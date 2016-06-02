@@ -1,0 +1,10 @@
+- name: checkout docker build
+  become_user: "{{username}}"
+  git: repo={{docker_build_repo}}
+       dest={{install_dir}}/hspc
+       update={{update_repositories}}
+
+- name: launch docker compose
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/hspc
+         docker-compose -f docker-compose.yml up

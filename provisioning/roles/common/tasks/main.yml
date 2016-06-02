@@ -1,0 +1,35 @@
+- name: update aptitude cache
+  tags: [general]
+  apt: update_cache=yes
+
+- name: install prerequisite packages
+  tags: [general]
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - acl
+         - aptitude
+         - git
+         - python-psycopg2
+         - python-jinja2
+         - python-httplib2
+         - python-requests
+         - python-pycurl
+
+- name: upgrade server packages
+  tags: [general]
+  apt: upgrade=full
+
+- name: create group
+  tags: [general]
+  group: name="{{username}}"
+
+- name: create user
+  tags: [general]
+  user: name="{{username}}" password="{{userpass}}" update_password="on_create"
+        group="{{username}}" groups=sudo,docker
+        shell=/bin/bash
+
+- include: hspc.yml
+- include: sample-data.yml

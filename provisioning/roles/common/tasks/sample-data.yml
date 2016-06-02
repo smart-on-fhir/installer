@@ -1,0 +1,145 @@
+- name: checkout sample patients
+  tags: [patients, load_patients]
+  become_user: "{{username}}"
+  git: repo={{sample_patients_repo}}
+       version={{sample_patients_branch}}
+       dest={{install_dir}}/sample-patients
+       update={{update_repositories}}
+  register: sample_patients_checkout
+
+- name: build sample patients
+  tags: [patients]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/sample-patients/bin
+         python generate.py --write-fhir ../generated-data {{sample_patients_generator_params}}
+
+- name: list sample patients
+  tags: [patients, load_patients]
+  shell: ls {{install_dir}}/sample-patients/generated-data/*.xml | head -n {{sample_patients_limit}}
+  register: sample_patient_files
+
+#- name: load sample patients
+#  tags: [patients, load_patients]
+#  when:
+#    ((sof_checkout.changed or sample_patients_checkout.changed) or force_rebuild)
+#    and (not fhir_server_preserve_db)
+#  shell: "chdir={{install_dir}}/sample-patients/generated-data/
+#         curl
+#           -u {{fhir_server_client}}:{{fhir_server_password}}
+#           'http://localhost:3000/?'
+#           -H 'Content-Type: text/xml'
+#           --data-binary @{{item}}"
+#  with_items: sample_patient_files.stdout_lines
+
+- name: list custom patients (json)
+  tags: [patients, load_patients]
+  shell: ls {{install_dir}}/sample-patients/custom-data/*.json
+  register: custom_patient_files_json
+
+#- name: load custom patients (json)
+#  tags: [patients, load_patients]
+#  when:
+#    ((sof_checkout.changed or sample_patients_checkout.changed) or force_rebuild)
+#    and (not fhir_server_preserve_db)
+#    and include_custom_patients
+#  shell: "chdir={{install_dir}}/sample-patients/custom-data/
+#         curl
+#           -u {{fhir_server_client}}:{{fhir_server_password}}
+#           'http://localhost:3000/?'
+#           -H 'Content-Type: application/json'
+#           --data-binary @{{item}}"
+#  with_items: custom_patient_files_json.stdout_lines
+
+- name: checkout fhir starter
+  tags: [apps]
+  become_user: "{{username}}"
+  git: repo={{fhir_starter_repo}}
+       version={{fhir_starter_branch}}
+       dest={{install_dir}}/apps/static
+       update={{update_repositories}}
+
+- name: configure sample apps server (services.js)
+  tags: [apps]
+  become_user: "{{username}}"
+  template: src="config/services.js.j2"
+            dest="{{install_dir}}/apps/static/fhirStarter/services.js"
+            owner="{{username}}" group="{{username}}" mode=0644
+
+- name: configure sample apps server (apps.json)
+  tags: [apps]
+  become_user: "{{username}}"
+  template: src="config/apps.json.j2"
+            dest="{{install_dir}}/apps/static/fhirStarter/apps.json"
+            owner="{{username}}" group="{{username}}" mode=0644
+
+- name: checkout cardiac risk app
+  tags: [apps]
+  become_user: "{{username}}"
+  git: repo={{cardiac_risk_repo}}
+       version={{cardiac_risk_branch}}
+       dest={{install_dir}}/apps/static/apps/cardiac-risk
+       update={{update_repositories}}
+       force=yes
+
+- name: checkout bp centiles app
+  tags: [apps]
+  become_user: "{{username}}"
+  git: repo={{bp_centiles_repo}}
+       version={{bp_centiles_branch}}
+       dest={{install_dir}}/apps/static/apps/bp-centiles
+       update={{update_repositories}}
+       force=yes
+
+- name: checkout growth chart app
+  tags: [apps]
+  become_user: "{{username}}"
+  git: repo={{growth_chart_repo}}
+       version={{growth_chart_branch}}
+       dest={{install_dir}}/apps/static/apps/growth-chart
+       update={{update_repositories}}
+       force=yes
+
+- name: checkout fhir demo app
+  tags: [apps]
+  become_user: "{{username}}"
+  git: repo={{fhir_demo_app_repo}}
+       version={{fhir_demo_app_branch}}
+       dest={{install_dir}}/apps/static/apps/fhir-demo
+       update={{update_repositories}}
+       force=yes
+
+- name: configure sample apps
+  tags: [apps]
+  become_user: "{{username}}"
+  shell: sed -i -e 's/node_modules\/fhirclient\/fhir-client\.js/\.\.\/\.\.\/js\/fhir-client\.js/' {{install_dir}}/apps/static/apps/{{item}}
+  with_items:
+        - bp-centiles/index.html
+        - bp-centiles/launch.html
+        - cardiac-risk/index.html
+        - cardiac-risk/launch.html
+        - growth-chart/index.html
+        - growth-chart/launch.html
+        - fhir-demo/app/index.html
+        - fhir-demo/app/launch.html
+
+- name: list sample apps
+  tags: [apps, load_apps]
+  shell: cat {{install_dir}}/apps/static/fhirStarter/apps.json
+  register: sample_apps
+
+- name: copy load-app script
+  tags: [apps, load_apps]
+  become_user: "{{username}}"
+  copy: src=load_sample_app.py dest={{install_dir}} mode=755
+
+#- name: load sample apps
+#  tags: [apps, load_apps]
+#  shell: chdir={{install_dir}}
+#     ./load_sample_app.py
+#         '{{lookup('template', '../templates/load_app.j2')}}'
+#         '{{auth_server_base}}'
+#         '{{auth_server_client}}'
+#         '{{auth_server_password}}'
+#  with_flattened:
+#     - {"client_name": "BP Centiles","client_id": "bp_centiles","launch_uri": "apps/bp-centiles/launch.html","redirect_uri": "apps/bp-centiles/","logo_uri": "http://hspc.smarthealthit.org/images/apps/bpc.png"}
+#    - "{{ sample_apps.stdout | to_json }}"
