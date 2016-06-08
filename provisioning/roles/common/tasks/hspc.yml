@@ -18,6 +18,31 @@
   notify:
      - Restart MySQL
 
+- name: checkout hspc repositories
+  tags: [smart_on_fhir, reset_db]
+  become_user: "{{username}}"
+  git: repo={{hspc_repos_base}}/{{item}}
+       version={{hspc_smart_branch}}
+       dest={{install_dir}}/hspc/{{item}}
+       update={{update_repositories}}
+       force=yes
+  with_items:
+     - reference-auth-security
+     - reference-auth-server-webapp
+     - reference-auth-server-ldap-webapp
+     - reference-api-mysql
+     - reference-api-oauth2
+     - reference-api-fhir
+     - reference-api-smart-support
+     - reference-api-webapp
+     - reference-messaging
+     - reference-apps
+     - reference-impl
+     - bilirubin-app
+     - java-client
+     - tools
+     - examples
+
 - name: Load Authorization Server DB Schema and Sample Data
   shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
        mysql oic < mysql_auth_install.sql
@@ -25,30 +50,6 @@
 - name: Load Resource Server Client
   shell: chdir={{install_dir}}/hspc/reference-api-mysql/src/main/resources/db/openidconnect/mysql
        mysql oic < resource-server-client.sql
-
-- name: checkout hspc repositories
-  tags: [smart_on_fhir, reset_db]
-  become_user: "{{username}}"
-  git: repo=https://github.com/nschwertner/{{item}}
-       dest={{install_dir}}/hspc/{{item}}
-       update={{update_repositories}}
-       force=yes
-  with_items:
-    - reference-auth-security
-    - reference-auth-server-webapp
-    - reference-auth-server-ldap-webapp
-    - reference-api-mysql
-    - reference-api-oauth2
-    - reference-api-fhir
-    - reference-api-smart-support
-    - reference-api-webapp
-    - reference-messaging
-    - reference-apps
-    - reference-impl
-    - bilirubin-app
-    - java-client
-    - tools
-    - examples
 
 - name: patch api server webapp
   become_user: "{{username}}"

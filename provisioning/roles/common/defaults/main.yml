@@ -65,3 +65,6 @@ ldap_server_uri: "ldap://{{ldap_server_host}}:389"
 ldap_server_organization: "Example Company"
 ldap_server_admin_password: "password"
 ldap_server_tls: false
+
+hspc_repos_base: "https://github.com/nschwertner"
+hspc_smart_branch: "smart-dstu2"
