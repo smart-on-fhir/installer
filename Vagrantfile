@@ -24,6 +24,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", path: "provisioning/fetch-templates.sh", args: ["/vagrant/provisioning/roles/common/templates/config","v0.1.2"]
 
   config.vm.provision "ansible" do |ansible|
+  #  ansible.tags=["docker"]
     ansible.playbook = "provisioning/smart-on-fhir-servers.yml"
   end
 

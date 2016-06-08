@@ -1,0 +1,40 @@
+server_names_hash_bucket_size  64;
+
+upstream fhir {
+    server 127.0.0.1:9002;
+}
+
+# the nginx server instance
+server {
+{% if fhir_server_host %}
+    server_name {{fhir_server_host}};
+{% endif %}
+
+    listen {{fhir_server_port}};
+
+    location / {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+
+      access_log /var/log/nginx/fhir_api_access.log;
+      proxy_pass http://fhir;
+      proxy_redirect off;
+    }
+
+{% if fhir_server_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/fhir.crt;
+    ssl_certificate_key /etc/nginx/ssl/fhir.key;
+{% endif %}
+}
+
+{% if fhir_server_port != 80 and http_redirect %}
+server {
+    server_name {{fhir_server_host}};
+    rewrite ^       {{fhir_server_base}}$request_uri? permanent;
+    listen 80;
+}
+{% endif %}

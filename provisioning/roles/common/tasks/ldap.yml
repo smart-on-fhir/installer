@@ -1,0 +1,55 @@
+- name: automatically select the OpenLDAP configuration settings
+  shell: /bin/echo "slapd {{item}}" | sudo debconf-set-selections
+  with_items:
+         - slapd/password1 password {{ldap_server_admin_password}}
+         - slapd/password2 password {{ldap_server_admin_password}}
+         - slapd/allow_ldap_v2 boolean false
+         - shared/organization string {{ldap_server_organization}}
+         - slapd/no_configuration boolean false
+         - slapd/move_old_database boolean true
+         - slapd/purge_database boolean true
+         - slapd/domain string {{ldap_server_domain}}
+         - slapd/backend boolean HDB
+
+- name: install ldap apt packages
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - slapd
+         - ldap-utils
+
+- name: configure LDAP client tool
+  template: src="ldap.conf.j2"
+            dest="/etc/ldap/ldap.conf"
+            owner=root group=root mode=0644
+  register: ldap_checkout
+
+- name: generate sample LDAP directory
+  become_user: "{{username}}"
+  template: src="ldap_content.ldif.j2"
+            dest="{{install_dir}}/ldap_content.ldif"
+
+- name: load sample LDAP directory
+  shell: chdir={{install_dir}}
+         ldapadd
+           -x -D cn=admin,{{ldap_server_base}}
+           -w {{ldap_server_admin_password}}
+           -f ldap_content.ldif
+  failed_when: False
+
+
+- name: copy ldap config files
+  copy: src={{item}}
+        dest=/tmp
+  with_items:
+    - ldap_disable_auth.ldif
+
+- name: disable ldap server tls
+  shell: ldapmodify
+           -Y EXTERNAL -H ldapi:///
+           -f /tmp/ldap_disable_auth.ldif
+  failed_when: False
+
+- name: restart ldap server
+  service: name=slapd state=restarted

@@ -1,0 +1,38 @@
+upstream auth {
+    server 127.0.0.1:9001;
+}
+
+# the nginx server instance
+server {
+{% if auth_server_host %}
+    server_name {{auth_server_host}};
+{% endif %}
+
+    listen {{auth_server_port}};
+
+    location / {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+
+      access_log /var/log/nginx/auth_access.log;
+      proxy_pass http://auth;
+      proxy_redirect off;
+    }
+
+{% if auth_server_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/auth.crt;
+    ssl_certificate_key /etc/nginx/ssl/auth.key;
+{% endif %}
+}
+
+{% if auth_server_port != 80 and http_redirect %}
+server {
+    server_name {{auth_server_host}};
+    rewrite ^       {{auth_server_base}}$request_uri? permanent;
+    listen 80;
+}
+{% endif %}

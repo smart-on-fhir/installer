@@ -1,0 +1,11 @@
+dn: cn=config
+delete: olcDisallows
+
+dn: cn=config
+delete: olcRequires
+
+dn: olcDatabase={-1}frontend,cn=config
+delete: olcRequires
+
+dn: olcDatabase={1}hdb,cn=config
+delete: olcSecurity

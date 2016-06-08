@@ -1,0 +1,27 @@
+dn: ou=People,{{ldap_server_base}}
+objectClass: organizationalUnit
+ou: People
+
+dn: uid=demo,ou=People,{{ldap_server_base}}
+objectClass: inetOrgPerson
+objectClass: simpleSecurityObject
+objectClass: shadowAccount
+uid: demo
+sn: User
+givenName: Demo
+cn: Demo User
+displayName: Demo User
+mail: demo@example.com
+userPassword: demo
+
+dn: uid=admin,ou=People,{{ldap_server_base}}
+objectClass: inetOrgPerson
+objectClass: simpleSecurityObject
+objectClass: shadowAccount
+uid: admin
+sn: User
+givenName: Admin
+cn: Admin User
+displayName: Admin User
+mail: admin@example.com
+userPassword: password

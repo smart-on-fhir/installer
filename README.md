@@ -12,8 +12,6 @@ are (we have tested with the versions below, but other versions may be fine too)
 Once you have the prerequisites installed on your machine, you can:
 
 ```
-sudo ansible-galaxy install franklinkim.docker
-sudo ansible-galaxy install franklinkim.docker-compose
 git clone https://github.com/nschwertner/installer-hspc
 cd installer-hspc
 vagrant up

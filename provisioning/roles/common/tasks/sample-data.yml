@@ -143,3 +143,9 @@
 #  with_flattened:
 #     - {"client_name": "BP Centiles","client_id": "bp_centiles","launch_uri": "apps/bp-centiles/launch.html","redirect_uri": "apps/bp-centiles/","logo_uri": "http://hspc.smarthealthit.org/images/apps/bpc.png"}
 #    - "{{ sample_apps.stdout | to_json }}"
+
+- name: configure nginx (sample apps)
+  tags: [apps,nginx]
+  template: src=nginx_apps.j2 dest=/etc/nginx/sites-enabled/apps owner=root group=root mode=0644
+  notify:
+    - restart nginx

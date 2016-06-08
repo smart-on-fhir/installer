@@ -1,3 +1,8 @@
+- name: remove aptitude lock
+  tags: [general]
+  file: state=absent
+        path=/var/lib/apt/lists/lock
+
 - name: update aptitude cache
   tags: [general]
   apt: update_cache=yes
@@ -10,10 +15,16 @@
   with_items:
          - acl
          - aptitude
+         - curl
          - git
+         - nginx
+         - maven
+         - mysql-server
+         - openjdk-8-jdk
          - python-psycopg2
          - python-jinja2
          - python-httplib2
+         - python-mysqldb
          - python-requests
          - python-pycurl
 
@@ -28,8 +39,42 @@
 - name: create user
   tags: [general]
   user: name="{{username}}" password="{{userpass}}" update_password="on_create"
-        group="{{username}}" groups=sudo,docker
+        group="{{username}}" groups=sudo
         shell=/bin/bash
 
+- name: download jetty-runner
+  tags: [apps, general]
+  become_user: "{{username}}"
+  get_url:
+          url={{jetty_download_url}}
+          dest={{install_dir}}/jetty-runner.jar
+
+#- name: config jetty-runner
+#  tags: [apps, general]
+#  copy: src=jetty.xml dest={{install_dir}}/jetty.xml
+
+- name: Update MySQL root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ mysql_root_pass }} state=present
+  with_items:
+     - "{{ ansible_hostname }}"
+     - 127.0.0.1
+     - ::1
+     - localhost
+
+- name: Copy the root credentials as .my.cnf file
+  template: src=root.cnf.j2 dest=~/.my.cnf mode=0600
+
+- name: Ensure Anonymous user(s) are not in the database
+  mysql_user: name='' host={{ item }} state=absent
+  with_items:
+     - localhost
+     - "{{ ansible_hostname }}"
+
+- name: Remove the test database
+  mysql_db: name=test state=absent
+  notify:
+     - Restart MySQL
+
+- include: ldap.yml
 - include: hspc.yml
 - include: sample-data.yml

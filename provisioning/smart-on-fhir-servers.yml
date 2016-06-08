@@ -4,6 +4,4 @@
   vars_files:
     - custom_settings.yml
   roles:
-    - franklinkim.docker
-    - franklinkim.docker-compose
     - common

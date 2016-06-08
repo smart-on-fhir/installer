@@ -1,0 +1,13 @@
+[Unit]
+Description=API Service
+
+[Service]
+User={{username}}
+TimeoutStartSec=infinity
+Environment=TEST={{fhir_server_base}}
+WorkingDirectory={{install_dir}}/hspc
+ExecStart=/usr/bin/java -jar {{install_dir}}/jetty-runner.jar hspc-reference-api.war
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

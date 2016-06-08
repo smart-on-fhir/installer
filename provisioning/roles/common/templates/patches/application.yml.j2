@@ -1,0 +1,61 @@
+server:
+#  port: 40010
+  contextPath: /hspc-reference-api
+
+spring:
+  jmx:
+    enabled: false
+  profiles:
+    active: local
+  resources:
+    chain:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+# Platform Servers
+hspc:
+  platform:
+    api:
+      security:
+#        mode: secured
+#        mode: open
+        mode: ${SECURITY_MODE:open}
+      oauth2:
+        clientId: hspc_resource_server
+        clientSecret: secret
+        scopes: openid,launch,smart/orchestrate_launch
+      fhir:
+        db:
+          driver: com.mysql.jdbc.Driver
+          username: ${MYSQL_USER:root}
+          password: ${MYSQL_PASS:password}
+          persistenceUnitName: ${MYSQL_DB:hapi_pu}
+          url: jdbc:mysql://${MYSQL_ENDPOINT:localhost:3306}/${MYSQL_DB:hapi_pu}?autoReconnect=true
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        terminologyEndpointURL: ${TERMINOLOGY_SERVER_URL:fhir2.healthintersections.com.au/open}
+        federatedEndpointURL: ${FEDERATED_SERVER_URL:dataphoria.org/datafhir}
+    authorization:
+      url: ${AUTH_SERVER_URL:http://localhost:8080/hspc-reference-authorization}
+      authorizeUrl: ${hspc.platform.authorization.url}/authorize
+      tokenUrl: ${hspc.platform.authorization.url}/token
+      tokenCheckUrl: ${hspc.platform.authorization.url}/introspect
+      userinfoUrl: ${hspc.platform.authorization.url}/userinfo
+      smart:
+        launchUrl: ${hspc.platform.authorization.url}/Launch
+        registrationEndpointUrl: ${hspc.platform.authorization.url}/register
+        urisEndpointExtensionUrl: http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris
+    messaging:
+      url: ${MESSAGING_SERVER_URL:http://localhost:8080/hspc-reference-messaging}
+      subscriptionSupport:
+        enabled: true
+        subscriptionEndpoint: ${hspc.platform.messaging.url}/subscription
+        resourceEndpoint: ${hspc.platform.messaging.url}/resource
+
+hibernate:
+  search:
+    default:
+      indexBase: target/lucenefiles

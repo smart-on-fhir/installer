@@ -1,10 +1,121 @@
-- name: checkout docker build
-  become_user: "{{username}}"
-  git: repo={{docker_build_repo}}
-       dest={{install_dir}}/hspc
-       update={{update_repositories}}
+- name: Drop the API Server database
+  mysql_db: name={{api_server_database}} state=absent
+  notify:
+     - Restart MySQL
 
-- name: launch docker compose
+- name: Drop the Authorization Server database
+  mysql_db: name={{auth_server_database}} state=absent
+  notify:
+     - Restart MySQL
+
+- name: Create the API Server database
+  mysql_db: name={{api_server_database}} state=present
+  notify:
+     - Restart MySQL
+
+- name: Create the Authorization Server database
+  mysql_db: name={{auth_server_database}} state=present
+  notify:
+     - Restart MySQL
+
+- name: Load Authorization Server DB Schema and Sample Data
+  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
+       mysql oic < mysql_auth_install.sql
+
+- name: Load Resource Server Client
+  shell: chdir={{install_dir}}/hspc/reference-api-mysql/src/main/resources/db/openidconnect/mysql
+       mysql oic < resource-server-client.sql
+
+- name: checkout hspc repositories
+  tags: [smart_on_fhir, reset_db]
+  become_user: "{{username}}"
+  git: repo=https://github.com/nschwertner/{{item}}
+       dest={{install_dir}}/hspc/{{item}}
+       update={{update_repositories}}
+       force=yes
+  with_items:
+    - reference-auth-security
+    - reference-auth-server-webapp
+    - reference-auth-server-ldap-webapp
+    - reference-api-mysql
+    - reference-api-oauth2
+    - reference-api-fhir
+    - reference-api-smart-support
+    - reference-api-webapp
+    - reference-messaging
+    - reference-apps
+    - reference-impl
+    - bilirubin-app
+    - java-client
+    - tools
+    - examples
+
+- name: patch api server webapp
+  become_user: "{{username}}"
+  template: src=patches/application.yml.j2
+            dest={{install_dir}}/hspc/reference-api-webapp/src/main/resources/application.yml
+
+- name: patch auth server webapp
+  become_user: "{{username}}"
+  template: src=patches/auth.properties.j2
+            dest={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/config/auth.properties
+
+- name: patch auth server ldap config
+  become_user: "{{username}}"
+  template: src=patches/ldap.properties.j2
+            dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp/src/main/resources/config/ldap.properties
+
+- name: patch auth server clients
+  become_user: "{{username}}"
+  template: src=patches/mysql_clients.sql.j2
+            dest={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql/mysql_clients.sql
+
+- name: build hspc api server
+  tags: [api]
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc
-         docker-compose -f docker-compose.yml up
+       mvn clean install -e -f reference-impl/pom.xml
+
+- name: clear war files
+  tags: [api]
+  shell: rm -f {{install_dir}}/hspc/*.war
+
+- name: copy war files
+  tags: [api]
+  shell: find {{install_dir}} -name *.war -print0 | xargs -I{} -0 cp -v {} {{install_dir}}/hspc/.
+
+- name: configure api server service
+  tags: [smart_on_fhir, reset_db]
+  template: src=api-server.service.j2
+            dest=/etc/systemd/system/api-server.service
+            owner=root group=root mode=0644
+
+- name: configure auth server service
+  tags: [auth]
+  template: src=auth-server.service.j2
+            dest=/etc/systemd/system/auth-server.service
+            owner=root group=root mode=0644
+
+- name: reload systemd daemon
+  tags: [api]
+  shell: systemctl daemon-reload
+
+- name: restart api server
+  tags: [smart_on_fhir, reset_db]
+  service: name=api-server enabled=yes state=restarted
+
+- name: restart auth server
+  tags: [smart_on_fhir, reset_db]
+  service: name=auth-server enabled=yes state=restarted
+
+- name: configure nginx (api server)
+  tags: [smart_on_fhir,nginx]
+  template: src=nginx_default.j2 dest=/etc/nginx/sites-enabled/default owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- name: configure nginx (auth server)
+  tags: [auth,nginx]
+  template: src=nginx_auth.j2 dest=/etc/nginx/sites-enabled/auth owner=root group=root mode=0644
+  notify:
+    - restart nginx

@@ -3,6 +3,7 @@ username: fhir
 userpass: secretpass
 install_dir: "/home/{{username}}"
 update_repositories: yes
+http_redirect: false
 docker_build_repo: "https://github.com/nschwertner/fhir-server-docker-experiment"
 fhir_starter_repo: "https://github.com/smart-on-fhir/fhir-starter.git"
 cardiac_risk_repo: "https://github.com/smart-on-fhir/cardiac-risk-app.git"
@@ -51,3 +52,16 @@ fhir_server_base: "{{
 
 # Additional parameters for the sample patient generator
 sample_patients_generator_params: ""
+
+mysql_root_pass: password
+api_server_database: hapi_pu
+auth_server_database: oic
+jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
+
+ldap_server_domain: "example.com"
+ldap_server_host: "localhost"
+ldap_server_base: "dc=example,dc=com"
+ldap_server_uri: "ldap://{{ldap_server_host}}:389"
+ldap_server_organization: "Example Company"
+ldap_server_admin_password: "password"
+ldap_server_tls: false

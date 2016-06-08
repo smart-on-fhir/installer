@@ -1,0 +1,8 @@
+oidc.issuer=${ISSUER_URL:http://localhost:8080/hspc-reference-authorization/}
+
+oidc.datasource.mysql.url=jdbc:mysql://${MYSQL_ENDPOINT:localhost}/${MYSQL_DB:oic}
+oidc.datasource.mysql.username=${MYSQL_USER:root}
+oidc.datasource.mysql.password=${MYSQL_PASS:password}
+
+CONTEXT_FHIR_ENDPOINT=${FHIR_SERVER_URL:http://localhost:8080/hspc-reference-api/data}
+CONTEXT_RESOLVE_ENDPOINT=${APP_SERVER_URL:http://localhost:8080/hspc-reference-apps/static/}
