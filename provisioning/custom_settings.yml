@@ -1,15 +1,15 @@
 ---
 fhir_server_secure_http: false
-fhir_server_host: "hspc.smarthealthit.org"
-fhir_server_port: 9002
-fhir_server_name: "SMART-on-FHIR HSPC Sandbox"
+fhir_server_host: localhost
+fhir_server_port: 9080
+fhir_server_name: SMART-on-FHIR HSPC Sandbox
 app_server_secure_http: false
-app_server_host: "hspc.smarthealthit.org"
-app_server_port: 80
+app_server_host: localhost
+app_server_port: 9090
 auth_server_secure_http: false
-auth_server_host: "hspc.smarthealthit.org"
-auth_server_port: 9001
-auth_server_password: K31eT411i936qir
+auth_server_host: localhost
+auth_server_port: 9085
+auth_server_password: secret
 sample_patients_branch: v0.1.0
 fhir_starter_branch: v0.1.2
 cardiac_risk_branch: v0.1.0
