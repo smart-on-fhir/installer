@@ -10,6 +10,11 @@ Vagrant.configure(2) do |config|
   #config.vm.box = "ubuntu/trusty64"
   #config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
+  config.vm.network :forwarded_port, guest: 9080, host: 9080
+  config.vm.network :forwarded_port, guest: 9085, host: 9085
+  config.vm.network :forwarded_port, guest: 9090, host: 9090
+  config.vm.network :forwarded_port, guest: 9095, host: 9095
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
