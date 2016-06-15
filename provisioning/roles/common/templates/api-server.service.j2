@@ -4,9 +4,13 @@ Description=API Service
 [Service]
 User={{username}}
 TimeoutStartSec=infinity
-Environment=TEST={{fhir_server_base}}
+Environment=AUTH_SERVER_URL={{auth_server_base}}
+Environment=SECURITY_MODE=open
+#Environment=SECURITY_MODE=secured
+#Environment=MYSQL_ENDPOINT=mysql_for_api:3306
+#Environment=MYSQL_DB=hapi_pu
 WorkingDirectory={{install_dir}}/hspc
-ExecStart=/usr/bin/java -jar {{install_dir}}/jetty-runner.jar hspc-reference-api.war
+ExecStart=/usr/bin/java -Djetty.port="9002" -Djetty.host="localhost" -jar {{install_dir}}/jetty-runner.jar --config {{install_dir}}/jetty.xml hspc-reference-api.war
 Restart=always
 
 [Install]

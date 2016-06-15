@@ -49,6 +49,10 @@
           url={{jetty_download_url}}
           dest={{install_dir}}/jetty-runner.jar
 
+- name: config jetty-runner
+  tags: [apps, general]
+  copy: src=jetty.xml dest={{install_dir}}/jetty.xml
+
 #- name: config jetty-runner
 #  tags: [apps, general]
 #  copy: src=jetty.xml dest={{install_dir}}/jetty.xml

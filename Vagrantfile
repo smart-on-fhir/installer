@@ -14,6 +14,10 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 9085, host: 9085
   config.vm.network :forwarded_port, guest: 9090, host: 9090
   config.vm.network :forwarded_port, guest: 9095, host: 9095
+  config.vm.network :forwarded_port, guest: 9000, host: 9000
+  config.vm.network :forwarded_port, guest: 9001, host: 9001
+  config.vm.network :forwarded_port, guest: 9002, host: 9002
+  config.vm.network :forwarded_port, guest: 8080, host: 8080
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
