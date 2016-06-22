@@ -4,10 +4,12 @@ Description=Authorization Service
 [Service]
 User={{username}}
 TimeoutStartSec=infinity
-Environment=ISSUER_URL={{auth_server_base}}
+Environment=ISSUER_URL={{auth_server_base}}/
 Environment=FHIR_SERVER_URL={{fhir_server_base}}
 Environment=APP_SERVER_URL={{app_server_base}}
-#MYSQL_ENDPOINT: "mysql_for_auth:3306"
+Environment=MYSQL_DB={{auth_server_database}}
+Environment=MYSQL_USER={{mysql_user}}
+Environment=MYSQL_PASS={{mysql_pass}}
 WorkingDirectory={{install_dir}}/hspc/reference-auth-server-ldap-webapp/target
 ExecStart=/usr/bin/java -Djetty.port="9001" -Djetty.host="localhost" -jar {{install_dir}}/jetty-runner.jar --config {{install_dir}}/jetty.xml hspc-reference-authorization.war
 Restart=always

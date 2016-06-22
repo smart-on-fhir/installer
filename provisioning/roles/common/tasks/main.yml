@@ -1,11 +1,16 @@
-- name: remove aptitude lock
-  tags: [general]
-  file: state=absent
-        path=/var/lib/apt/lists/lock
+- name: disable apt update on startup
+  service: name=apt-daily.service enabled=no
+
+- name: disable apt update timer
+  service: name=apt-daily.timer enabled=no
 
 - name: update aptitude cache
   tags: [general]
   apt: update_cache=yes
+  register: result
+  until: result|succeeded
+  retries: 10
+  delay: 10
 
 - name: install prerequisite packages
   tags: [general]
@@ -53,31 +58,14 @@
   tags: [apps, general]
   copy: src=jetty.xml dest={{install_dir}}/jetty.xml
 
-#- name: config jetty-runner
-#  tags: [apps, general]
-#  copy: src=jetty.xml dest={{install_dir}}/jetty.xml
-
-- name: Update MySQL root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_root_pass }} state=present
-  with_items:
-     - "{{ ansible_hostname }}"
-     - 127.0.0.1
-     - ::1
-     - localhost
-
-- name: Copy the root credentials as .my.cnf file
-  template: src=root.cnf.j2 dest=~/.my.cnf mode=0600
-
-- name: Ensure Anonymous user(s) are not in the database
-  mysql_user: name='' host={{ item }} state=absent
-  with_items:
-     - localhost
-     - "{{ ansible_hostname }}"
-
-- name: Remove the test database
-  mysql_db: name=test state=absent
+- name: configure nginx (api server)
+  tags: [nginx]
+  template: src=upload.conf.j2 dest=/etc/nginx/conf.d/upload.conf owner=root group=root mode=0644
   notify:
-     - Restart MySQL
+    - restart nginx
+
+- name: Configure MySQL user
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{api_server_database}}.*:ALL/{{auth_server_database}}.*:ALL state=present
 
 - include: ldap.yml
 - include: hspc.yml

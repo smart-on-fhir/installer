@@ -1,55 +1,3 @@
-- name: checkout sample patients
-  tags: [patients, load_patients]
-  become_user: "{{username}}"
-  git: repo={{sample_patients_repo}}
-       version={{sample_patients_branch}}
-       dest={{install_dir}}/sample-patients
-       update={{update_repositories}}
-  register: sample_patients_checkout
-
-- name: build sample patients
-  tags: [patients]
-  become_user: "{{username}}"
-  shell: chdir={{install_dir}}/sample-patients/bin
-         python generate.py --write-fhir ../generated-data {{sample_patients_generator_params}}
-
-- name: list sample patients
-  tags: [patients, load_patients]
-  shell: ls {{install_dir}}/sample-patients/generated-data/*.xml | head -n {{sample_patients_limit}}
-  register: sample_patient_files
-
-#- name: load sample patients
-#  tags: [patients, load_patients]
-#  when:
-#    ((sof_checkout.changed or sample_patients_checkout.changed) or force_rebuild)
-#    and (not fhir_server_preserve_db)
-#  shell: "chdir={{install_dir}}/sample-patients/generated-data/
-#         curl
-#           -u {{fhir_server_client}}:{{fhir_server_password}}
-#           'http://localhost:3000/?'
-#           -H 'Content-Type: text/xml'
-#           --data-binary @{{item}}"
-#  with_items: sample_patient_files.stdout_lines
-
-- name: list custom patients (json)
-  tags: [patients, load_patients]
-  shell: ls {{install_dir}}/sample-patients/custom-data/*.json
-  register: custom_patient_files_json
-
-#- name: load custom patients (json)
-#  tags: [patients, load_patients]
-#  when:
-#    ((sof_checkout.changed or sample_patients_checkout.changed) or force_rebuild)
-#    and (not fhir_server_preserve_db)
-#    and include_custom_patients
-#  shell: "chdir={{install_dir}}/sample-patients/custom-data/
-#         curl
-#           -u {{fhir_server_client}}:{{fhir_server_password}}
-#           'http://localhost:3000/?'
-#           -H 'Content-Type: application/json'
-#           --data-binary @{{item}}"
-#  with_items: custom_patient_files_json.stdout_lines
-
 - name: checkout fhir starter
   tags: [apps]
   become_user: "{{username}}"
@@ -149,3 +97,50 @@
   template: src=nginx_apps.j2 dest=/etc/nginx/sites-enabled/apps owner=root group=root mode=0644
   notify:
     - restart nginx
+
+- name: checkout sample patients
+  tags: [patients, load_patients]
+  become_user: "{{username}}"
+  git: repo={{sample_patients_repo}}
+       version={{sample_patients_branch}}
+       dest={{install_dir}}/sample-patients
+       update={{update_repositories}}
+  register: sample_patients_checkout
+
+- name: build sample patients
+  tags: [patients, load_patients]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/sample-patients/bin
+         python generate.py --write-fhir ../generated-data {{sample_patients_generator_params}}
+
+- name: wait for api server to become available
+  tags: [smart_on_fhir, reset_db, load_patients]
+  wait_for: port=9002
+
+- name: list sample patients
+  tags: [patients, load_patients]
+  shell: ls {{install_dir}}/sample-patients/generated-data/*.xml | head -n {{sample_patients_limit}}
+  register: sample_patient_files
+
+- name: load sample patients
+  tags: [patients, load_patients]
+  shell: "chdir={{install_dir}}/sample-patients/generated-data/
+         curl
+           'http://localhost:9002/data/?'
+           -H 'Content-Type: application/xml+fhir'
+           --data-binary @{{item}}"
+  with_items: sample_patient_files.stdout_lines
+
+- name: list custom patients (json)
+  tags: [patients, load_patients]
+  shell: ls {{install_dir}}/sample-patients/custom-data/*.json
+  register: custom_patient_files_json
+
+- name: load custom patients (json)
+  tags: [patients, load_patients]
+  shell: "chdir={{install_dir}}/sample-patients/custom-data/
+         curl
+           'http://localhost:9002/data/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}"
+  with_items: custom_patient_files_json.stdout_lines

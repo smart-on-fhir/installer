@@ -53,6 +53,8 @@ fhir_server_base: "{{
 # Additional parameters for the sample patient generator
 sample_patients_generator_params: ""
 
+mysql_user: fhir
+mysql_pass: password
 mysql_root_pass: password
 api_server_database: hapi_pu
 auth_server_database: oic
@@ -68,3 +70,5 @@ ldap_server_tls: false
 
 hspc_repos_base: "https://github.com/nschwertner"
 hspc_smart_branch: "smart-dstu2"
+
+max_upload_size: "5M"

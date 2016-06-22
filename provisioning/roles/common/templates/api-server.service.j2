@@ -7,9 +7,10 @@ TimeoutStartSec=infinity
 Environment=AUTH_SERVER_URL={{auth_server_base}}
 Environment=SECURITY_MODE=open
 #Environment=SECURITY_MODE=secured
-#Environment=MYSQL_ENDPOINT=mysql_for_api:3306
-#Environment=MYSQL_DB=hapi_pu
-WorkingDirectory={{install_dir}}/hspc
+Environment=MYSQL_DB={{api_server_database}}
+Environment=MYSQL_USER={{mysql_user}}
+Environment=MYSQL_PASS={{mysql_pass}}
+WorkingDirectory={{install_dir}}/hspc/reference-api-webapp/target
 ExecStart=/usr/bin/java -Djetty.port="9002" -Djetty.host="localhost" -jar {{install_dir}}/jetty-runner.jar --config {{install_dir}}/jetty.xml hspc-reference-api.war
 Restart=always
 

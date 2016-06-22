@@ -45,11 +45,11 @@
 
 - name: Load Authorization Server DB Schema and Sample Data
   shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
-       mysql oic < mysql_auth_install.sql
+         mysql oic < mysql_auth_install.sql
 
 - name: Load Resource Server Client
   shell: chdir={{install_dir}}/hspc/reference-api-mysql/src/main/resources/db/openidconnect/mysql
-       mysql oic < resource-server-client.sql
+         mysql oic < resource-server-client.sql
 
 - name: patch api server webapp
   become_user: "{{username}}"
@@ -71,19 +71,11 @@
   template: src=patches/mysql_clients.sql.j2
             dest={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql/mysql_clients.sql
 
-- name: build hspc api server
+- name: build hspc server stack
   tags: [api]
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc
        mvn clean install -e -f reference-impl/pom.xml
-
-- name: clear war files
-  tags: [api]
-  shell: rm -f {{install_dir}}/hspc/*.war
-
-- name: copy war files
-  tags: [api]
-  shell: find {{install_dir}} -name *.war -print0 | xargs -I{} -0 cp -v {} {{install_dir}}/hspc/.
 
 - name: configure api server service
   tags: [smart_on_fhir, reset_db]
