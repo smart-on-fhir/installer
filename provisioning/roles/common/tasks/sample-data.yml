@@ -129,7 +129,7 @@
            'http://localhost:9002/data/?'
            -H 'Content-Type: application/xml+fhir'
            --data-binary @{{item}}"
-  with_items: sample_patient_files.stdout_lines
+  with_items: "{{sample_patient_files.stdout_lines}}"
 
 - name: list custom patients (json)
   tags: [patients, load_patients]
@@ -143,4 +143,4 @@
            'http://localhost:9002/data/?'
            -H 'Content-Type: application/json+fhir'
            --data-binary @{{item}}"
-  with_items: custom_patient_files_json.stdout_lines
+  with_items: "{{custom_patient_files_json.stdout_lines}}"

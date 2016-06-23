@@ -43,14 +43,6 @@
      - tools
      - examples
 
-- name: Load Authorization Server DB Schema and Sample Data
-  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
-         mysql oic < mysql_auth_install.sql
-
-- name: Load Resource Server Client
-  shell: chdir={{install_dir}}/hspc/reference-api-mysql/src/main/resources/db/openidconnect/mysql
-         mysql oic < resource-server-client.sql
-
 - name: patch api server webapp
   become_user: "{{username}}"
   template: src=patches/application.yml.j2
@@ -70,6 +62,14 @@
   become_user: "{{username}}"
   template: src=patches/mysql_clients.sql.j2
             dest={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql/mysql_clients.sql
+
+- name: Load Authorization Server DB Schema and Sample Data
+  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
+         mysql oic < mysql_auth_install.sql
+
+- name: Load Resource Server Client
+  shell: chdir={{install_dir}}/hspc/reference-api-mysql/src/main/resources/db/openidconnect/mysql
+         mysql oic < resource-server-client.sql
 
 - name: build hspc server stack
   tags: [api]
