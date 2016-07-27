@@ -6,7 +6,7 @@ spring:
   jmx:
     enabled: false
   profiles:
-    active: local
+    active: singletenant
   resources:
     chain:
       enabled: true
@@ -29,15 +29,16 @@ hspc:
         scopes: openid,launch,smart/orchestrate_launch
       fhir:
         db:
-          driver: com.mysql.jdbc.Driver
+          driver-class-name: com.mysql.jdbc.Driver
           username: ${MYSQL_USER:root}
           password: ${MYSQL_PASS:password}
-          persistenceUnitName: ${MYSQL_DB:hapi_pu}
-          url: jdbc:mysql://${MYSQL_ENDPOINT:localhost:3306}/${MYSQL_DB:hapi_pu}?autoReconnect=true
+          schema: ${MYSQL_DB:hapi_pu}
+          url: jdbc:mysql://${MYSQL_ENDPOINT:localhost:3306}/${MYSQL_DB:hapi_pu}
         hibernate:
           dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         terminologyEndpointURL: ${TERMINOLOGY_SERVER_URL:fhir2.healthintersections.com.au/open}
         federatedEndpointURL: ${FEDERATED_SERVER_URL:dataphoria.org/datafhir}
+        contextPath: data
     authorization:
       url: ${AUTH_SERVER_URL:http://localhost:8080/hspc-reference-authorization}
       authorizeUrl: ${hspc.platform.authorization.url}/authorize
