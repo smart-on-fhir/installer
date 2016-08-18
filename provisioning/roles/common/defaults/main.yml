@@ -1,10 +1,66 @@
 ---
+
+# *** Main configuration file for the SMART-on-FHIR Installer ***
+
+# To customize the SMART-on-FHIR stack, you can either edit the settings directly in
+# this file or set up custom settings overrides (such as custom_settings.yml)
+
+# The user account that will host the servers. If a user account of this name
+# already exists on the system, the installer will not alter its credentials or
+# authentication mechanism
 username: fhir
 userpass: secretpass
 install_dir: "/home/{{username}}"
+
+# Suppresses selective task execution (set this to true if you would like to
+# force the playbook to always rebuild the servers and reload them)
+force_rebuild: true
+
+# By default Ansible will update the local copies of the servers code from
+# the source repositories. Set this to "no" if you would rather not have the
+# repositories updated on each run.
 update_repositories: yes
-http_redirect: false
-docker_build_repo: "https://github.com/nschwertner/fhir-server-docker-experiment"
+
+# Settigs for Jetty and Oracle Java. You probably won't have to alter these
+# unles you are switching to a different version of Jetty or Java
+jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
+
+# Database configuration
+mysql_root_pass: password
+mysql_user: fhir
+mysql_pass: password
+api_server_database: hapi_pu
+auth_server_database: oic
+
+# Password for the Java keystore used by the authorization server (please change)
+keystore_password: "changeme"
+
+# When setting up SSL security for the various services, these settings will allow you to
+# specify your own certificates instead of using self-signed certificates.
+# See files/sample-certificates for the names of the certificate files expected by the script
+use_custom_ssl_certificates: false
+#custom_ssl_certificates_path: examples/certificates
+
+# Controls whether HTTP requests on port 80 will be
+# redirected to the server's base URLs
+http_redirect: true
+
+# When set to true Ansible will not reset the SMART-on-FHIR database
+fhir_server_preserve_db: false
+
+# Specific settings for the SMART-on-FHIR server authorization behavior
+fhir_server_use_auth: true
+
+# General settings for the SMART-on-FHIR server (override as needed)
+fhir_server_secure_http: false
+fhir_server_host: "localhost"
+fhir_server_port: 9080
+fhir_server_name: "Local FHIR dev server"
+
+# General settings for the applications server
+app_server_secure_http: false
+app_server_host: "localhost"
+app_server_port: 9090
 fhir_starter_repo: "https://github.com/smart-on-fhir/fhir-starter.git"
 cardiac_risk_repo: "https://github.com/smart-on-fhir/cardiac-risk-app.git"
 bp_centiles_repo: "https://github.com/smart-on-fhir/bp-centiles-app.git"
@@ -15,18 +71,17 @@ cardiac_risk_branch: "master"
 bp_centiles_branch: "master"
 growth_chart_branch: "master"
 fhir_demo_app_branch: "master"
-fhir_server_secure_http: false
-fhir_server_host: "localhost"
-fhir_server_port: 9080
-fhir_server_name: "Local FHIR dev server"
-app_server_secure_http: false
-app_server_host: "localhost"
-app_server_port: 9090
+
+# When set to true Ansible will not reset the authorization server database
+auth_server_preserve_db: false
+
+# General settings for the authorization server
 auth_server_secure_http: false
 auth_server_host: "localhost"
 auth_server_port: 9085
 auth_server_client: client
 auth_server_password: secret
+auth_server_db_file: "{{install_dir}}/auth_server_db.hsql"
 
 # General settings for the sample patients set
 sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
@@ -50,25 +105,55 @@ fhir_server_base: "{{
         'https' if fhir_server_secure_http else 'http'}}://{{fhir_server_host}}{{
         (':'+fhir_server_port|string) if fhir_server_port|int not in (80,443) else ''}}/data"
 
-# Additional parameters for the sample patient generator
-sample_patients_generator_params: ""
+# Self-signed SSL certificates settings (if generating self-signed certificates)
+auth_server_ssl_country: US
+auth_server_ssl_province: MA
+auth_server_ssl_locality: Boston
+auth_server_ssl_organization: Example Company
+auth_server_ssl_division: support
+auth_server_ssl_email: support@example.com
+fhir_server_ssl_country: "{{auth_server_ssl_country}}"
+fhir_server_ssl_province: "{{auth_server_ssl_province}}"
+fhir_server_ssl_locality: "{{auth_server_ssl_locality}}"
+fhir_server_ssl_organization: "{{auth_server_ssl_organization}}"
+fhir_server_ssl_division: "{{auth_server_ssl_division}}"
+fhir_server_ssl_email: "{{auth_server_ssl_email}}"
+app_server_ssl_country: "{{auth_server_ssl_country}}"
+app_server_ssl_province: "{{auth_server_ssl_province}}"
+app_server_ssl_locality: "{{auth_server_ssl_locality}}"
+app_server_ssl_organization: "{{auth_server_ssl_organization}}"
+app_server_ssl_division: "{{auth_server_ssl_division}}"
+app_server_ssl_email: "{{auth_server_ssl_email}}"
 
-mysql_user: fhir
-mysql_pass: password
-mysql_root_pass: password
-api_server_database: hapi_pu
-auth_server_database: oic
-jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
-
-ldap_server_domain: "example.com"
+# LDAP server configuration
 ldap_server_host: "localhost"
 ldap_server_base: "dc=example,dc=com"
 ldap_server_uri: "ldap://{{ldap_server_host}}:389"
-ldap_server_organization: "Example Company"
-ldap_server_admin_password: "password"
-ldap_server_tls: false
+ldap_server_admin_password: "sample-password"
 
-hspc_repos_base: "https://github.com/nschwertner"
-hspc_smart_branch: "smart-dstu2"
+# Additional parameters for the sample patient generator
+sample_patients_generator_params: ""
 
+# Base and branch for HSPC server repos
+hspc_repos_base: "https://bitbucket.org/hspconsortium"
+hspc_smart_branch: "master"
+
+repositories:
+     - {name: 'reference-auth-security', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-auth-server-webapp', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-auth-server-ldap-webapp', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-api-mysql', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-api-oauth2', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-api-fhir', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-api-smart-support', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-api-webapp', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-messaging', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-apps', version: "{{hspc_smart_branch}}"}
+     - {name: 'reference-impl', version: "{{hspc_smart_branch}}"}
+     - {name: 'bilirubin-risk-chart', version: "{{hspc_smart_branch}}"}
+     - {name: 'java-client', version: "{{hspc_smart_branch}}"}
+     - {name: 'tools', version: "{{hspc_smart_branch}}"}
+     - {name: 'examples', version: "{{hspc_smart_branch}}"}
+
+# Maximu size of sample patient data files
 max_upload_size: "5M"

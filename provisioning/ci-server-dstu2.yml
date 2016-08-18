@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: true
+  vars:
+    use_custom_ssl_certificates: true
+    custom_ssl_certificates_path: ../../private/fhir_ci_certs
+    auth_server_secure_http: true
+    auth_server_host: "ci-auth.fhir.me"
+    auth_server_port: "443"
+    auth_server_preserve_db: true
+    fhir_server_secure_http: true
+    fhir_server_host: "ci-api.fhir.me"
+    fhir_server_port: "443"
+    fhir_server_preserve_db: true
+    app_server_secure_http: true
+    app_server_host: "ci.fhir.me"
+    app_server_port: "443"
+    include_custom_patients: true
+    fhir_server_branch: v0.1.2
+    auth_server_branch: f0.1.0
+    auth_ldap_server_branch: f0.1.0
+    sample_patients_branch: v0.1.0
+    fhir_starter_branch: v0.1.2
+    cardiac_risk_branch: v0.1.0
+    bp_centiles_branch: v0.1.1
+    growth_chart_branch: v0.1.1
+    fhir_demo_app_branch: v0.1.0
+
+  roles:
+    - common
+    - ldap

@@ -1,0 +1,146 @@
+- name: automatically select the OpenLDAP configuration settings
+  shell: /bin/echo "slapd {{item}}" | sudo debconf-set-selections
+  with_items:
+         - slapd/password1 password {{ldap_server_admin_password}}
+         - slapd/password2 password {{ldap_server_admin_password}}
+         - slapd/allow_ldap_v2 boolean false
+         - shared/organization string {{ldap_server_organization}}
+         - slapd/no_configuration boolean false
+         - slapd/move_old_database boolean true
+         - slapd/purge_database boolean true
+         - slapd/domain string {{ldap_server_domain}}
+         - slapd/backend boolean HDB
+
+- name: install ldap apt packages
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - slapd
+         - ldap-utils
+         - ssl-cert
+
+- name: configure LDAP client tool
+  template: src="ldap.conf.j2"
+            dest="/etc/ldap/ldap.conf"
+            owner=root group=root mode=0644
+  register: ldap_checkout
+
+- name: generate sample LDAP directory
+  become_user: "{{username}}"
+  template: src="ldap_content.ldif.j2"
+            dest="{{install_dir}}/ldap_content.ldif"
+
+- name: load sample LDAP directory
+  when: ldap_checkout.changed or force_rebuild
+  shell: chdir={{install_dir}}
+         ldapadd
+           -x -D cn=admin,{{ldap_server_base}}
+           -w {{ldap_server_admin_password}}
+           -f ldap_content.ldif
+  failed_when: False
+
+- name: install certificate generator
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - gnutls-bin
+         - ssl-cert
+
+- name: create ldap ssl certificates directory
+  when: ldap_server_tls
+  file: path=/etc/ldap/ssl state=directory owner=root group=ssl-cert mode=0755
+
+- name: configure certificate authority
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  template: src="ldap_ca.info.j2"
+            dest="/etc/ldap/ssl/ldap_ca.info"
+
+- name: generate private key for certificate authority
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  shell: sh -c "certtool --generate-privkey > /etc/ldap/ssl/ldap_ca_key.pem"
+
+
+- name: generate self-signed ca certificate
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  shell: certtool --generate-self-signed
+                  --load-privkey /etc/ldap/ssl/ldap_ca_key.pem
+                  --template /etc/ldap/ssl/ldap_ca.info
+                  --outfile /etc/ldap/ssl/ldap_ca_cert.pem
+
+- name: configure ldap server certificate
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  template: src="ldap01.info.j2"
+            dest="/etc/ldap/ssl/ldap01.info"
+
+- name: generate private key for ldap server
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  shell: certtool --generate-privkey --bits 1024
+                   --outfile /etc/ldap/ssl/ldap01_slapd_key.pem
+
+- name: generate ldap server certificate
+  when: ldap_server_tls and not use_custom_ssl_certificates
+  shell: certtool --generate-certificate
+                  --load-privkey /etc/ldap/ssl/ldap01_slapd_key.pem
+                  --load-ca-certificate /etc/ldap/ssl/ldap_ca_cert.pem
+                  --load-ca-privkey /etc/ldap/ssl/ldap_ca_key.pem
+                  --template /etc/ldap/ssl/ldap01.info
+                  --outfile /etc/ldap/ssl/ldap01_slapd_cert.pem
+
+- name: copy custom ldap ssl certificates
+  when: ldap_server_tls and use_custom_ssl_certificates
+  copy: src={{custom_ssl_certificates_path}}/ldap/
+        dest=/etc/ldap/ssl
+
+- name: copy ldap config files
+  copy: src={{item}}
+        dest=/tmp
+  with_items:
+    - ldap_disable_auth.ldif
+    - ldap_tls_config.ldif
+
+- name: configure ldap server tls
+  when: ldap_server_tls
+  shell: ldapmodify
+           -Y EXTERNAL -H ldapi:///
+           -f /tmp/ldap_tls_config.ldif
+
+- name: disable ldap server tls
+  when: not ldap_server_tls
+  shell: ldapmodify
+           -Y EXTERNAL -H ldapi:///
+           -f /tmp/ldap_disable_auth.ldif
+  failed_when: False
+
+- name: add openldap user to ssl-cert group
+  user: name=openldap groups=ssl-cert
+
+- name: set ldap private key permissions
+  when: ldap_server_tls
+  file: path=/etc/ldap/ssl/ldap01_slapd_key.pem group=ssl-cert mode=640
+
+- name: delete private key for certificate authority
+  when: ldap_server_tls
+  file: path=/etc/ldap/ssl/ldap_ca_key.pem state=absent
+
+- name: restart ldap server
+  service: name=slapd state=restarted
+
+- name: import ldap ca certificate in truststore
+  become_user: "{{username}}"
+  when: ldap_server_tls
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -importcert -trustcacerts
+           -file /etc/ldap/ssl/ldap_ca_cert.pem
+           -keystore {{install_dir}}/keystore
+  failed_when: False
+
+- name: import ldap certificate in truststore
+  when: ldap_server_tls
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -importcert -trustcacerts
+           -alias ldap
+           -file /etc/ldap/ssl/ldap01_slapd_cert.pem
+           -keystore {{install_dir}}/keystore

@@ -1,0 +1,21 @@
+<VirtualHost *:3061>
+        ServerAdmin support@smartplatforms.org
+
+        ErrorLog /var/log/apache2/error.mpr-monitor.log
+        LogLevel debug
+        CustomLog /var/log/apache2/access.log combined
+
+        DocumentRoot {{install_dir}}/apps/rest/mpr_monitor
+
+        <Directory {{install_dir}}/apps/rest/mpr_monitor/>
+           AllowOverride None
+           Order Allow,Deny
+           Allow from all
+           Require all granted
+        </Directory>
+
+        WSGIScriptAlias / {{install_dir}}/apps/rest/mpr_monitor/django.wsgi
+        WSGIApplicationGroup %{GLOBAL}
+        WSGIDaemonProcess mpr-monitor user={{username}}
+        WSGIProcessGroup mpr-monitor
+</VirtualHost>

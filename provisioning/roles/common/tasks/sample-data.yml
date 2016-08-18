@@ -70,27 +70,11 @@
         - fhir-demo/app/index.html
         - fhir-demo/app/launch.html
 
-- name: list sample apps
-  tags: [apps, load_apps]
-  shell: cat {{install_dir}}/apps/static/fhirStarter/apps.json
-  register: sample_apps
-
-- name: copy load-app script
-  tags: [apps, load_apps]
-  become_user: "{{username}}"
-  copy: src=load_sample_app.py dest={{install_dir}} mode=755
-
-#- name: load sample apps
-#  tags: [apps, load_apps]
-#  shell: chdir={{install_dir}}
-#     ./load_sample_app.py
-#         '{{lookup('template', '../templates/load_app.j2')}}'
-#         '{{auth_server_base}}'
-#         '{{auth_server_client}}'
-#         '{{auth_server_password}}'
-#  with_flattened:
-#     - {"client_name": "BP Centiles","client_id": "bp_centiles","launch_uri": "apps/bp-centiles/launch.html","redirect_uri": "apps/bp-centiles/","logo_uri": "http://hspc.smarthealthit.org/images/apps/bpc.png"}
-#    - "{{ sample_apps.stdout | to_json }}"
+- name: generate self-signed ssl certificate (apps server)
+  tags: [apps]
+  when: app_server_secure_http and not use_custom_ssl_certificates
+  shell: creates=/etc/nginx/ssl/apps.crt
+         /bin/echo -e "{{app_server_ssl_country}}\n{{app_server_ssl_province}}\n{{app_server_ssl_locality}}\n{{app_server_ssl_organization}}\n{{app_server_ssl_division}}\n{{app_server_host}}\n{{app_server_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/apps.key -out /etc/nginx/ssl/apps.crt
 
 - name: configure nginx (sample apps)
   tags: [apps,nginx]
@@ -144,3 +128,5 @@
            -H 'Content-Type: application/json+fhir'
            --data-binary @{{item}}"
   with_items: "{{custom_patient_files_json.stdout_lines}}"
+
+- meta: flush_handlers

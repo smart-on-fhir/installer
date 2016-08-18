@@ -1,0 +1,26 @@
+server {
+{% if docs_server_host %}
+    server_name {{docs_server_host}};
+{% endif %}
+
+    listen {{docs_server_port}};
+
+    location / {
+        autoindex on;
+        root {{install_dir}}/docs/static;
+    }
+
+{% if docs_server_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/docs.crt;
+    ssl_certificate_key /etc/nginx/ssl/docs.key;
+{% endif %}
+}
+
+{% if docs_server_port != 80 and http_redirect %}
+server {
+    server_name {{docs_server_host}};
+    rewrite ^       {{docs_server_base}}$request_uri? permanent;
+    listen 80;
+} 
+{% endif %}

@@ -1,7 +1,19 @@
+- name: check host:port uniqueness
+  tags: [general]
+  fail: msg="each server must have unique host:port assigned"
+  when: "'{{auth_server_host}}:{{auth_server_port}}' == '{{fhir_server_host}}:{{fhir_server_port}}' or '{{auth_server_host}}:{{auth_server_port}}' == '{{app_server_host}}:{{app_server_port}}' or '{{fhir_server_host}}:{{fhir_server_port}}' == '{{app_server_host}}:{{app_server_port}}'"
+
+- name: check custom certificate preconditions
+  tags: [general]
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
 - name: disable apt update on startup
+  tags: [general]
   service: name=apt-daily.service enabled=no
 
 - name: disable apt update timer
+  tags: [general]
   service: name=apt-daily.timer enabled=no
 
 - name: update aptitude cache
@@ -58,6 +70,48 @@
   tags: [apps, general]
   copy: src=jetty.xml dest={{install_dir}}/jetty.xml
 
+- name: create ssl certificates directory
+  tags: [general]
+  when: auth_server_secure_http or fhir_server_secure_http or app_server_secure_http
+  file: path=/etc/nginx/ssl state=directory owner=root group=root mode=0640
+
+- name: copy custom ssl certificates
+  tags: [general]
+  when: (auth_server_secure_http or fhir_server_secure_http or app_server_secure_http) and use_custom_ssl_certificates
+  copy: src={{custom_ssl_certificates_path}}/
+        dest=/etc/nginx/ssl
+  notify:
+        - restart nginx
+
+- name: add www-data user to ssl-cert group
+  tags: [general]
+  when: (auth_server_secure_http or fhir_server_secure_http or app_server_secure_http) and use_custom_ssl_certificates
+  user: name=www-data groups=ssl-cert
+
+- name: list private key files
+  tags: [general]
+  when: (auth_server_secure_http or fhir_server_secure_http or app_server_secure_http) and use_custom_ssl_certificates
+  shell: ls /etc/nginx/ssl/*.key
+  register: private_key_files
+
+- name: set private key permissions
+  tags: [general]
+  when: (auth_server_secure_http or fhir_server_secure_http or app_server_secure_http) and use_custom_ssl_certificates
+  file: path={{item}} group=ssl-cert mode=640
+  with_items: "{{private_key_files.stdout_lines}}"
+
+- name: clear truststore
+  tags: [general]
+  file: name={{install_dir}}/keystore state=absent
+
+- name: initialize truststore
+  tags: [general]
+  become_user: "{{username}}"
+  when: auth_server_secure_http or fhir_server_secure_http or app_server_secure_http
+  shell: /bin/echo -e "{{keystore_password}}\n{{keystore_password}}\n\n\n\n\n\n\nyes\n" | keytool
+           -genkey -alias foo
+           -keystore {{install_dir}}/keystore
+
 - name: configure nginx (api server)
   tags: [nginx]
   template: src=upload.conf.j2 dest=/etc/nginx/conf.d/upload.conf owner=root group=root mode=0644
@@ -65,8 +119,8 @@
     - restart nginx
 
 - name: Configure MySQL user
+  tags: [general]
   mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{api_server_database}}.*:ALL/{{auth_server_database}}.*:ALL state=present
 
-- include: ldap.yml
 - include: hspc.yml
 - include: sample-data.yml

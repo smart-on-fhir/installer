@@ -1,0 +1,58 @@
+---
+
+# *** Main configuration file for the SMART-on-FHIR Documentation Installer ***
+
+# To customize the SMART-on-FHIR stack, you can either edit the settings directly in
+# this file or set up custom settings overrides (such as custom_settings.yml)
+
+# The user account that will host the servers. If a user account of this name
+# already exists on the system, the installer will not alter its credentials or
+# authentication mechanism
+username: fhir
+userpass: secretpass
+install_dir: "/home/{{username}}"
+
+# Suppresses selective task execution (set this to true if you would like to
+# force the playbook to always rebuild the servers and reload them)
+force_rebuild: true
+
+# When setting up SSL security for the various services, these settings will allow you to 
+# specify your own certificates instead of using self-signed certificates.
+# See files/sample-certificates for the names of the certificate files expected by the script
+use_custom_ssl_certificates: false
+#custom_ssl_certificates_path: examples/certificates
+
+# By default Ansible will update the local copies of the servers code from
+# the source repositories. Set this to "no" if you would rather not have the
+# repositories updated on each run.
+update_repositories: yes
+
+# Controls whether HTTP requests on port 80 will be
+# redirected to the server's base URLs
+http_redirect: true
+
+# General settings for the FHIR-Starter docs server
+docs_server_secure_http: false
+docs_server_host: "localhost"
+docs_server_port: 9095
+docs_server_repo: "https://github.com/smart-on-fhir/smart-on-fhir.github.io.git"
+docs_server_branch: "master"
+
+# Self-signed SSL certificates settings (if generating self-signed certificates)
+docs_server_ssl_country: US
+docs_server_ssl_province: MA
+docs_server_ssl_locality: Boston
+docs_server_ssl_organization: Example Company
+docs_server_ssl_division: support
+docs_server_ssl_email: support@example.com
+
+# To receive webhooks when docs are updated
+docs_webhook_path: /github-notification
+docs_webhook_port: 6748
+docs_webhook_secret: default-webhook-secret
+
+# These are convenience variables with the generated base paths of the servers. You
+# most likely will never have to touch these.
+docs_server_base: "{{
+        'https' if docs_server_secure_http else 'http'}}://{{docs_server_host}}{{
+        (':'+docs_server_port|string) if docs_server_port|int not in (80,443) else ''}}"

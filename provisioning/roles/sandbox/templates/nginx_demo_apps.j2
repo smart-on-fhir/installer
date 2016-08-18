@@ -1,0 +1,27 @@
+server {
+{% if demo_apps_server_host %}
+    server_name {{demo_apps_server_host}};
+{% endif %}
+
+    listen {{demo_apps_server_port}};
+
+    location / {
+       root {{install_dir}}/demo-apps;
+       expires 1h;
+       add_header Cache-Control "public";
+    }
+
+{% if demo_apps_server_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/apps.crt;
+    ssl_certificate_key /etc/nginx/ssl/apps.key;
+{% endif %}
+}
+
+{% if demo_apps_server_port != 80 and http_redirect %}
+server {
+    server_name {{demo_apps_server_host}};
+    rewrite ^       {{demo_apps_server_base}}$request_uri? permanent;
+    listen 80;
+}
+{% endif %}

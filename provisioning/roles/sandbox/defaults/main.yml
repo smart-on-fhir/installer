@@ -1,0 +1,35 @@
+---
+username: fhir
+install_dir: "/home/{{username}}"
+update_repositories: yes
+http_redirect: true
+mpr_monitor_host: "localhost"
+mpr_monitor_port: 8000
+mpr_monitor_secure_http: false
+demo_apps_server_secure_http: false
+demo_apps_server_host: "localhost"
+demo_apps_server_port: 9095
+mpr_monitor_base: "{{
+    'https' if mpr_monitor_secure_http else 'http' }}://{{mpr_monitor_host}}{{(
+    ':'+mpr_monitor_port|string) if mpr_monitor_port|int not in (80,443) else ''}}"
+demo_apps_server_base: "{{
+        'https' if demo_apps_server_secure_http else 'http'}}://{{demo_apps_server_host}}{{
+        (':'+demo_apps_server_port|string) if demo_apps_server_host|int not in (80,443) else ''}}"
+mpr_monitor_repo: "https://github.com/smart-on-fhir/mpr-monitor-app.git"
+cardiac_risk_repo: "https://github.com/smart-on-fhir/cardiac-risk-app.git"
+bp_centiles_repo: "https://github.com/smart-on-fhir/bp-centiles-app.git"
+growth_chart_repo: "https://github.com/smart-on-fhir/growth-chart-app.git"
+diabetes_monograph_repo: "https://github.com/smart-on-fhir/diabetes-monograph-app"
+disease_monograph_repo: "https://github.com/smart-on-fhir/disease-monograph-app"
+mpr_monitor_branch: "master"
+cardiac_risk_branch: "master"
+bp_centiles_branch: "master"
+growth_chart_branch: "master"
+diabetes_monograph_branch: "master"
+disease_monograph_branch: "master"
+cardiac_risk_client_id: "cardiac_risk"
+bp_centiles_client_id: "bp_centiles"
+growth_chart_client_id: "growth_chart"
+diabetes_monograph_client_id: "diabetes_monograph"
+disease_monograph_client_id: "disease_monograph"
+mpr_monitor_client_id: "mpr_monitor"

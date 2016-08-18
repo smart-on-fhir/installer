@@ -1,15 +1,14 @@
 ---
-fhir_server_secure_http: false
-fhir_server_host: localhost
-fhir_server_port: 9080
-fhir_server_name: SMART-on-FHIR HSPC Sandbox
-app_server_secure_http: false
-app_server_host: localhost
-app_server_port: 9090
-auth_server_secure_http: false
-auth_server_host: localhost
-auth_server_port: 9085
+keystore_password: "changeme"
+username: fhir
+userpass: secretpass
 auth_server_password: secret
+fhir_server_name: SMART-on-FHIR Sandbox
+fhir_server_host: localhost
+app_server_host: localhost
+auth_server_host: localhost
+#use_custom_ssl_certificates: true
+#custom_ssl_certificates_path: /example/local/path
 sample_patients_branch: hapi-patients-testing
 fhir_starter_branch: v0.1.2
 cardiac_risk_branch: v0.1.0
@@ -19,3 +18,19 @@ fhir_demo_app_branch: v0.1.0
 mpr_monitor_branch: v0.1.0
 diabetes_monograph_branch: v0.1.0
 disease_monograph_branch: v0.1.0
+repositories:
+     - {name: 'reference-auth-security', version: "fc50fa0"}
+     - {name: 'reference-auth-server-webapp', version: "4116a5f"}
+     - {name: 'reference-auth-server-ldap-webapp', version: "c120c6a"}
+     - {name: 'reference-api-mysql', version: "c0e902b"}
+     - {name: 'reference-api-oauth2', version: "e955a9d"}
+     - {name: 'reference-api-fhir', version: "e98c5ce"}
+     - {name: 'reference-api-smart-support', version: "cf96a43"}
+     - {name: 'reference-api-webapp', version: "3f5fe78"}
+     - {name: 'reference-messaging', version: "9c46798"}
+     - {name: 'reference-apps', version: "0ab8148"}
+     - {name: 'reference-impl', version: "91dd357"}
+     - {name: 'bilirubin-risk-chart', version: "fc4a59f"}
+     - {name: 'java-client', version: "7393bde"}
+     - {name: 'tools', version: "7c4333a"}
+     - {name: 'examples', version: "93c6c56"}

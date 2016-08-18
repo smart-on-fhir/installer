@@ -1,0 +1,11 @@
+- name: install prerequisite packages
+  tags: [general]
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+       - apache2
+       - python-pip
+       - libapache2-mod-wsgi
+
+- include: apps.yml

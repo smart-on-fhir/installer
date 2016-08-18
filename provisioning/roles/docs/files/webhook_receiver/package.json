@@ -1,0 +1,11 @@
+{
+  "name": "webhook-receiver",
+  "version": "0.0.1",
+  "description": "Receive github webhooks and rebuild docs",
+  "author": "Josh Mandel <joshua.mandel@childrens.harvard.edu>",
+  "dependencies": {
+    "github-webhook-handler": "0.3.4"
+  },
+  "engine": "node >= 0.6.0"
+}
+

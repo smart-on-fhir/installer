@@ -1,0 +1,39 @@
+upstream mpr-monitor {
+    server 127.0.0.1:3061;
+}
+
+# the nginx server instance
+server {
+
+{% if app_server_host %}
+    server_name {{mpr_monitor_host}};
+{% endif %}
+
+    listen {{mpr_monitor_port}};
+
+    location / {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+
+      access_log /var/log/nginx/mpr_monitor_access.log;
+      proxy_pass http://mpr-monitor;
+      proxy_redirect off;
+    }
+
+{% if mpr_monitor_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/apps.crt;
+    ssl_certificate_key /etc/nginx/ssl/apps.key;
+{% endif %}
+}
+
+{% if mpr_monitor_port == 443 %}
+server {
+    server_name {{mpr_monitor_host}};
+    rewrite ^       {{mpr_monitor_base}}$request_uri? permanent;
+    listen 80;
+}
+{% endif %}

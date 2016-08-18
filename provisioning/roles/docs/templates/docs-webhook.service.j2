@@ -1,0 +1,15 @@
+[Unit]
+Description=Docs Github Webhook Receiver
+
+[Service]
+User={{username}}
+TimeoutStartSec=infinity
+Environment=WEBHOOK_PATH={{docs_webhook_path}}
+Environment=PORT={{docs_webhook_port}}
+Environment=SECRET={{docs_webhook_secret}}
+WorkingDirectory={{install_dir}}/docs/webhook_receiver
+ExecStart=/usr/bin/nodejs listen.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

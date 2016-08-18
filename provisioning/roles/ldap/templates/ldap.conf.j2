@@ -11,3 +11,8 @@ URI	{{ldap_server_uri}}
 #SIZELIMIT	12
 #TIMELIMIT	15
 #DEREF		never
+
+# TLS certificates (needed for GnuTLS)
+#TLS_CACERT	/etc/ssl/certs/ca-certificates.crt
+TLS_CACERT	/etc/ldap/ssl/ldap_ca_cert.pem
+TLS_REQCERT allow

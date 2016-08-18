@@ -1,0 +1,28 @@
+- name: put update script in place
+  tags: [docs-webhook]
+  become_user: "{{username}}"
+  copy: src=webhook_receiver dest={{install_dir}}/docs/
+
+- name: install npm dependencies for update script
+  tags: [docs-webhook]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/docs/webhook_receiver
+         npm install
+
+- name: configure service for update script
+  tags: [docs-webhook]
+  template: src=docs-webhook.service.j2
+            dest=/etc/systemd/system/docs-webhook.service
+            owner=root group=root mode=0644
+
+- name: enable update script service
+  tags: [docs-webhook]
+  shell: systemctl enable docs-webhook.service
+
+- name: reload systemd daemon
+  tags: [api]
+  shell: systemctl daemon-reload
+
+- name: restart update listener
+  tags: [docs-webhook]
+  service: name=docs-webhook state=restarted

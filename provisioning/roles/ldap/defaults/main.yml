@@ -1,0 +1,42 @@
+---
+
+# *** Main configuration file for the SMART-on-FHIR LDAP Server Installer ***
+
+# To customize the SMART-on-FHIR stack, you can either edit the settings directly in
+# this file or set up custom settings overrides (such as custom_settings.yml)
+
+# The user account that contains the keystore file (shared with SMART on FHIR auth server)
+username: fhir
+install_dir: "/home/{{username}}"
+
+# Suppresses selective task execution (set this to true if you would like to
+# force the playbook to always rebuild the servers and reload them)
+force_rebuild: true
+
+# Password for the Java keystore used by the authorization server (please change)
+keystore_password: "changeme"
+
+# When setting up SSL security for the various services, these settings will allow you to
+# specify your own certificates instead of using self-signed certificates.
+# See files/sample-certificates for the names of the certificate files expected by the script
+use_custom_ssl_certificates: false
+#custom_ssl_certificates_path: examples/certificates
+
+# LDAP server configuration
+ldap_server_domain: "example.com"
+ldap_server_host: "localhost"
+ldap_server_base: "dc=example,dc=com"
+ldap_server_uri: "ldap://{{ldap_server_host}}:389"
+ldap_server_organization: "Example Company"
+ldap_server_admin_password: "sample-password"
+
+# When set to true will force TLS and disalow anonymous binds for the LDAP server
+ldap_server_tls: false
+
+# Self-signed SSL certificate settings (if generating self-signed certificates)
+ldap_server_ssl_country: US
+ldap_server_ssl_province: MA
+ldap_server_ssl_locality: Boston
+ldap_server_ssl_organization: Example Company
+ldap_server_ssl_division: support
+ldap_server_ssl_email: support@example.com

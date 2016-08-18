@@ -1,0 +1,87 @@
+- name: check custom certificate preconditions
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
+- name: disable apt update on startup
+  service: name=apt-daily.service enabled=no
+
+- name: disable apt update timer
+  service: name=apt-daily.timer enabled=no
+
+- name: update aptitude cache
+  tags: [general]
+  apt: update_cache=yes
+  register: result
+  until: result|succeeded
+  retries: 10
+  delay: 10
+
+- name: install prerequisite packages
+  tags: [general]
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - acl
+         - aptitude
+         - git
+         - nginx
+
+- name: upgrade server packages
+  tags: [general]
+  apt: upgrade=full
+
+- name: create group
+  tags: [general]
+  group: name="{{username}}"
+
+- name: create user
+  tags: [general]
+  user: name="{{username}}" password="{{userpass}}" update_password="on_create"
+        group="{{username}}" groups=sudo
+        shell=/bin/bash
+
+- name: create ssl certificates directory
+  tags: [general]
+  when: docs_server_secure_http
+  file: path=/etc/nginx/ssl state=directory owner=root group=root mode=0640
+
+- name: copy custom ssl certificates
+  tags: [general]
+  when: (docs_server_secure_http) and use_custom_ssl_certificates
+  copy: src={{custom_ssl_certificates_path}}/
+        dest=/etc/nginx/ssl
+  notify:
+        - restart nginx
+
+- name: add www-data user to ssl-cert group
+  tags: [general]
+  when: (docs_server_secure_http) and use_custom_ssl_certificates
+  user: name=www-data groups=ssl-cert
+
+- name: list private key files
+  tags: [general]
+  when: (docs_server_secure_http) and use_custom_ssl_certificates
+  shell: ls /etc/nginx/ssl/*.key
+  register: private_key_files
+
+- name: set private key permissions
+  tags: [general]
+  when: (docs_server_secure_http) and use_custom_ssl_certificates
+  file: path={{item}} group=ssl-cert mode=640
+  with_items: "{{private_key_files.stdout_lines|default([])}}"
+
+- name: request http server restart
+  when: force_rebuild
+  command: echo
+  notify:
+        - restart nginx
+
+- include: docs-server.yml
+- include: docs-webhook.yml
+
+- name: generate docs sites
+  tags: [docs,docs-rebuild]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/docs/webhook_receiver
+         /bin/bash update.sh

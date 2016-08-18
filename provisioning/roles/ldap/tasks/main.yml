@@ -1,0 +1,42 @@
+- name: check custom certificate preconditions
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
+- name: disable apt update on startup
+  service: name=apt-daily.service enabled=no
+
+- name: disable apt update timer
+  service: name=apt-daily.timer enabled=no
+
+- name: update aptitude cache
+  tags: [general]
+  apt: update_cache=yes
+  register: result
+  until: result|succeeded
+  retries: 10
+  delay: 10
+
+- name: install prerequisite packages
+  tags: [general]
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - acl
+         - aptitude
+
+- name: upgrade server packages
+  tags: [general]
+  apt: upgrade=full
+
+- name: create group
+  tags: [general]
+  group: name="{{username}}"
+
+- name: create user
+  tags: [general]
+  user: name="{{username}}" password="{{userpass}}" update_password="on_create"
+        group="{{username}}" groups=sudo
+        shell=/bin/bash
+
+- include: ldap-server.yml
