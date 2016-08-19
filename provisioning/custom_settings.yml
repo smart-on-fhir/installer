@@ -26,7 +26,7 @@ repositories:
      - {name: 'reference-api-oauth2', version: "e955a9d"}
      - {name: 'reference-api-fhir', version: "e98c5ce"}
      - {name: 'reference-api-smart-support', version: "cf96a43"}
-     - {name: 'reference-api-webapp', version: "3f5fe78"}
+     - {name: 'reference-api-webapp', version: "199e3d6"}
      - {name: 'reference-messaging', version: "9c46798"}
      - {name: 'reference-apps', version: "0ab8148"}
      - {name: 'reference-impl', version: "91dd357"}

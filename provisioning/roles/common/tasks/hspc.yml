@@ -1,3 +1,27 @@
+- name: configure api server service
+  tags: [smart_on_fhir, reset_db]
+  template: src=api-server.service.j2
+            dest=/etc/systemd/system/api-server.service
+            owner=root group=root mode=0644
+
+- name: configure auth server service
+  tags: [auth]
+  template: src=auth-server.service.j2
+            dest=/etc/systemd/system/auth-server.service
+            owner=root group=root mode=0644
+
+- name: enable api server service
+  tags: [docs-webhook]
+  shell: systemctl enable api-server.service
+
+- name: enable auth server service
+  tags: [docs-webhook]
+  shell: systemctl enable auth-server.service
+
+- name: reload systemd daemon
+  tags: [api]
+  shell: systemctl daemon-reload
+
 - name: stop api server
   tags: [smart_on_fhir, reset_db]
   service: name=api-server state=stopped
@@ -112,30 +136,6 @@
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc
        mvn clean install -e -f reference-impl/pom.xml
-
-- name: configure api server service
-  tags: [smart_on_fhir, reset_db]
-  template: src=api-server.service.j2
-            dest=/etc/systemd/system/api-server.service
-            owner=root group=root mode=0644
-
-- name: configure auth server service
-  tags: [auth]
-  template: src=auth-server.service.j2
-            dest=/etc/systemd/system/auth-server.service
-            owner=root group=root mode=0644
-
-- name: enable api server service
-  tags: [docs-webhook]
-  shell: systemctl enable api-server.service
-
-- name: enable auth server service
-  tags: [docs-webhook]
-  shell: systemctl enable auth-server.service
-
-- name: reload systemd daemon
-  tags: [api]
-  shell: systemctl daemon-reload
 
 - name: restart api server
   tags: [smart_on_fhir, reset_db]
