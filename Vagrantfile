@@ -33,4 +33,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.playbook = "provisioning/smart-on-fhir.yml"
   end
 
+  # If you are running the build on a Windows host, please comment out the
+  # "ansible" provisioner above and use this "shell" provisioner:
+  #
+  # config.vm.provision "shell", path: "provisioning/provision-on-guest.sh"
+
 end

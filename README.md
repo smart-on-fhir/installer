@@ -9,9 +9,7 @@ are (we have tested with the versions below, but other versions may be fine too)
 3. [Ansible 2.1.0](http://docs.ansible.com/intro_installation.html)
 
 *Note:* Ansible is not supported on Windows. If you want to build a SMART on FHIR VM on Windows,
-please use the version of the installer in the "ansible-guest" branch which runs Ansible on the
-guest machine instead of using the one on the host OS. To switch the branch, execute
-`git checkout ansible-guest` before running `vagrant up`. Another options is to follow the
+please use the version of the installer which runs Ansible on the guest machine instead of using the one on the host OS. To enable this mode, please edit `Vagrantfile` by commenting out the "ansible" provisioner and enabling second "shell" provisioner before running `vagrant up`. An alternative options is to follow the
 instructions in the "Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without
 Vagrant)" section in this document.
 
@@ -80,6 +78,36 @@ app_server public port to 80.
 ```
 sudo ansible-playbook  -c local -i 'localhost,' -vvvv smart-on-fhir.yml
 ```
+
+---
+
+## Building SMART-on-FHIR on fresh Ubuntu 16.04 remote machine
+
+You can build a remote machine using your local Ansible. First,
+make sure that you have a user account on the remote machine that
+has passwordless sudo privileges. Next, edit `smart-on-fhir.yml`
+locally replacing `REMOTEHOST` and `REMOTEUSER` with the hostname or IP
+of your remote host and the user account with the sudo privileges. Also,
+don't forget to update the `custom_settings.yml` file to suit your needs.
+You can then start the build of the remote host.
+
+The steps (on the local machine):
+
+```
+sudo apt-get update
+sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
+sudo pip install ansible==2.1.0
+git clone https://github.com/smart-on-fhir/installer
+cd installer/provisioning
+vi smart-on-fhir.yml
+vi custom_settings.yml
+ansible-playbook -i "REMOTEHOST," smart-on-fhir.yml
+```
+
+Of course, you always have the option of building the remote machine
+using the method described in
+`Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without Vagrant)`
+instead
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: all:!REMOTEHOST
   become: yes
   vars_files:
     - custom_settings.yml
@@ -8,3 +8,19 @@
     - ldap
 #    - docs
 #    - sandbox
+
+- hosts: REMOTEHOST
+  remote_user: REMOTEUSER
+  gather_facts: no
+  pre_tasks:
+    - raw: sudo apt-get -y install python-simplejson
+  become: yes
+  vars_files:
+    - custom_settings.yml
+  vars:
+    fhir_server_host: REMOTEHOST
+    app_server_host: REMOTEHOST
+    auth_server_host: REMOTEHOST
+  roles:
+    - common
+    - ldap
