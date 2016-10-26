@@ -7,16 +7,17 @@
 
 # The user account that will host the servers. If a user account of this name
 # already exists on the system, the installer will not alter its credentials or
-# authentication mechanism
+# authentication mechanism. If you need to set up actual password authentication,
+# userpass needs to be a valid SHA-512 hash.
 username: fhir
-userpass: secretpass
+userpass: nopass
 install_dir: "/home/{{username}}"
 
 # Suppresses selective task execution (set this to true if you would like to
 # force the playbook to always rebuild the servers and reload them)
 force_rebuild: true
 
-# When setting up SSL security for the various services, these settings will allow you to 
+# When setting up SSL security for the various services, these settings will allow you to
 # specify your own certificates instead of using self-signed certificates.
 # See files/sample-certificates for the names of the certificate files expected by the script
 use_custom_ssl_certificates: false

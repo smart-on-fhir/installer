@@ -7,9 +7,10 @@
 
 # The user account that will host the servers. If a user account of this name
 # already exists on the system, the installer will not alter its credentials or
-# authentication mechanism
+# authentication mechanism. If you need to set up actual password authentication,
+# userpass needs to be a valid SHA-512 hash.
 username: fhir
-userpass: secretpass
+userpass: nopass
 install_dir: "/home/{{username}}"
 
 # Suppresses selective task execution (set this to true if you would like to

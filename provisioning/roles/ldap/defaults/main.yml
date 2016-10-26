@@ -6,7 +6,9 @@
 # this file or set up custom settings overrides (such as custom_settings.yml)
 
 # The user account that contains the keystore file (shared with SMART on FHIR auth server)
+# If you need to set up actual password authentication, userpass needs to be a valid SHA-512 hash.
 username: fhir
+userpass: nopass
 install_dir: "/home/{{username}}"
 
 # Suppresses selective task execution (set this to true if you would like to
