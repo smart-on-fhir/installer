@@ -97,6 +97,26 @@
   shell: chdir={{install_dir}}/sample-patients/bin
          python generate.py --write-fhir ../generated-data {{sample_patients_generator_params}}
 
+- name: configure api server service (open)
+  tags: [patients, load_patients]
+  vars:
+    fhir_server_security_mode: open
+  template: src=api-server.service.j2
+            dest=/etc/systemd/system/api-server.service
+            owner=root group=root mode=0644
+
+- name: enable api server service
+  tags: [patients, load_patients]
+  shell: systemctl enable api-server.service
+
+- name: reload systemd daemon
+  tags: [patients, load_patients]
+  shell: systemctl daemon-reload
+
+- name: restart api server
+  tags: [patients, load_patients]
+  service: name=api-server state=restarted
+
 - name: wait for api server to become available
   tags: [smart_on_fhir, reset_db, load_patients]
   wait_for: port=9002
@@ -128,5 +148,27 @@
            -H 'Content-Type: application/json+fhir'
            --data-binary @{{item}}"
   with_items: "{{custom_patient_files_json.stdout_lines}}"
+
+- name: configure api server service
+  tags: [patients, load_patients]
+  template: src=api-server.service.j2
+            dest=/etc/systemd/system/api-server.service
+            owner=root group=root mode=0644
+
+- name: enable api server service
+  tags: [patients, load_patients]
+  shell: systemctl enable api-server.service
+
+- name: reload systemd daemon
+  tags: [patients, load_patients]
+  shell: systemctl daemon-reload
+
+- name: restart api server
+  tags: [patients, load_patients]
+  service: name=api-server state=restarted
+
+- name: wait for api server to become available
+  tags: [smart_on_fhir, reset_db, load_patients]
+  wait_for: port=9002
 
 - meta: flush_handlers

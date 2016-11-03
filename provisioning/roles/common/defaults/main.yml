@@ -58,6 +58,9 @@ fhir_server_host: "localhost"
 fhir_server_port: 9080
 fhir_server_name: "Local FHIR dev server"
 
+# Set this to either "open" or "secured"
+fhir_server_security_mode: secured
+
 # General settings for the applications server
 app_server_secure_http: false
 app_server_host: "localhost"
