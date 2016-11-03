@@ -85,6 +85,11 @@
   template: src=patches/ldap.properties.j2
             dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp/src/main/resources/config/ldap.properties
 
+- name: patch auth server login screen
+  become_user: "{{username}}"
+  template: src=patches/login.jsp.j2
+            dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp/src/main/webapp/WEB-INF/views/login.jsp
+
 - name: patch auth server mysql auth install
   become_user: "{{username}}"
   template: src=patches/mysql_auth_install.sql.j2
