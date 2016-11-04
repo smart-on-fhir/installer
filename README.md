@@ -38,7 +38,7 @@ vagrant up
 
 Now visit in a web browser on your local ("host") machine:
 
- * `http://localhost:9080`  for a FHIR API server
+ * `http://localhost:9080/data`  for a FHIR API server
  * `http://localhost:9085`  for an OAuth2 authorization server
  * `http://localhost:9090`  for a SMART apps server
 
