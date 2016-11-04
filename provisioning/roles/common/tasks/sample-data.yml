@@ -167,8 +167,4 @@
   tags: [patients, load_patients]
   service: name=api-server state=restarted
 
-- name: wait for api server to become available
-  tags: [smart_on_fhir, reset_db, load_patients]
-  wait_for: port=9002
-
 - meta: flush_handlers

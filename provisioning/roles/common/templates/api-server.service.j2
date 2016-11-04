@@ -10,7 +10,11 @@ Environment=MYSQL_DB={{api_server_database}}
 Environment=MYSQL_USER={{mysql_user}}
 Environment=MYSQL_PASS={{mysql_pass}}
 WorkingDirectory={{install_dir}}/hspc/reference-api-webapp/target
+{% if auth_server_secure_http and not use_custom_ssl_certificates %}
+ExecStart=/usr/bin/java -Djetty.port="9002" -Djetty.host="localhost" -Djavax.net.ssl.trustStore="{{install_dir}}/keystore" -Djavax.net.ssl.trustStorePassword="{{keystore_password}}" -jar {{install_dir}}/jetty-runner.jar --config {{install_dir}}/jetty.xml hspc-reference-api.war
+{% else %}
 ExecStart=/usr/bin/java -Djetty.port="9002" -Djetty.host="localhost" -jar {{install_dir}}/jetty-runner.jar --config {{install_dir}}/jetty.xml hspc-reference-api.war
+{% endif %}
 Restart=always
 
 [Install]
