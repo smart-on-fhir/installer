@@ -1,0 +1,63 @@
+---
+- name: install apache-tomcat
+  tags: [pwm-all, pwm-server, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="http://supergsego.com/apache/tomcat/tomcat-8/v8.5.9/bin/apache-tomcat-8.5.9.tar.gz"
+             dest="{{install_dir}}"
+             copy=no
+             creates="{{tomcat_home}}"
+
+- name: configure tomcat server
+  tags: [pwm-all, pwm-server, smart-platform]
+  become_user: "{{username}}"
+  template: src=server.xml.j2
+            dest="{{tomcat_home}}/conf/server.xml"
+
+- name: remove tomcat default webapps
+  tags: [pwm-all, pwm-server, smart-platform]
+  become_user: "{{username}}"
+  file: path="{{tomcat_home}}/webapps" state=absent
+
+- name: initialize tomcat webapps
+  tags: [pwm-all, pwm-server, smart-platform]
+  become_user: "{{username}}"
+  file: path="{{tomcat_home}}/webapps" state=directory
+
+- name: configure tomcat to only host pwm
+  tags: [pwm-all, pwm-server, smart-platform]
+  become_user: "{{username}}"
+  shell: "cp -r {{install_dir}}/hspc/pwm/target/pwm-1.7 {{tomcat_home}}/webapps/ROOT"
+
+- name: configure pwm server service
+  tags: [pwm-all, pwm-server, smart-platform]
+  template: src=pwm-server.service.j2
+            dest=/etc/systemd/system/pwm-server.service
+            owner=root group=root mode=0644
+
+- name: enable pwm server service
+  tags: [pwm-all, pwm-server, smart-platform]
+  shell: systemctl enable pwm-server.service
+
+- name: reload systemd daemon
+  tags: [pwm-all, pwm-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop pwm server
+  tags: [pwm-all, pwm-server, smart-platform]
+  service: name=pwm-server state=stopped
+
+- name: restart pwm server
+  tags: [pwm-all, pwm-server, smart-platform]
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: configure nginx (pwm server)
+  tags: [pwm-all, pwm-server, smart-platform]
+  template: src=nginx_pwm.j2 dest=/etc/nginx/sites-enabled/pwm owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: verify pwm-server is available
+  tags: [pwm-all, pwm-server, verify, smart-platform]
+  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}

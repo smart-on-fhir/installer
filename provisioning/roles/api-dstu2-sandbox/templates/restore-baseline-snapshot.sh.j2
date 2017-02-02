@@ -1,0 +1,54 @@
+#!/bin/bash
+
+RESTORE_BASELINE_ERROR=${ERROR:-1}
+RESTORE_BASELINE_CONTINUE_ON_ERROR=${CONTINUE_ON_ERROR:-false}
+RESTORE_BASELINE_WORKING_FOLDER="${JOBS_FOLDER:-{{user_jobs_home}}}"
+RESTORE_BASELINE_OUTPUT_FOLDER="${OUTPUT_FOLDER:-{{user_jobs_output_home}}/$(date '+%d-%b-%Y')}"
+
+RESTORE_BASELINE_FILE=restore-baseline-snapshot-response.json
+
+function RESTORE_BASELINE_handleLastError {
+  echo $1
+  if [ ! $RESTORE_BASELINE_CONTINUE_ON_ERROR ]
+  then
+    exit $RESTORE_BASELINE_ERROR
+  fi
+}
+
+# restore the baseline
+HTTP_RESPONSE=$(curl '{{api_dstu2_server_internal_smart_sandbox_url}}/sandbox/snapshot/{{api_dstu2_baseline_snapshot}}' --silent --write-out 'HTTPSTATUS:%{http_code}' -H 'Content-Type: application/json' --data '{"action": "Restore"}')
+
+# handle curl errors
+if [ $? -ne 0 ]
+then
+    RESTORE_BASELINE_handleLastError "Failed to restore database snapshot"
+fi
+
+# extract the body
+HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+
+# make sure the output folder exists
+mkdir -p $RESTORE_BASELINE_OUTPUT_FOLDER
+
+# remove previous file, if any
+rm -rf $RESTORE_BASELINE_OUTPUT_FOLDER/$RESTORE_BASELINE_FILE
+
+# write the response body
+echo "$HTTP_BODY" | python -m json.tool > $RESTORE_BASELINE_OUTPUT_FOLDER/$RESTORE_BASELINE_FILE
+
+# extract the status
+HTTP_STATUS=$(echo $HTTP_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+case $HTTP_STATUS in
+200) echo "200 OK"
+     ;;
+201) echo "201 Created"
+     ;;
+202) echo "202 Accepted"
+     ;;
+203|204|205|206|207|208|226) echo "$HTTP_STATUS"
+     ;;
+*) echo "$HTTP_STATUS"
+   RESTORE_BASELINE_handleResourceError "Failed to restore database snapshot"
+   ;;
+esac

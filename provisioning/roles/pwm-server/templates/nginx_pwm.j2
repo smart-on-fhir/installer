@@ -1,0 +1,39 @@
+upstream pwm {
+    server 127.0.0.1:{{pwm_server_internal_port}};
+}
+
+# the nginx server instance
+server {
+{% if pwm_server_host %}
+    server_name {{pwm_server_host}};
+{% endif %}
+
+    listen {{pwm_server_port}};
+
+    location {{pwm_server_context}} {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+
+      access_log /var/log/nginx/pwm_access.log;
+      proxy_pass http://pwm{{pwm_server_context}};
+      proxy_redirect off;
+    }
+
+{% if use_secure_http %}
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/{{certificate_crt_filename}};
+    ssl_certificate_key /etc/nginx/ssl/{{certificate_key_filename}};
+{% endif %}
+}
+
+{% if pwm_server_port != 80 and http_redirect %}
+server {
+    server_name {{pwm_server_host}};
+    listen 80;
+    listen [::]:80;
+    return 301 https://$server_name$request_uri;
+}
+{% endif %}

@@ -1,0 +1,108 @@
+---
+- name: checkout cardiac risk app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{cardiac_risk_repo}}
+       version={{cardiac_risk_branch}}
+       dest={{install_dir}}/apps/static/apps/cardiac-risk
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: checkout bp centiles app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{bp_centiles_repo}}
+       version={{bp_centiles_branch}}
+       dest={{install_dir}}/apps/static/apps/bp-centiles
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: checkout growth chart app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{growth_chart_repo}}
+       version={{growth_chart_branch}}
+       dest={{install_dir}}/apps/static/apps/growth-chart
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: checkout fhir demo app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{fhir_demo_app_repo}}
+       version={{fhir_demo_app_branch}}
+       dest={{install_dir}}/apps/static/apps/fhir-demo
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: checkout patient picker app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{patient_picker_app_repo}}
+       version={{patient_picker_app_branch}}
+       dest={{install_dir}}/apps/static/apps/patient-picker
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: copy patient picker app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  shell: |
+    mv {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp/static {{install_dir}}/apps/static/apps/patient-picker
+    mv {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp/index.html {{install_dir}}/apps/static/apps/patient-picker
+    rm -rf {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp
+
+- name: patch branding
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  template: src=branded_text.js.j2
+            dest={{install_dir}}/apps/static/apps/patient-picker/static/js/branding/branded_text.js
+
+- name: branding rights
+  tags: [apps-all, apps-code, smart-platform]
+  file: path={{install_dir}}/apps/static/apps/patient-picker/static/js/branding/branded_text.js state=file owner=root group=root mode=0644
+
+
+- name: configure sample apps to use a common fhir-client
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  shell: sed -i -e 's/node_modules\/fhirclient\/fhir-client\.js/\.\.\/\.\.\/js\/fhir-client\.js/' {{install_dir}}/apps/static/apps/{{item}}
+  with_items:
+        - bp-centiles/index.html
+        - bp-centiles/launch.html
+        - cardiac-risk/index.html
+        - cardiac-risk/launch.html
+        - growth-chart/index.html
+        - growth-chart/launch.html
+        - fhir-demo/app/index.html
+        - fhir-demo/app/launch.html
+
+- name: extract images used in registration
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="images.tar" dest="{{install_dir}}/apps/static/"
+
+- name: extract common javascript
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="js.tar" dest="{{install_dir}}/apps/static/"
+
+- name: extract common angular
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="angular.tar" dest="{{install_dir}}/apps/static/"
+
+- name: extract common bootstrap
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="bootstrap.tar" dest="{{install_dir}}/apps/static/"
+
+- name: extract common stylesheets
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="stylesheets.tar" dest="{{install_dir}}/apps/static/"

@@ -1,0 +1,42 @@
+export NGINX_HOME={{nginx_home}}
+export NGINX_SITES=$NGINX_HOME/sites-enabled
+export SERVICE_HOME=/etc/systemd/system
+export FHIR_HOME={{fhir_home}}
+export INSTALLER_HOME={{installer_home}}
+export PROVISIONING_HOME=$INSTALLER_HOME/provisioning
+export EDITOR=vi
+
+alias n='cd $NGINX_SITES'
+alias s='cd $SERVICE_HOME'
+
+# tail services
+alias tauth='sudo journalctl -f -u auth-server.service'
+alias tauthp='sudo journalctl -f -u persona-auth-server.service'
+alias tapi='sudo journalctl -f -u api-dstu2-server.service'
+alias tapip='sudo journalctl -f -u persona-api-dstu2-server.service'
+alias tsand='sudo journalctl -f -u sandbox-manager-server.service'
+alias tmsg='sudo journalctl -f -u messaging-server.service'
+alias tpwm='sudo journalctl -f -u pwm-server.service'
+
+# view services
+alias vauth='sudo journalctl -u auth-server.service'
+alias vauthp='sudo journalctl -u persona-auth-server.service'
+alias vapi='sudo journalctl -u api-dstu2-server.service'
+alias vapip='sudo journalctl -u persona-api-dstu2-server.service'
+alias vsand='sudo journalctl -u sandbox-manager-server.service'
+alias vmsg='sudo journalctl -u messaging-server.service'
+alias vpwm='sudo journalctl -u pwm-server.service'
+
+alias f='cd $FHIR_HOME'
+
+alias stopn='sudo service nginx stop'
+alias startn='sudo service nginx start'
+alias build='~/build.sh'
+alias p='cd $PROVISIONING_HOME'
+alias i='cd $INSTALLER_HOME'
+
+alias pull='cd $INSTALLER_HOME; git pull'
+alias b='sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml'
+alias echob='echo sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml'
+alias v='sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml --tags "verify"'
+alias echov='echo sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml --tags \"verify\"'

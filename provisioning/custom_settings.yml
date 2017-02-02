@@ -1,0 +1,49 @@
+---
+keystore_password: "changeme"
+username: fhir
+# Note: If you want to be able to authenticate into the account with a password
+#       replace `nopass` with a valid SHA-512 hash of your preferred password.
+#       You can generate the has with the `mkpasswd --method=sha-512` command,
+#       for example. Alternatively, you can use `sudo passwd [username]` to
+#       enable password authentication on the account.
+userpass: nopass
+mysql_root_pass: password
+mysql_user: fhir
+mysql_pass: password
+
+app_server_host: "localhost"
+app_server_port: 9093
+
+api_dstu2_server_host: "localhost"
+api_dstu2_server_port: 9070
+api_dstu2_server_name: "SMART-on-FHIR FHIR DSTU2 Server"
+
+persona_api_dstu2_server_host: "localhost"
+persona_api_dstu2_server_port: 9071
+persona_api_dstu2_server_name: "SMART-on-FHIR FHIR DSTU2 Server"
+
+sandbox_manager_server_host: "localhost"
+sandbox_manager_server_port: 9090
+
+auth_server_host: "localhost"
+auth_server_port: 9080
+auth_server_password: secret
+
+persona_auth_server_host: "localhost"
+persona_auth_server_port: 9081
+
+messaging_server_host: "localhost"
+messaging_server_port: 9091
+
+#use_custom_ssl_certificates: true
+#custom_ssl_certificates_path: examples/certificates
+#use_secure_http: true
+sample_patients_branch: hapi-patients-testing
+fhir_starter_branch: v0.1.2
+cardiac_risk_branch: v0.1.0
+bp_centiles_branch: v0.1.1
+growth_chart_branch: v0.1.1
+fhir_demo_app_branch: v0.1.0
+mpr_monitor_branch: v0.1.0
+diabetes_monograph_branch: v0.1.0
+disease_monograph_branch: v0.1.0

@@ -1,0 +1,18 @@
+---
+sandbox_manager_server_initial_memory: 128M
+sandbox_manager_server_max_memory: 256M
+
+# Version control information
+sandbox_manager_project: "sandbox-manager"
+sandbox_manager_branch: "master"
+
+# Database schema
+sandbox_manager_database: sandman
+
+# Options
+sandbox_manager_server_defaultSystemRoles: USER
+sandbox_manager_server_defaultSandboxVisibility: PUBLIC
+
+# Branding
+sandbox_manager_company_logo_path: static/branding/smart/images/smart-logo.png
+sandbox_manager_company_logo2x_path: static/branding/smart/images/smart-logo@2x.png

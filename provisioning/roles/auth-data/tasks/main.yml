@@ -1,0 +1,41 @@
+---
+- name: Configure MySQL user
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{mysql_privilage}} state=present
+
+- name: Drop the Authorization Server database
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_db: name={{auth_server_database}} state=absent
+
+- name: Create the Authorization Server database
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_db: name={{auth_server_database}} state=present
+
+- name: clear auth server data
+  tags: [auth-all, auth-data, smart-platform]
+  file: path={{auth_db_file}}{{item}} state=absent
+# todo figure this out
+#   when: not auth_server_preserve_db
+  with_items: [".tmp", ".properties", ".script", ".log", ""]
+
+- name: Load Authorization Server DB Schema and Sample Data
+  tags: [auth-all, auth-data, smart-platform]
+  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
+         mysql oic < mysql_auth_install.sql
+
+- name: load api-dstu2 resource server client
+  tags: [auth-all, auth-data, smart-platform]
+  shell: chdir={{install_dir}}/hspc/api-dstu2/reference-api-mysql/src/main/resources/db/openidconnect/mysql
+         mysql oic < resource-server-client.sql
+
+- name: load sandbox-manager resource server client
+  tags: [auth-all, auth-data, smart-platform]
+  shell: chdir={{install_dir}}/hspc/sandbox-manager/src/main/resources/db/openidconnect/mysql
+         mysql oic < sandbox-manager-client.sql
+
+- name: load patient-picker resource server client
+  tags: [auth-all, auth-data, smart-platform]
+  shell: chdir={{install_dir}}/apps/static/apps/patient-picker/src/main/resources/db/openidconnect/mysql
+         mysql oic < patient-picker-client.sql
+
+- meta: flush_handlers

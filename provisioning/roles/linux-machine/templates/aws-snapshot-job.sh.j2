@@ -1,0 +1,25 @@
+#!/bin/bash
+
+REMOVE_DATE=$(date --date="7 day ago" +%Y-%m-%d)
+ERROR=1
+CONTINUE_ON_ERROR=false
+
+function handleLastError {
+  echo $1
+  if [ ! $CONTINUE_ON_ERROR ]
+  then
+    exit $ERROR
+  fi
+}
+
+echo " "
+echo "--- $DATE ---"
+echo "aws-backup-job.sh has started successfully!"
+
+# remove old snapshot
+./aws-remove-snapshot.sh $REMOVE_DATE
+
+# take new snapshot
+./aws-take-snapshot.sh
+
+echo "aws-backup-job.sh completed successfully!"

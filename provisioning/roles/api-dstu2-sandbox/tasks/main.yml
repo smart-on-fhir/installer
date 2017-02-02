@@ -1,0 +1,112 @@
+---
+- name: drop sandbox snapshot
+  include: snapshot-command.yml
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  vars:
+    snapshot_name: "{{api_dstu2_baseline_snapshot}}"
+    snapshot_action: Delete
+
+- name: initialize sandbox
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  uri:
+    url: "{{api_dstu2_server_internal_smart_sandbox_url}}/sandbox"
+    method: PUT
+    body: "{ 'teamId': '{{api_dstu2_server_smart_sandbox}}','schemaVersion': '{{api_dstu2_schema_version}}','allowOpenAccess': true,'baselineDate': '{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}' }"
+    body_format: json
+    HEADER_Content-Type: "application/json"
+
+- name: checkout api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{api_dstu2_sample_patients_repo}}
+       version={{api_dstu2_sample_patients_branch}}
+       dest={{install_dir}}/api-dstu2-sample-patients
+       update={{update_repositories}}
+       force=yes
+       depth=1
+  register: api_dstu2_sample_patients_checkout
+
+- name: build api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/api-dstu2-sample-patients/bin
+         python generate.py --write-fhir ../generated-data {{api_dstu2_sample_patients_generator_params}}
+
+- name: list api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: ls {{install_dir}}/api-dstu2-sample-patients/generated-data/*.xml | head -n {{api_dstu2_sample_patients_limit}}
+  register: api_dstu2_sample_patient_files
+
+- name: load api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: "chdir={{install_dir}}/api-dstu2-sample-patients/generated-data/
+         curl
+           '{{api_dstu2_server_internal_smart_sandbox_open_fhir_root_url}}/?'
+           -H 'Content-Type: application/xml+fhir'
+           --data-binary @{{item}}"
+  with_items: "{{api_dstu2_sample_patient_files.stdout_lines}}"
+
+- name: list custom patients (json)
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: ls {{install_dir}}/api-dstu2-sample-patients/custom-data/*.json
+  register: api_dstu2_custom_patient_files_json
+
+- name: load custom patients (json)
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: "chdir={{install_dir}}/api-dstu2-sample-patients/custom-data/
+         curl
+           '{{api_dstu2_server_internal_smart_sandbox_open_fhir_root_url}}/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}"
+  with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
+
+- include: snapshot-command.yml
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  vars:
+    snapshot_name: "{{api_dstu2_baseline_snapshot}}"
+    snapshot_action: Take
+
+# custom-sample-data is loaded nightly after the snapshot is restored
+# checkout the project but don't build it
+- name: checkout api-dstu2-custom-sample-data
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{api_dstu2_custom_sample_data_repo}}
+       version={{api_dstu2_custom_sample_data_branch}}
+       dest={{install_dir}}/api-dstu2-custom-sample-data
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: create script process-custom-sample-data.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  become_user: "{{username}}"
+  template: src=process-custom-sample-data.sh.j2
+            dest={{user_scripts_home}}/process-custom-sample-data.sh
+            mode=0755
+
+- name: create script restore-baseline-snapshot.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  become_user: "{{username}}"
+  template: src=restore-baseline-snapshot.sh.j2
+            dest={{user_scripts_home}}/restore-baseline-snapshot.sh
+            mode=0755
+
+- name: create script reset-database-job.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  become_user: "{{username}}"
+  template: src=reset-database-job.sh.j2
+            dest={{user_scripts_home}}/reset-database-job.sh
+            mode=0755
+
+# create a cron job for nightly reset to be run at 5 AM UTC, or midnight US-EST
+- name: create cron job to nightly reset the api database
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  become_user: "{{username}}"
+  cron:
+    name: "reset api-dstu2 database"
+    minute: "0"
+    hour: "5"
+    job: "{{user_scripts_home}}/reset-database-job.sh >> {{user_jobs_output_home}}/nightly-reset.log"
+
+- meta: flush_handlers

@@ -1,0 +1,6 @@
+---
+- include: auth.yml
+
+- include: persona-auth.yml
+
+- meta: flush_handlers

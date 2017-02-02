@@ -1,0 +1,42 @@
+---
+- name: checkout repository sandbox_manager_project
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo="{{hspc_repos_base}}/{{sandbox_manager_project}}"
+       version="{{sandbox_manager_branch}}"
+       dest="{{install_dir}}/hspc/{{sandbox_manager_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: ensures {{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/branding dir exists
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  file: path={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/branding state=directory
+
+- name: patch branding
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  become_user: "{{username}}"
+  template: src=branded_text.js.j2
+            dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/branding/branded_text.js
+
+- name: ensures {{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images dir exists
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  file: path={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images state=directory
+
+- name: config smart-logo.png
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  copy: src=smart-logo.png dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images/smart-logo.png
+
+- name: config smart-logo@2x.png
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  copy: src=smart-logo@2x.png dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images/smart-logo@2x.png
+
+- name: config smart-logo@3x.png
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  copy: src=smart-logo@3x.png dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images/smart-logo@3x.png
+
+- name: build hspc sandbox-manager-server
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/hspc
+       mvn clean install -e -f sandbox-manager/pom.xml -Ptomcat-embedded

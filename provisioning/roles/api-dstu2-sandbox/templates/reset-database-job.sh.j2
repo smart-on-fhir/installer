@@ -1,0 +1,43 @@
+#!/bin/bash
+
+DATE=$(date '+%d-%b-%Y')
+ERROR=1
+CONTINUE_ON_ERROR=false
+JOBS_FOLDER="{{user_jobs_home}}"
+SCRIPTS_FOLDER="{{user_scripts_home}}"
+RESOURCES_FOLDER="{{install_dir}}/api-dstu2-custom-sample-data/fhir-resources"
+OUTPUT_FOLDER="{{user_jobs_output_home}}/$DATE"
+
+function handleLastError {
+  echo $1
+  if [ ! $CONTINUE_ON_ERROR ]
+  then
+    exit $ERROR
+  fi
+}
+
+# clear out prior executions for this date
+echo "Removing output folder $OUTPUT_FOLDER"
+rm -rf $OUTPUT_FOLDER
+
+# make sure folders exist
+echo "Creating output folder $OUTPUT_FOLDER"
+mkdir -p $OUTPUT_FOLDER
+
+# restore to the baseline snapshot
+source {{user_scripts_home}}/restore-baseline-snapshot.sh .
+
+if [ $? -ne 0 ]
+then
+    handleLastError "Failed to restore the baseline snapshot"
+fi
+
+# process the custom sample data
+source {{user_scripts_home}}/process-custom-sample-data.sh .
+
+if [ $? -ne 0 ]
+then
+    handleLastError "Failed to process custom sample data"
+fi
+
+echo "reset-database-job.sh completed successfully!"

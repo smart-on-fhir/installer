@@ -1,0 +1,53 @@
+---
+- hosts: all:!REMOTEHOST
+  become: yes
+  vars_files:
+    - global_settings.yml
+    - custom_settings.yml
+  roles:
+    - common
+#    - ldap-common
+#    - ldap-server
+    - apacheds-common
+    - apacheds-server
+    - pwm-common
+    - pwm-server
+    - api-dstu2-common
+    - api-dstu2-server
+    - apps-server
+    - messaging-common
+    - messaging-server
+    - sandbox-manager-common
+    - sandbox-manager-server
+    - auth-common
+    - auth-server
+
+- hosts: REMOTEHOST
+  remote_user: REMOTEUSER
+  gather_facts: no
+  pre_tasks:
+    - raw: sudo apt-get -y install python-simplejson
+  become: yes
+  vars_files:
+    - custom_settings.yml
+  vars:
+    api_dstu2_server_host: REMOTEHOST
+    app_server_host: REMOTEHOST
+    auth_server_host: REMOTEHOST
+  roles:
+    - common
+#    - ldap-common
+#    - ldap-server
+    - apacheds-common
+    - apacheds-server
+    - pwm-common
+    - pwm-server
+    - api-dstu2-common
+    - api-dstu2-server
+    - apps-server
+    - messaging-common
+    - messaging-server
+    - sandbox-manager-common
+    - sandbox-manager-server
+    - auth-common
+    - auth-server

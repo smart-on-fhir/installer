@@ -1,0 +1,12 @@
+---
+- name: stop pwm server
+  tags: [pwm-all, pwm-sandbox, smart-platform]
+  service: name=pwm-server state=stopped
+
+- name: restart pwm server to rebuild the database tables
+  tags: [pwm-all, pwm-sandbox, smart-platform]
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: verify pwm-server is available
+  tags: [pwm-all, pwm-sandbox, verify, smart-platform]
+  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}

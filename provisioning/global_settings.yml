@@ -1,0 +1,289 @@
+---
+
+# *** Main configuration file for the SMART-on-FHIR Installer ***
+
+# To customize the SMART-on-FHIR stack, you can either edit the settings directly in
+# this file or set up custom settings overrides (such as custom_settings.yml)
+
+# The user account that will host the servers. If a user account of this name
+# already exists on the system, the installer will not alter its credentials or
+# authentication mechanism. If you need to set up actual password authentication,
+# userpass needs to be a valid SHA-512 hash.
+username: fhir
+userpass: nopass
+install_dir: "/home/{{username}}"
+
+top_level_domain: org
+second_level_domain: smarthealthit
+additional_subdomains: ""
+domain_name: "{{additional_subdomains}}{{second_level_domain}}.{{top_level_domain}}"
+
+# Suppresses selective task execution (set this to true if you would like to
+# force the playbook to always rebuild the servers and reload them)
+force_rebuild: true
+
+# By default Ansible will update the local copies of the servers code from
+# the source repositories. Set this to "no" if you would rather not have the
+# repositories updated on each run.
+update_repositories: yes
+
+# Settigs for Jetty and Oracle Java. You probably won't have to alter these
+# unles you are switching to a different version of Jetty or Java
+jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
+
+# HSPC Repositories
+hspc_repos_base: "https://bitbucket.org/hspconsortium"
+
+# Database configuration
+mysql_host: localhost
+mysql_connect_host: "%"
+mysql_endpoint: "{{mysql_host}}:3306"
+mysql_root_pass: password
+mysql_user: fhir
+mysql_pass: password
+#mysql_privilage: "{{auth_server_database}}.*:ALL/{{sandbox_manager_database}}.*:ALL/*.*:ALL,GRANT"
+mysql_privilage: "*.*:ALL,GRANT"
+mysql_bind_address: "0.0.0.0"
+
+# Password for the Java keystore used by the authorization server (please change)
+keystore_password: "changeme"
+
+# When set to true, https is used
+use_secure_http: false
+
+# When setting up SSL security for the various services, these settings will allow you to
+# specify your own certificates instead of using self-signed certificates.
+# See files/sample-certificates for the names of the certificate files expected by the script
+use_custom_ssl_certificates: false
+#custom_ssl_certificates_path: examples/certificates
+
+certificate_crt_filename: self-signed-certificate.crt
+certificate_key_filename: self-signed-certificate.key
+
+certificate_truststore_alias: smart
+
+# Self-signed SSL certificates settings (if generating self-signed certificates)
+self_signed_certificate_ssl_country: US
+self_signed_certificate_ssl_province: MA
+self_signed_certificate_ssl_locality: Boston
+self_signed_certificate_ssl_organization: Example Company
+self_signed_certificate_ssl_division: support
+self_signed_certificate_ssl_email: support@{{domain_name}}
+
+# Controls whether HTTP requests on port 80 will be
+# redirected to the server's base URLs
+http_redirect: true
+
+# Set this to either "open" or "secured" on the primary endpoint /data
+fhir_server_security_mode: secured
+# Set this to either "true" or "false" to allow an open endpoint at /open
+fhir_server_allow_open_access: true
+
+# General settings for the applications server
+app_server_host: "localhost"
+app_server_port: 9093
+fhir_starter_repo: "https://github.com/smart-on-fhir/fhir-starter.git"
+cardiac_risk_repo: "https://github.com/smart-on-fhir/cardiac-risk-app.git"
+bp_centiles_repo: "https://github.com/smart-on-fhir/bp-centiles-app.git"
+growth_chart_repo: "https://github.com/smart-on-fhir/growth-chart-app.git"
+fhir_demo_app_repo: "https://github.com/smart-on-fhir/fhir-demo-app.git"
+patient_picker_app_repo: "https://bitbucket.org/hspconsortium/patient-picker.git"
+fhir_starter_branch: "master"
+cardiac_risk_branch: "master"
+bp_centiles_branch: "master"
+growth_chart_branch: "master"
+fhir_demo_app_branch: "master"
+patient_picker_app_branch: "master"
+
+# General settings for the sample patients set
+sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
+sample_patients_branch: "master"
+
+# choose how many sample patients to load in the server or set to 9999 for all of them
+include_custom_patients: false
+api_dstu2_sample_patients_generator_params: --id-prefix SMART
+
+app_server_base: "{{
+    'https' if use_secure_http else 'http'}}://{{app_server_host}}{{
+    (':'+app_server_port|string) if app_server_port|int not in (80,443) else ''}}"
+
+# Additional parameters for the sample patient generator
+sample_patients_generator_params: ""
+
+# ApacheDS server configuration
+apacheds_server_host: "localhost"
+apacheds_server_port: "10389"
+apacheds_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
+apacheds_server_url: "ldap://{{apacheds_server_host}}:{{apacheds_server_port}}"
+
+# API DSTU2 Server
+api_dstu2_server_host: "localhost"
+api_dstu2_server_port: 9070
+api_dstu2_server_context: /api/
+api_dstu2_server_name: "Local DSTU2 FHIR dev server"
+api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+api_dstu2_server_inferred_port: "{{(':'+api_dstu2_server_port|string) if api_dstu2_server_port|int not in (80,443) else ''}}"
+api_dstu2_server_smart_sandbox: smartdstu2
+api_dstu2_server_base_url: "{{api_dstu2_server_inferred_protocol}}://{{api_dstu2_server_host}}{{api_dstu2_server_inferred_port}}"
+api_dstu2_server_context_url: "{{api_dstu2_server_base_url}}{{api_dstu2_server_context}}"
+api_dstu2_server_smart_sandbox_url: "{{api_dstu2_server_context_url}}{{api_dstu2_server_smart_sandbox}}"
+api_dstu2_server_smart_sandbox_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/data"
+api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/open"
+
+# Persona-API DSTU2 Server
+persona_api_dstu2_server_host: "localhost"
+persona_api_dstu2_server_port: 9071
+persona_api_dstu2_server_context: /persona-api/
+persona_api_dstu2_server_name: "Local Persona DSTU2 FHIR dev server"
+persona_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+persona_api_dstu2_server_inferred_port: "{{(':'+persona_api_dstu2_server_port|string) if persona_api_dstu2_server_port|int not in (80,443) else ''}}"
+persona_api_dstu2_server_smart_sandbox: smartdstu2
+persona_api_dstu2_server_base_url: "{{persona_api_dstu2_server_inferred_protocol}}://{{persona_api_dstu2_server_host}}{{persona_api_dstu2_server_inferred_port}}"
+persona_api_dstu2_server_context_url: "{{persona_api_dstu2_server_base_url}}{{persona_api_dstu2_server_context}}"
+persona_api_dstu2_server_smart_sandbox_url: "{{persona_api_dstu2_server_context_url}}{{persona_api_dstu2_server_smart_sandbox}}"
+persona_api_dstu2_server_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/data"
+persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/open"
+
+# Mock-API DSTU2 Server
+mock_api_dstu2_server_host: "localhost"
+mock_api_dstu2_server_port: 9074
+mock_api_dstu2_server_context: /mock-api/
+mock_api_dstu2_server_name: "Local Mock DSTU2 FHIR dev server"
+mock_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+mock_api_dstu2_server_inferred_port: "{{(':'+mock_api_dstu2_server_port|string) if mock_api_dstu2_server_port|int not in (80,443) else ''}}"
+mock_api_dstu2_server_smart_sandbox: smartdstu2
+mock_api_dstu2_server_base_url: "{{mock_api_dstu2_server_inferred_protocol}}://{{mock_api_dstu2_server_host}}{{mock_api_dstu2_server_inferred_port}}"
+mock_api_dstu2_server_context_url: "{{mock_api_dstu2_server_base_url}}{{mock_api_dstu2_server_context}}"
+mock_api_dstu2_server_smart_sandbox_url: "{{mock_api_dstu2_server_context_url}}{{mock_api_dstu2_server_smart_sandbox}}"
+mock_api_dstu2_server_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/data"
+mock_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/open"
+
+# API Server client
+api_server_oauth2_clientId: hspc_resource_server
+api_server_oauth2_clientSecret: secret
+
+# SandboxManager Server
+sandbox_manager_server_host: "localhost"
+sandbox_manager_server_port: 9090
+sandbox_manager_server_internal_host: localhost
+sandbox_manager_server_internal_port: 8090
+sandbox_manager_server_context: /
+sandbox_manager_server_name: "Sandbox Manager server"
+sandbox_manager_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+sandbox_manager_server_inferred_port: "{{(':'+sandbox_manager_server_port|string) if sandbox_manager_server_port|int not in (80,443) else ''}}"
+sandbox_manager_server_base_url: "{{sandbox_manager_server_inferred_protocol}}://{{sandbox_manager_server_host}}{{sandbox_manager_server_inferred_port}}"
+sandbox_manager_server_url: "{{sandbox_manager_server_base_url}}{{sandbox_manager_server_context}}"
+
+# Auth Server
+auth_server_host: "localhost"
+auth_server_port: 9080
+auth_server_internal_host: "localhost"
+auth_server_internal_port: 8080
+# for local install with /auth and /persona from the same host
+# requiring two deployments of the auth server
+auth_server_context: /auth/
+auth_server_name: "Authorization Server"
+auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
+auth_server_base_url: "{{auth_server_inferred_protocol}}://{{auth_server_host}}{{auth_server_inferred_port}}"
+auth_server_url: "{{auth_server_base_url}}{{auth_server_context}}"
+auth_server_client: client
+auth_server_password: secret
+auth_server_enable_mock_endpoints: true
+
+# Persona-Auth Server
+persona_auth_server_host: "localhost"
+persona_auth_server_port: 9081
+persona_auth_server_internal_host: "localhost"
+persona_auth_server_internal_port: 8081
+persona_auth_server_context: /persona-auth/
+persona_auth_server_name: "Persona Authorization Server"
+persona_auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+persona_auth_server_inferred_port: "{{(':'+persona_auth_server_port|string) if persona_auth_server_port|int not in (80,443) else ''}}"
+persona_auth_server_base_url: "{{persona_auth_server_inferred_protocol}}://{{persona_auth_server_host}}{{persona_auth_server_inferred_port}}"
+persona_auth_server_url: "{{persona_auth_server_base_url}}{{persona_auth_server_context}}"
+persona_auth_server_enable_mock_endpoints: false
+
+# Messaging Server
+messaging_server_host: "localhost"
+messaging_server_port: 9091
+messaging_server_internal_host: "localhost"
+messaging_server_internal_port: 8091
+messaging_server_context: /
+messaging_server_name: "Messaging Server"
+messaging_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+messaging_server_inferred_port: "{{(':'+messaging_server_port|string) if messaging_server_port|int not in (80,443) else ''}}"
+messaging_server_base_url: "{{messaging_server_inferred_protocol}}://{{messaging_server_host}}{{messaging_server_inferred_port}}"
+messaging_server_url: "{{messaging_server_base_url}}{{messaging_server_context}}"
+
+# PWM Server
+pwm_server_host: "localhost"
+#pwm_server_host: "service.smarthealthit.org"
+pwm_server_port: 9092
+pwm_server_internal_host: "localhost"
+pwm_server_internal_port: 8092
+pwm_server_context: /
+pwm_server_name: "PWM Server"
+pwm_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+#pwm_server_inferred_protocol: "https"
+pwm_server_inferred_port: "{{(':'+pwm_server_port|string) if pwm_server_port|int not in (80,443) else ''}}"
+#pwm_server_inferred_port: ""
+pwm_server_base_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_host}}{{pwm_server_inferred_port}}"
+pwm_server_url: "{{pwm_server_base_url}}{{pwm_server_context}}"
+
+nginx_home: /etc/nginx
+fhir_home: /home/fhir
+installer_user: vagrant
+installer_user_home: "/home/{{installer_user}}"
+installer_home: "{installer_user_home}/installer"
+
+user_scripts_home: "{{install_dir}}/scripts"
+user_jobs_home: "{{install_dir}}/jobs"
+user_jobs_output_home: "{{user_jobs_home}}/output"
+
+enable_aws_snapshot: false
+aws_output_format: 'json'
+aws_region: "changeme"
+aws_access_key_id: "changeme"
+aws_secret_access_key: "changeme"
+aws_ec2_volume_id: "changeme"
+
+# Maximu size of sample patient data files
+max_upload_size: "5M"
+
+#delete below
+
+# Self-signed SSL certificates settings (if generating self-signed certificates)
+default_ssl_country: US
+default_ssl_province: MA
+default_ssl_locality: Boston
+default_ssl_organization: Example Company
+default_ssl_division: support
+default_ssl_email: support@{{domain_name}}
+app_server_ssl_country: "{{default_ssl_country}}"
+app_server_ssl_province: "{{default_ssl_province}}"
+app_server_ssl_locality: "{{default_ssl_locality}}"
+app_server_ssl_organization: "{{default_ssl_organization}}"
+app_server_ssl_division: "{{default_ssl_division}}"
+app_server_ssl_email: "{{default_ssl_email}}"
+
+# LDAP server configuration
+ldap_server_organization: "SMART Heathcare IT"
+ldap_server_domain: "{{domain_name}}"
+ldap_server_host: "localhost"
+ldap_server_port: "10389"
+ldap_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
+ldap_server_uri: "ldap://{{ldap_server_host}}:{{ldap_server_port}}"
+ldap_server_admin_password: "sample-password"
+ldap_server_account_admin_password: "password"
+ldap_server_account_demo_password: "demo"
+
+# Email server account
+email_account_description: SMART Account Services
+email_smtp_address: smtp.example.com
+email_smtp_port: 587
+email_smtp_username: changeme
+email_smtp_password: changeme
+email_smtp_password_encrypted: changeme
+email_admin_address: changeme@example.com
+email_contact_addresss: support@example.org
