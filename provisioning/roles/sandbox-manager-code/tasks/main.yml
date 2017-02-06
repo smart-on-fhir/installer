@@ -19,6 +19,14 @@
   template: src=branded_text.js.j2
             dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/branding/branded_text.js
 
+- name: ensures {{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/templates dir exists
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  file: path={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/templates state=directory
+
+- name: nav bar
+  tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
+  copy: src=sideNav.html dest={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/js/templates/sideNav.html
+
 - name: ensures {{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images dir exists
   tags: [sandbox-manager-all, sandbox-manager-code, smart-platform]
   file: path={{install_dir}}/hspc/sandbox-manager/src/main/webapp/static/branding/smart/images state=directory

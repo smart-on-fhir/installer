@@ -1,0 +1,39 @@
+<div id="sideNav" ng-controller="SideBarController">
+    <div ng-show="showing.largeSidebar">
+        <div class="row nav nav-sidebar">
+            <div class="col-md-12 content-column">
+                <div><a ng-class="{selected: selected === 'manage-apps'}" ng-click="select('manage-apps')" ui-sref="manage-apps"><i class="fa fa-th fa-lg"></i> Registered Apps</a></div>
+                <div><a ng-class="{selected: selected === 'patients'}" ng-click="select('patients')" ui-sref="patients"><i class="fa fa-bed fa-lg"></i> {{patientsLabel}}</a></div>
+                <div><a ng-class="{selected: selected === 'practitioners'}" ng-click="select('practitioners')" ui-sref="practitioners"><i class="fa fa-user-md fa-lg"></i> {{practitionersLabel}}</a></div>
+                <div><a ng-class="{selected: selected === 'data-manager'}" ng-click="select('data-manager')" ui-sref="data-manager"><i class="fa fa-database fa-lg"></i> {{dataLabel}}</a></div>
+                <div><a ng-class="{selected: selected === 'launch-scenarios'}" ng-click="select('launch-scenarios')" ui-sref="launch-scenarios"><i class="fa fa-list fa-lg"></i> Launch Scenarios</a></div>
+                <div><a ng-class="{selected: selected === 'personas'}" ng-click="select('personas')" ui-sref="personas"><i class="fa fa-users fa-lg"></i> Personas</a></div>
+                <div ng-show="canManageUsers()"><a ng-class="{selected: selected === 'users'}" ng-click="select('users')" ui-sref="users"><i class="fa fa-users"></i> User Management</a></div>
+                <div><a href={{docLink('mainDocs')}} target="_blank"><i class="fa fa-book"></i> Documentation</a></div>
+                <div><a ng-class="{selected: selected === 'settings'}" ng-click="select('settings')" ui-sref="settings"><i class="fa fa-gear fa-lg"></i> Settings</a></div>
+            </div>
+        </div>
+        <div class="nav nav-sidebar nav-sidebar-bottom">
+            <a ng-click="toggleSize()"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </div>
+
+    <div ng-hide="showing.largeSidebar">
+        <div class="row nav nav-sidebar">
+            <div class="col-md-12 content-column">
+                <div class="center-text"><a ng-class="{selected: selected === 'manage-apps'}" ng-click="select('manage-apps')" ui-sref="manage-apps"><i class="fa fa-th fa-lg"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'patients'}" ng-click="select('patients')" ui-sref="patients"><i class="fa fa-bed fa-lg"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'practitioners'}" ng-click="select('practitioners')" ui-sref="practitioners"><i class="fa fa-user-md fa-lg"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'data-manager'}" ng-click="select('data-manager')" ui-sref="data-manager"><i class="fa fa-database fa-lg"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'launch-scenarios'}" ng-click="select('launch-scenarios')" ui-sref="launch-scenarios"><i class="fa fa-list fa-lg"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'personas'}" ng-click="select('personas')" ui-sref="personas"><i class="fa fa-users fa-lg"></i></a></div>
+                <div ng-show="canManageUsers()" class="center-text"><a ng-class="{selected: selected === 'users'}" ng-click="select('users')" ui-sref="users"><i class="fa fa-users fa-lg"></i></a></div>
+                <div class="center-text"><a href={{docLink('mainDocs')}} target="_blank"><i class="fa fa-book"></i></a></div>
+                <div class="center-text"><a ng-class="{selected: selected === 'settings'}" ng-click="select('settings')" ui-sref="settings"><i class="fa fa-gear fa-lg"></i></a></div>
+            </div>
+        </div>
+        <div class="nav nav-sidebar nav-sidebar-bottom">
+            <a ng-click="toggleSize()"><i class="fa fa-chevron-right"></i></a>
+        </div>
+    </div>
+</div>
