@@ -17,9 +17,9 @@ echo "--- $DATE ---"
 echo "aws-backup-job.sh has started successfully!"
 
 # remove old snapshot
-./aws-remove-snapshot.sh $REMOVE_DATE
+{{install_dir}}/scripts/aws-remove-snapshot.sh $REMOVE_DATE
 
 # take new snapshot
-./aws-take-snapshot.sh
+{{install_dir}}/scripts/aws-take-snapshot.sh
 
 echo "aws-backup-job.sh completed successfully!"
