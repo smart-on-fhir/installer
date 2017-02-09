@@ -77,6 +77,7 @@ At this point, you probably want to edit `custom_settings.yml` or pass a
 vars file with settings that suit your needs.  For example, change `localhost`
 to some world-routable hostname if that's what you need -- and set the
 app_server public port to 80.
+Note: it is not necessary to change the -i 'localhost, ' entry to be your hostname as this is referring to the Ansible inventory.
 
 ```
 sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml
