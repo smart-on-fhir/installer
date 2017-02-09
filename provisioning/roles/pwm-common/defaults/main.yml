@@ -10,10 +10,10 @@ pwm_project: "pwm"
 pwm_server_database: pwm
 
 # Tomcat settings
-tomcat_version: 8.5.9
+tomcat_version: 8.5.11
 tomcat_artifact_name: "apache-tomcat-{{tomcat_version}}"
 tomcat_home: "{{install_dir}}/{{tomcat_artifact_name}}"
-tomcat_artifact_host: "http://apache.cs.utah.edu/tomcat/tomcat-8/v{{tomcat_version}}/bin/"
+tomcat_artifact_host: "http://mirror.metrocast.net/apache/tomcat/tomcat-8/v{{tomcat_version}}/bin"
 tomcat_artifact_url: "{{tomcat_artifact_host}}/{{tomcat_artifact_name}}.tar.gz"
 tomcat_shutdown_port: 8005
 tomcat_redirect_port: 8443
