@@ -1,5 +1,8 @@
 ---
 keystore_password: "changeme"
+
+installer_user: vagrant
+
 username: fhir
 # Note: If you want to be able to authenticate into the account with a password
 #       replace `nopass` with a valid SHA-512 hash of your preferred password.
