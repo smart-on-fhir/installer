@@ -13,7 +13,8 @@ pwm_server_database: pwm
 tomcat_version: 8.5.9
 tomcat_artifact_name: "apache-tomcat-{{tomcat_version}}"
 tomcat_home: "{{install_dir}}/{{tomcat_artifact_name}}"
-tomcat_artifact_url: "http://supergsego.com/apache/tomcat/tomcat-8/v{{tomcat_version}}/bin/{{tomcat_artifact_name}}.tar.gz"
+tomcat_artifact_host: "http://apache.cs.utah.edu/tomcat/tomcat-8/v{{tomcat_version}}/bin/"
+tomcat_artifact_url: "{{tomcat_artifact_host}}/{{tomcat_artifact_name}}.tar.gz"
 tomcat_shutdown_port: 8005
 tomcat_redirect_port: 8443
 tomcat_ajp_port: 8009

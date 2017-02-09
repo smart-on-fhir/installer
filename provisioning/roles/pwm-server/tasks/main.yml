@@ -2,7 +2,7 @@
 - name: install apache-tomcat
   tags: [pwm-all, pwm-server, smart-platform]
   become_user: "{{username}}"
-  unarchive: src="http://supergsego.com/apache/tomcat/tomcat-8/v8.5.9/bin/apache-tomcat-8.5.9.tar.gz"
+  unarchive: src="{{tomcat_artifact_url}}"
              dest="{{install_dir}}"
              copy=no
              creates="{{tomcat_home}}"
