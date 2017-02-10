@@ -37,8 +37,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 9093, host: 9093
 # ApacheDS
   config.vm.network :forwarded_port, guest: 10389, host: 10389
-# LDAP
-#  config.vm.network :forwarded_port, guest: 389, host: 1389
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "SMART on FHIR Platform"
