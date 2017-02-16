@@ -3,9 +3,9 @@
         <div class="row nav nav-sidebar">
             <div class="col-md-12 content-column">
                 <div><a ng-class="{selected: selected === 'manage-apps'}" ng-click="select('manage-apps')" ui-sref="manage-apps"><i class="fa fa-th fa-lg"></i> Registered Apps</a></div>
-                <div><a ng-class="{selected: selected === 'patients'}" ng-click="select('patients')" ui-sref="patients"><i class="fa fa-bed fa-lg"></i> {{patientsLabel}}</a></div>
-                <div><a ng-class="{selected: selected === 'practitioners'}" ng-click="select('practitioners')" ui-sref="practitioners"><i class="fa fa-user-md fa-lg"></i> {{practitionersLabel}}</a></div>
-                <div><a ng-class="{selected: selected === 'data-manager'}" ng-click="select('data-manager')" ui-sref="data-manager"><i class="fa fa-database fa-lg"></i> {{dataLabel}}</a></div>
+                <div><a ng-class="{selected: selected === 'patients'}" ng-click="select('patients')" ui-sref="patients"><i class="fa fa-bed fa-lg"></i> Browse Patients</a></div>
+                <div><a ng-class="{selected: selected === 'practitioners'}" ng-click="select('practitioners')" ui-sref="practitioners"><i class="fa fa-user-md fa-lg"></i> Browse Practitioner</a></div>
+                <div><a ng-class="{selected: selected === 'data-manager'}" ng-click="select('data-manager')" ui-sref="data-manager"><i class="fa fa-database fa-lg"></i> Data Browser</a></div>
                 <div><a ng-class="{selected: selected === 'launch-scenarios'}" ng-click="select('launch-scenarios')" ui-sref="launch-scenarios"><i class="fa fa-list fa-lg"></i> Launch Scenarios</a></div>
                 <div><a ng-class="{selected: selected === 'personas'}" ng-click="select('personas')" ui-sref="personas"><i class="fa fa-users fa-lg"></i> Personas</a></div>
                 <div ng-show="canManageUsers()"><a ng-class="{selected: selected === 'users'}" ng-click="select('users')" ui-sref="users"><i class="fa fa-users"></i> User Management</a></div>
