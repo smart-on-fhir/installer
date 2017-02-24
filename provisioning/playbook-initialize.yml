@@ -13,17 +13,14 @@
     - api-dstu2-sandbox
 
 - hosts: REMOTEHOST
-  remote_user: REMOTEUSER
+  remote_user: "{{installer_user}}"
   gather_facts: no
   pre_tasks:
     - raw: sudo apt-get -y install python-simplejson
   become: yes
   vars_files:
+    - global_settings.yml
     - custom_settings.yml
-  vars:
-    api_dstu2_server_host: REMOTEHOST
-    app_server_host: REMOTEHOST
-    auth_server_host: REMOTEHOST
   roles:
     - apacheds-common
     - apacheds-sandbox

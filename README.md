@@ -65,6 +65,9 @@ vagrant halt
 
 ## Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without Vagrant)
 
+In this example, we are going to skip the inventory and to a local install to the Ubuntu 16.04 machine directly.
+
+From the Ubuntu 16.04 machine:
 ```
 sudo apt-get update
 sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
@@ -73,65 +76,73 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
 
-At this point, you probably want to edit `custom_settings.yml` or pass a
-vars file with settings that suit your needs.  For example, change `localhost`
-to some world-routable hostname if that's what you need -- and set the
-app_server public port to 80.
+Modify custom_settings.yml:
+    * set "installer_user" to your ssh username
+    * set "services_host" to a real-world route-able IP for your Ubuntu machine
+    * setting passwords, ports, and other properties as desired
 Note: it is not necessary to change the -i 'localhost, ' entry to be your hostname as this is referring to the Ansible inventory.
 
 ```
-sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml
+sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
 ```
 
 You may run a specific Ansible playbook such as:
 ```
-sudo ansible-playbook  -c local -i 'localhost,' -vvvv playbook-rebuild-databases.yml
+sudo ansible-playbook -c local -i 'localhost,' -vvvv playbook-rebuild-databases.yml
 ```
 
 You may run the Ansible playbook for specific tags using the --tags or --skip-tags flags such as:
 ```
-sudo ansible-playbook  -c local -i 'localhost,' -vvvv site.yml --tags "verify"
+sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml --tags "verify"
 ```
 
 ---
 
 ## Building SMART-on-FHIR on fresh Ubuntu 16.04 remote machine
 
-You can build a remote machine using your local Ansible. 
+In this example, we are going to use the inventory to install the platform on a remote Ubuntu 16.04 machine.
 
-### Configure the Remote Machine
+### Configure the remote machine
+1. Install libraries
+```
+sudo apt-get update
+sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
+sudo pip install ansible==2.1.0
+```
+2. Set up SSH using certificates
+Make sure that you have a user account on the remote machine that
+has passwordless sudo privileges.  Enable SSH from your local machine to
+the remote machine using certificates or password. If using an AWS EC2 Ubuntu
+instance, your installer_user is "ubuntu" and your key is the .pem file established for access.
+
+### Install remotely (from the local machine)
 1. Install Libraries
 ```
 sudo apt-get update
 sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
 sudo pip install ansible==2.1.0
 ```
-2. Set up SSH using Certificates
-Make sure that you have a user account on the remote machine that
-has passwordless sudo privileges.  Enable SSH from your local machine to
- the remote machine using certificates or password.
-3. Configure the installer
-Edit `site.yml` locally replacing `REMOTEHOST` and `REMOTEUSER` 
-with the hostname or IP of your remote host and the user account with the 
-sudo privileges. Also, don't forget to update the `custom_settings.yml` 
-file to suit your needs. 
-
-### Install Remotely
-The steps (on the local machine, replacing REMOTEHOST):
+2. Get the installer sourcecode
 ```
-sudo apt-get update
-sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
-sudo pip install ansible==2.1.0
 git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
-vi site.yml
+```
+3. Configure the installer for remote installation
+Modify inventory:
+    * set the REMOTEHOST, REMOTEUSER, and KEYFILE as appropriate
+```
+vi inventory
+```
+Modify custom_settings.yml:
+    * set "installer_user" to your ssh username
+    * set "services_host" to the IP of your remote machine
+    * setting passwords, ports, and other properties as desired
+```
 vi custom_settings.yml
-ansible-playbook -i "REMOTEHOST," site.yml
 ```
-*Note:*  If your install returns an error "ESTABLISH SSH CONNECTION FOR USER: None", 
-explicitly pass the user (replacing {user} with your username):
+4. Run the installer for remote installation
 ```
-ansible-playbook -i "REMOTEHOST," -e "ansible_user={user}" site.yml
+ansible-playbook -i 'inventory' site.yml
 ```
 
 ---

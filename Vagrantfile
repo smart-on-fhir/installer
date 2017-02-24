@@ -53,13 +53,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
 #    ansible.verbose="vvvv"
-#    ansible.tags=["smart-platform"]
-#    ansible.tags=["apps-code"]
 #    ansible.tags=["api-dstu2-all"]
     ansible.playbook = "provisioning/site.yml"
-#    ansible.playbook = "provisioning/playbook-rebuild-databases.yml"
-#    ansible.playbook = "provisioning/playbook-rebuild-app-code.yml"
-#    ansible.playbook = "provisioning/playbook-rebuild-services.yml"
   end
 
   # If you are running the build on a Windows host, please comment out the
