@@ -30,6 +30,7 @@
     - custom_settings.yml
   roles:
     - apacheds-common
+    - apacheds-code
     - pwm-common
     - pwm-code
     - api-dstu2-common

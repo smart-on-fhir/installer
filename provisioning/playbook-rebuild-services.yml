@@ -6,8 +6,6 @@
     - custom_settings.yml
   roles:
     - common
-#    - ldap-common
-#    - ldap-server
     - apacheds-common
     - apacheds-server
     - pwm-common
@@ -33,8 +31,6 @@
     - custom_settings.yml
   roles:
     - common
-#    - ldap-common
-#    - ldap-server
     - apacheds-common
     - apacheds-server
     - pwm-common

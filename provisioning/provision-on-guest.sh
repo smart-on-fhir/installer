@@ -19,4 +19,4 @@ sudo pip install ansible==2.1.0
 
 # Run Ansible Playbook
 cd /vagrant/provisioning
-ansible-playbook -c local -i 'localhost,' smart-on-fhir.yml
+ansible-playbook -c local -i 'localhost,' site.yml

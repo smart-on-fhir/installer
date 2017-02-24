@@ -45,7 +45,7 @@ Now visit in a web browser on your local ("host") machine:
 
 The authorization server uses the OpenLDAP server running on the virtual machine.
 The two sample accounts are `demo/demo` and `admin/password` by default. You should change
-these for production environments. You can connect to the LDAP server on `localhost:1389`.
+these for production environments. You can connect to the LDAP server on `localhost:10389`.
 
 You can poke around the virtual machine by doing:
 
@@ -70,16 +70,18 @@ In this example, we are going to skip the inventory and to a local install to th
 From the Ubuntu 16.04 machine:
 ```
 sudo apt-get update
-sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
+sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
 sudo pip install ansible==2.1.0
 git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
 
 Modify custom_settings.yml:
+
     * set "installer_user" to your ssh username
     * set "services_host" to a real-world route-able IP for your Ubuntu machine
     * setting passwords, ports, and other properties as desired
+
 Note: it is not necessary to change the -i 'localhost, ' entry to be your hostname as this is referring to the Ansible inventory.
 
 ```
@@ -134,9 +136,11 @@ Modify inventory:
 vi inventory
 ```
 Modify custom_settings.yml:
+
     * set "installer_user" to your ssh username
     * set "services_host" to the IP of your remote machine
     * setting passwords, ports, and other properties as desired
+
 ```
 vi custom_settings.yml
 ```
