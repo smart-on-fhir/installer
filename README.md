@@ -129,22 +129,20 @@ sudo pip install ansible==2.1.0
 git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
-3. Configure the installer for remote installation
-Modify inventory:
-    * set the REMOTEHOST, REMOTEUSER, and KEYFILE as appropriate
+3. Configure the inventory
 ```
 vi inventory
 ```
-Modify custom_settings.yml:
-
-    * set "installer_user" to your ssh username
-    * set "services_host" to the IP of your remote machine
-    * setting passwords, ports, and other properties as desired
-
+    * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
+4. Configure the custom_settings.yml
 ```
 vi custom_settings.yml
 ```
-4. Run the installer for remote installation
+    * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
+    * set "installer_user" to your ssh username
+    * set "services_host" to the IP of your remote machine
+    * setting passwords, ports, and other properties as desired
+5. Run the installer for remote installation
 ```
 ansible-playbook -i 'inventory' site.yml
 ```
@@ -153,7 +151,27 @@ ansible-playbook -i 'inventory' site.yml
 
 ## Notes
 
+### AWS
+
+An example configuration for the SMART on FHIR platform  on a single AWS EC2 instance is:
+
+| Item          | Value                   |
+| ------------- | -----------------------:|
+| Instance Type | t2.large                |
+| AIM           | Ubuntu Server 16.04 LTS |
+| SSH PORT      | 22                      |
+| HTTP PORT     | 80                      |
+| HTTPS PORT    | 443                     |
+| LDAP PORT     | 10389                   |
+| APPS PORTS    | 9070-9099               |
+| REMOTEIP      | 1.1.1.1                 |
+| REMOTEUSER    | ubuntu                  |
+| KEYFILE       | my_aws_key.pem          |
+| installer_user| ubuntu                  |
+| services_host | 1.1.1.1                 |
+
 ### TLS
+
 By default, the install process will not enable TLS. To enable TLS for specific services, you can set the following variable:
 
 * `use_secure_http: true`
@@ -180,38 +198,3 @@ The installer creates servers that log to the journal.  You can view the journal
 * sudo journalctl -u auth-server.service
 
 Use the -f option tail the logs. 
-
-### SMART on FHIR Versions
-
-#### SMART on FHIR 0.2.0 / FHIR 1.0.1 (DSTU2)
-
-* Sample Patients: v0.1.0
-* FHIR Starter: v0.1.0
-* Cardiac Risk App: v0.1.0
-* BP Centiles App: v0.1.0
-* Growth Chart App: v0.1.0
-* FHIR Demo App: v0.1.0
-
-#### SMART on FHIR 0.1.0 / FHIR 1.0.1 (DSTU2)
-
-* API Server: v0.1.0
-* Auth Server: f0.1.0
-* Auth LDAP Overlay: f0.1.0
-* Sample Patients: v0.1.0
-* FHIR Starter: v0.1.0
-* Cardiac Risk App: v0.1.0
-* BP Centiles App: v0.1.0
-* Growth Chart App: v0.1.0
-* FHIR Demo App: v0.1.0
-
-#### SMART on FHIR 0.0.5 / FHIR 0.0.82 (DSTU1)
-
-* API Server: v0.0.5
-* Auth Server: f0.0.5
-* Auth LDAP Overlay: f0.0.4
-* Sample Patients: v0.0.5
-* FHIR Starter: v0.0.5
-* Cardiac Risk App: v0.0.5
-* BP Centiles App: v0.0.5
-* Growth Chart App: v0.0.5
-* FHIR Demo App: v0.0.5
