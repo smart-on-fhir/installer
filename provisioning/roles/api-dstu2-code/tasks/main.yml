@@ -22,12 +22,12 @@
 
 # HAPI 1.6 is used to gain a fix for composite queryies such as
 #   Observation?code-value-quantity=http://loinc.org|8480-6$60
-- name: patch hspc_repo_api_webapp_project to use Hapi 1.6
-  tags: [api-dstu2-all, api-dstu2-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=pom.xml.j2
-            dest={{install_dir}}/hspc/api-dstu2/{{api_dstu2_repo_api_webapp_project}}/pom.xml
-            mode=0755
+#- name: patch hspc_repo_api_webapp_project to use Hapi 1.6
+#  tags: [api-dstu2-all, api-dstu2-code, smart-platform]
+#  become_user: "{{username}}"
+#  template: src=pom.xml.j2
+#            dest={{install_dir}}/hspc/api-dstu2/{{api_dstu2_repo_api_webapp_project}}/pom.xml
+#            mode=0755
 
 - name: ensures {{install_dir}}/hspc/api-dstu2/{{api_dstu2_repo_api_webapp_project}}/src/main/resources/db dir exists
   tags: [api-dstu2-all, api-dstu2-code, smart-platform]
