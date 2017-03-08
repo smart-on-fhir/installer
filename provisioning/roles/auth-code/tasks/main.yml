@@ -96,6 +96,6 @@
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc
-       mvn clean install -e -f reference-auth-server-ldap-webapp/pom.xml
+       mvn clean install -e -U -f reference-auth-server-ldap-webapp/pom.xml
 
 - meta: flush_handlers

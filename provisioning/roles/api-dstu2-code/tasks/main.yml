@@ -46,6 +46,6 @@
   tags: [api-dstu2-all, api-dstu2-code, smart-platform]
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc/api-dstu2/{{api_dstu2_repo_api_webapp_project}}
-       mvn clean install -e -Pjetty
+       mvn clean install -e -U -Pjetty
 
 - meta: flush_handlers

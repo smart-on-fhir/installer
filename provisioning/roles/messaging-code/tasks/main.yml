@@ -13,4 +13,4 @@
   tags: [messaging-all, messaging-code, smart-platform]
   become_user: "{{username}}"
   shell: chdir={{install_dir}}/hspc
-       mvn clean install -e -f reference-messaging/pom.xml
+       mvn clean install -e -U -f reference-messaging/pom.xml
