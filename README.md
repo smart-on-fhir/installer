@@ -134,8 +134,9 @@ cd installer/provisioning
 vi inventory
 ```
     * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
-4. Configure the custom_settings.yml
+4. Configure the custom_settings.yml using the custom_settings_example.yml as a reference.
 ```
+cp custom_settings_example.yml custom_settings.yml
 vi custom_settings.yml
 ```
     * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
