@@ -4,3 +4,6 @@ vagrant/.*
 .vagrant/
 *.log
 *.retry
+
+# This file should not be checked in, instead custom_settings_example.yml should be checked in
+custom_settings.yml
