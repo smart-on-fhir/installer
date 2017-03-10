@@ -44,7 +44,7 @@
   become_user: "{{username}}"
   git: repo={{patient_picker_app_repo}}
        version={{patient_picker_app_branch}}
-       dest={{install_dir}}/apps/static/apps/patient-picker
+       dest={{install_dir}}/hspc/patient-picker
        update={{update_repositories}}
        force=yes
        depth=1
@@ -53,9 +53,8 @@
   tags: [apps-all, apps-code, smart-platform]
   become_user: "{{username}}"
   shell: |
-    mv {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp/static {{install_dir}}/apps/static/apps/patient-picker
-    mv {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp/index.html {{install_dir}}/apps/static/apps/patient-picker
-    rm -rf {{install_dir}}/apps/static/apps/patient-picker/src/main/webapp
+    cp -r {{install_dir}}/hspc/patient-picker/src/main/webapp/static {{install_dir}}/apps/static/apps/patient-picker
+    cp -r {{install_dir}}/hspc/patient-picker/src/main/webapp/index.html {{install_dir}}/apps/static/apps/patient-picker
 
 - name: patch branding
   tags: [apps-all, apps-code, smart-platform]
