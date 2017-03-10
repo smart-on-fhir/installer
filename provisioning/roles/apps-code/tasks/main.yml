@@ -53,7 +53,8 @@
   tags: [apps-all, apps-code, smart-platform]
   become_user: "{{username}}"
   shell: |
-    cp -r {{install_dir}}/hspc/patient-picker/src/main/webapp/static {{install_dir}}/apps/static/apps/patient-picker/static
+    mkdir -p {{install_dir}}/apps/static/apps/patient-picker
+    cp -r {{install_dir}}/hspc/patient-picker/src/main/webapp/static {{install_dir}}/apps/static/apps/patient-picker
     cp -r {{install_dir}}/hspc/patient-picker/src/main/webapp/index.html {{install_dir}}/apps/static/apps/patient-picker
 
 - name: patch branding
