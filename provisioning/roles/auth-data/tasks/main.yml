@@ -35,7 +35,7 @@
 
 - name: load patient-picker resource server client
   tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/apps/static/apps/patient-picker/src/main/resources/db/openidconnect/mysql
+  shell: chdir={{install_dir}}/hspc/patient-picker/src/main/resources/db/openidconnect/mysql
          mysql oic < patient-picker-client.sql
 
 - meta: flush_handlers
