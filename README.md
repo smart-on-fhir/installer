@@ -65,7 +65,7 @@ vagrant halt
 
 ## Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without Vagrant)
 
-In this example, we are going to skip the inventory and to a local install to the Ubuntu 16.04 machine directly.
+In this example, we are going to skip the inventory and do a local install to the Ubuntu 16.04 machine directly.
 
 From the Ubuntu 16.04 machine:
 ```
@@ -77,7 +77,10 @@ cd installer/provisioning
 ```
 
 Modify custom_settings.yml:
-
+```
+cp custom_settings_example.yml custom_settings.yml
+vi custom_settings.yml
+```
     * set "installer_user" to your ssh username
     * set "services_host" to a real-world route-able IP for your Ubuntu machine
     * setting passwords, ports, and other properties as desired
