@@ -77,7 +77,7 @@
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
   template: src=patient-picker-client.sql.j2
-            dest={{install_dir}}/apps/static/apps/patient-picker/src/main/resources/db/openidconnect/mysql/patient-picker-client.sql
+            dest={{install_dir}}/hspc/patient-picker/src/main/resources/db/openidconnect/mysql/patient-picker-client.sql
 
 # install SMART logos
 - name: config company-logo.png
