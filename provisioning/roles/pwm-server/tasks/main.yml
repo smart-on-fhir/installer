@@ -4,7 +4,6 @@
   become_user: "{{username}}"
   unarchive: src="{{tomcat_artifact_url}}"
              dest="{{install_dir}}"
-             copy=no
              creates="{{tomcat_home}}"
 
 - name: configure tomcat server
