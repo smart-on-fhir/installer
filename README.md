@@ -39,7 +39,8 @@ vagrant up
 Now visit in a web browser on your local ("host") machine:
 
  * `http://localhost:9090/`  for the Sandbox Manager application
- * `http://localhost:9070/api/data`  for a FHIR DSTU2 API server
+ * `http://localhost:9070/api/smartdstu2/data`  for a FHIR DSTU2 API server
+ * `http://localhost:9070/api/smartdstu2/data/metadata`  for the FHIR DSTU2 API conformance
  * `http://localhost:9080/auth/`  for an OAuth2 authorization server
  * `http://localhost:9093`  for a SMART apps server
 
