@@ -32,6 +32,12 @@ then
     handleLastError "Failed to restore the baseline snapshot"
 fi
 
+# restart the api-dstu2 server (to clear out the hibernate sequence caching
+sudo service api-dstu2-server restart
+
+# wait for a few minutes
+sleep 2m
+
 # process the custom sample data
 source {{user_scripts_home}}/process-custom-sample-data.sh .
 
