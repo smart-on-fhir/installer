@@ -1,12 +1,14 @@
 #!/bin/bash
 
 DATE=$(date '+%Y-%m-%d')
+REMOVE_DATE=$(date --date="7 day ago" +%Y-%m-%d)
 ERROR=1
 CONTINUE_ON_ERROR=false
 JOBS_FOLDER="{{user_jobs_home}}"
 SCRIPTS_FOLDER="{{user_scripts_home}}"
 RESOURCES_FOLDER="{{install_dir}}/api-dstu2-custom-sample-data/fhir-resources"
 OUTPUT_FOLDER="{{user_jobs_output_home}}/$DATE"
+REMOVE_OUTPUT_FOLDER="{{user_jobs_output_home}}/$REMOVE_DATE"
 
 function handleLastError {
   echo $1
@@ -19,6 +21,10 @@ function handleLastError {
 # clear out prior executions for this date
 echo "Removing output folder $OUTPUT_FOLDER"
 rm -rf $OUTPUT_FOLDER
+
+# clear out folders that are old
+echo "Removing output folder $REMOVE_OUTPUT_FOLDER"
+rm -rf $REMOVE_OUTPUT_FOLDER
 
 # make sure folders exist
 echo "Creating output folder $OUTPUT_FOLDER"
