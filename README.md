@@ -31,6 +31,18 @@ Once you have the prerequisites installed on your machine, you can:
 vagrant plugin install vagrant-vbguest
 git clone https://github.com/smart-on-fhir/installer
 cd installer
+```
+
+Create a custom_settings.yml.  You can use the custom_settings_example.yml file as a starting point.
+
+```
+cp provisioning/custom_settings_example.yml provisioning/custom_settings.yml
+vi provisioning/custom_settings.yml
+```
+
+Run the installer.
+
+```
 vagrant up
 ```
 
