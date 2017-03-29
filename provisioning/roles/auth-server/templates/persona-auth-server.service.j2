@@ -4,7 +4,7 @@ Description=Authorization Service
 [Service]
 User={{username}}
 TimeoutStartSec=infinity
-WorkingDirectory={{install_dir}}/hspc/reference-auth-server-ldap-webapp/target
+WorkingDirectory={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/target
 {% if use_secure_http and not use_custom_ssl_certificates %}
 ExecStart=/usr/bin/java \
  -Xms{{auth_server_initial_memory}} \

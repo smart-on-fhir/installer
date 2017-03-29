@@ -4,7 +4,7 @@ sandbox_manager_server_max_memory: 256M
 
 # Version control information
 sandbox_manager_project: "sandbox-manager"
-sandbox_manager_branch: "1.0"
+sandbox_manager_branch: "SMART-SANDBOX"
 
 # Database schema
 sandbox_manager_database: sandman

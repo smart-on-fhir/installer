@@ -13,9 +13,9 @@ api_dstu2_schema_version: 1
 # Repositories
 api_dstu2_repos_base: "https://bitbucket.org/hspconsortium"
 # Note, reference-api-mysql is cloned to gain the SQL install files
-api_dstu2_repo_api_mysql_project: "reference-api-mysql"
+api_dstu2_repo_api_mysql_project: "reference-api-mysql-deprecated"
 # Note, reference-api-webapp is cloned to perform a jetty build
-api_dstu2_repo_api_webapp_project: "reference-api-webapp-multitenant"
+api_dstu2_repo_api_webapp_project: "reference-api-webapp-multitenant-deprecated"
 api_dstu2_repo_api_branch: "SMART-SANDBOX-DSTU2"
 
 api_dstu2_database: "hspc_{{api_dstu2_schema_version}}_{{api_dstu2_server_smart_sandbox}}"

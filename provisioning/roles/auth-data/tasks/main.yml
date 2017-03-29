@@ -20,12 +20,12 @@
 
 - name: Load Authorization Server DB Schema and Sample Data
   tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp/src/main/resources/db/openidconnect/mysql
+  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql
          mysql oic < mysql_auth_install.sql
 
 - name: load api-dstu2 resource server client
   tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/api-dstu2/reference-api-mysql/src/main/resources/db/openidconnect/mysql
+  shell: chdir={{install_dir}}/hspc/api-dstu2/reference-api-mysql-deprecated/src/main/resources/db/openidconnect/mysql
          mysql oic < resource-server-client.sql
 
 - name: load sandbox-manager resource server client
