@@ -10,6 +10,7 @@ alias n='cd $NGINX_SITES'
 alias s='cd $SERVICE_HOME'
 
 # tail services
+alias tldap='sudo journalctl -f -u apacheds-server.service'
 alias tauth='sudo journalctl -f -u auth-server.service'
 alias tauthp='sudo journalctl -f -u persona-auth-server.service'
 alias tapi='sudo journalctl -f -u api-dstu2-server.service'
@@ -19,6 +20,7 @@ alias tmsg='sudo journalctl -f -u messaging-server.service'
 alias tpwm='sudo journalctl -f -u pwm-server.service'
 
 # view services
+alias vldap='sudo journalctl -u apacheds-server.service'
 alias vauth='sudo journalctl -u auth-server.service'
 alias vauthp='sudo journalctl -u persona-auth-server.service'
 alias vapi='sudo journalctl -u api-dstu2-server.service'
