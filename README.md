@@ -187,6 +187,13 @@ Here is the custom_settings.yml file:
 installer_user: "ubuntu"
 services_host: "x.x.x.x" (your IP address)
 sample_patients_branch: "hapi-patients-testing"
+app_server_host: "{{services_host}}"
+api_dstu2_server_host: "{{services_host}}"
+persona_api_dstu2_server_host: "{{services_host}}"
+sandbox_manager_server_host: "{{services_host}}"
+auth_server_host: "{{services_host}}"
+persona_auth_server_host: "{{services_host}}"
+messaging_server_host: "{{services_host}}"
 ```
 
 Here are the commands we run:
@@ -200,7 +207,16 @@ vi custom_settings.yml
 ... (see above)
 sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
 ...
+(about 20 minutes later...)
+PLAY RECAP *********************************************************************
+localhost                  : ok=216  changed=167  unreachable=0    failed=0
 
+ubuntu:~/installer/provisioning$
+```
+
+Then launch the Sandbox Manager app at:
+```
+http://(your IP address):9090/
 ```
 
 ### TLS
