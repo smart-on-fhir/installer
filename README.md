@@ -166,11 +166,11 @@ ansible-playbook -i 'inventory' site.yml
 
 ---
 
-## Notes
+## Tips and Tricks
 
-### AWS
+### AWS Test Configuration
 
-An example configuration for the SMART on FHIR platform  on a single AWS EC2 instance is:
+Here is the exact configuration we use to test the installer using an AWS EC2 instance:
 
 | Item          | Value                   |
 | ------------- | -----------------------:|
@@ -181,11 +181,27 @@ An example configuration for the SMART on FHIR platform  on a single AWS EC2 ins
 | HTTPS PORT    | 443                     |
 | LDAP PORT     | 10389                   |
 | APPS PORTS    | 9070-9099               |
-| REMOTEIP      | 1.1.1.1                 |
-| REMOTEUSER    | ubuntu                  |
-| KEYFILE       | my_aws_key.pem          |
-| installer_user| ubuntu                  |
-| services_host | 1.1.1.1                 |
+
+Here is the custom_settings.yml file:
+```
+installer_user: "ubuntu"
+services_host: "54.83.75.238"
+sample_patients_branch: "hapi-patients-testing"
+```
+
+Here are the commands we run:
+```
+sudo apt-get update
+sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
+sudo pip install ansible==2.1.0
+git clone https://github.com/smart-on-fhir/installer
+cd installer/provisioning
+vi custom_settings.yml
+... (see above)
+sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
+...
+
+```
 
 ### TLS
 
@@ -215,10 +231,6 @@ The installer creates servers that log to the journal.  You can view the journal
 * sudo journalctl -u auth-server.service
 
 Use the -f option tail the logs. 
-
----
-
-## Tips and Tricks
 
 ### Aliases
 The installer creates several aliases that can be used to help you manage and navigate the sandbox system.
