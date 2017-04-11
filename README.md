@@ -185,7 +185,7 @@ Here is the exact configuration we use to test the installer using an AWS EC2 in
 Here is the custom_settings.yml file:
 ```
 installer_user: "ubuntu"
-services_host: "54.83.75.238"
+services_host: "x.x.x.x" (your IP address)
 sample_patients_branch: "hapi-patients-testing"
 ```
 
