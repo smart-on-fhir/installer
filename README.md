@@ -170,7 +170,7 @@ ansible-playbook -i 'inventory' site.yml
 
 ### AWS Test Configuration
 
-Here is the exact configuration we use to test the installer using an AWS EC2 instance:
+Here is the exact configuration we use to test the installer using an AWS EC2 instance.  The ports must all be open for inbound connections in the security group.
 
 | Item          | Value                   |
 | ------------- | -----------------------:|
