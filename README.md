@@ -215,3 +215,53 @@ The installer creates servers that log to the journal.  You can view the journal
 * sudo journalctl -u auth-server.service
 
 Use the -f option tail the logs. 
+
+---
+
+## Tips and Tricks
+
+### Aliases
+The installer creates several aliases that can be used to help you manage and navigate the sandbox system.
+
+You can see the aliases by typing "alias" from the command prompt.  The aliases are defined in the ~/.bash_profile file.
+
+```
+ubuntu$ alias
+```
+
+These aliases are helpful to navigate the most important folders.
+```
+alias f='cd $FHIR_HOME'
+alias i='cd $INSTALLER_HOME'
+alias n='cd $NGINX_SITES'
+alias p='cd $PROVISIONING_HOME'
+alias s='cd $SERVICE_HOME'
+```
+
+These aliases are helpful for starting services.
+```
+alias startn='sudo service nginx start'
+alias stopn='sudo service nginx stop'
+```
+
+These aliases are helpful for viewing (ex: v...) or tailing (ex: t...) different service logs.
+```
+alias tapi='sudo journalctl -f -u api-dstu2-server.service'
+alias tapip='sudo journalctl -f -u persona-api-dstu2-server.service'
+alias tauth='sudo journalctl -f -u auth-server.service'
+alias tauthp='sudo journalctl -f -u persona-auth-server.service'
+alias tldap='sudo journalctl -f -u apacheds-server.service'
+alias tmsg='sudo journalctl -f -u messaging-server.service'
+alias tpwm='sudo journalctl -f -u pwm-server.service'
+alias tsand='sudo journalctl -f -u sandbox-manager-server.service'
+alias v='sudo ansible-playbook  -c local -i localhost, -vvvv site.yml --tags "verify"'
+alias vapi='sudo journalctl -u api-dstu2-server.service'
+alias vapip='sudo journalctl -u persona-api-dstu2-server.service'
+alias vauth='sudo journalctl -u auth-server.service'
+alias vauthp='sudo journalctl -u persona-auth-server.service'
+alias vldap='sudo journalctl -u apacheds-server.service'
+alias vmsg='sudo journalctl -u messaging-server.service'
+alias vpwm='sudo journalctl -u pwm-server.service'
+alias vsand='sudo journalctl -u sandbox-manager-server.service'
+```
+
