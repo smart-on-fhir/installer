@@ -34,9 +34,11 @@ sandbox_manager_server_port: "9090"
 auth_server_host: "{{services_host}}"
 auth_server_port: "9080"
 auth_server_password: "secret"
+auth_server_newUserUrl: ""
 
 persona_auth_server_host: "{{services_host}}"
 persona_auth_server_port: "9081"
+persona_auth_server_newUserUrl: ""
 
 messaging_server_host: "{{services_host}}"
 messaging_server_port: "9091"
