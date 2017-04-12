@@ -4,7 +4,7 @@ Description=PWM Service
 [Service]
 Type=forking
 
-Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+Environment=JAVA_HOME={{java_home}}
 Environment=CATALINA_HOME={{tomcat_home}}
 Environment=CATALINA_BASE={{tomcat_home}}
 Environment=CATALINA_PID={{tomcat_home}}/temp/tomcat.pid

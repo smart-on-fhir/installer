@@ -6,7 +6,7 @@ User={{username}}
 TimeoutStartSec=infinity
 WorkingDirectory={{install_dir}}/hspc/reference-messaging/target
 {% if use_secure_http and not use_custom_ssl_certificates %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
  -Xms{{messaging_server_initial_memory}} \
  -Xmx{{messaging_server_max_memory}} \
  -Djetty.port={{messaging_server_internal_port}} \
@@ -26,7 +26,7 @@ ExecStart=/usr/bin/java \
  --path {{messaging_server_context}} \
  hspc-reference-messaging.war
 {% else %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
  -Xms{{messaging_server_initial_memory}} \
  -Xmx{{messaging_server_max_memory}} \
  -Djetty.port={{messaging_server_internal_port}} \

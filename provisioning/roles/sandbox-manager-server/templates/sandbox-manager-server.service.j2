@@ -6,7 +6,7 @@ User={{username}}
 TimeoutStartSec=infinity
 WorkingDirectory={{install_dir}}/hspc/sandbox-manager/target
 {% if use_secure_http and not use_custom_ssl_certificates %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
   -Xms{{sandbox_manager_server_initial_memory}} \
   -Xmx{{sandbox_manager_server_max_memory}} \
   -Dserver.port={{sandbox_manager_server_internal_port}} \
@@ -44,7 +44,7 @@ ExecStart=/usr/bin/java \
   -Djavax.net.ssl.trustStorePassword={{keystore_password}} \
   -jar hspc-sandbox-manager.war
 {% else %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
   -Xms{{sandbox_manager_server_initial_memory}} \
   -Xmx{{sandbox_manager_server_max_memory}} \
   -Dserver.port={{sandbox_manager_server_internal_port}} \

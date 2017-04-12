@@ -29,6 +29,7 @@ update_repositories: "yes"
 
 # Settigs for Jetty and Oracle Java. You probably won't have to alter these
 # unles you are switching to a different version of Jetty or Java
+java_home: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
 jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
 
 # HSPC Repositories

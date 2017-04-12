@@ -6,7 +6,7 @@ User={{username}}
 TimeoutStartSec=infinity
 WorkingDirectory={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/target
 {% if use_secure_http and not use_custom_ssl_certificates %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
  -Xms{{auth_server_initial_memory}} \
  -Xmx{{auth_server_max_memory}} \
  -Dspring.profiles.active=production \
@@ -34,7 +34,7 @@ ExecStart=/usr/bin/java \
  --path {{persona_auth_server_context}} \
  hspc-reference-authorization.war
 {% else %}
-ExecStart=/usr/bin/java \
+ExecStart={{java_home}}/bin/java \
  -Xms{{auth_server_initial_memory}} \
  -Xmx{{auth_server_max_memory}} \
  -Dspring.profiles.active=production \
