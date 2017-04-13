@@ -1,23 +1,50 @@
-## Get started with one line, using Vagrant
+## Building your own SMART on FHIR platform
 ![SMART Logo](smart-logo.png)
 
-The three prerequisites, which are available on Mac, Windows, and Linux
-are (we have tested with the versions below, but other versions may be fine too):
+This installer will create a full SMART on FHIR platform including a FHIR server, an OAuth server, and a SMART launch simulator.
 
-1. [VirtualBox 5.0.20](https://www.virtualbox.org/wiki/Downloads)
-2. [Vagrant 1.8.1](https://www.vagrantup.com/downloads.html)
-3. [Ansible 2.1.0](http://docs.ansible.com/intro_installation.html)
+### Supported System Architectures
+The SMART on FHIR platform will be installed on a single machine in one of the following layouts:
 
-*Note:* Ansible is not supported on Windows. If you want to build a SMART on FHIR VM on Windows,
-please use the version of the installer which runs Ansible on the guest machine instead of using the one on the host OS. To enable this mode, please edit `Vagrantfile` by commenting out the "ansible" provisioner and enabling second "shell" provisioner before running `vagrant up`. An alternative options is to follow the
-instructions in the "Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without
-Vagrant)" section in this document.
+1. [VM Instance Install](#localvm) (ie: an Ubuntu server running on VirtualBox on a developer machine)
+2. [Native Install](#nativeinstall) (ie: an Ubuntu server)
+3. [Remote Install](#remoteinstall) (ie: a controller machine installs to remote Ubuntu server)
 
-*Note:* The default installation of GIT on Windows enables a LF to CRLF conversion
-upon checkout which is going to mess up the install. You will need to make sure that this
-conversion is disabled by running `git config --global core.autocrlf false`
+More advanced installations are possible by modifying this installer (mainly custom_settings.yml) but are not supported by our technical team.
 
-*Note:* The Ansible requirement is a Python package that installs some console tools.
+### Supported Operating Systems
+The SMART on FHIR platform is tested on Ubuntu 16.04.  Other linux-based systems may require different commands or packages.
+* **Ubuntu 16.04** may be used as a platform server or controller machine
+* **Mac OSx** may be used as a controller machine or VirtualBox host
+* **Windows** may be used as a VirtualBox host for a native install
+
+    *See [Windows Notes](#windowsnotes)*
+
+### SMART on FHIR Platfrom
+When complete, you will have a SMART on FHIR platform!
+
+* `{host}:9090/` for the Sandbox Manager application
+* `{host}/api/smartdstu2/data` for a FHIR DSTU2 API server
+* `{host}:9070/api/smartdstu2/data/metadata` for the FHIR DSTU2 API conformance
+* `{host}:9080/auth/` for an OAuth2 authorization server
+* `{host}:9093` for a SMART apps server
+* `{host}:10389` for an ApacheDS LDAP server
+* `{host}:3306` for a MySQL database
+
+The two sample accounts are `demo/demo` and `admin/password`.
+You can connect to the LDAP server on `localhost:10389`.
+
+---
+
+## <a name="localvm"/>VM Instance Install using VirtualBox
+
+In this install, we are going to build the SMART on FHIR platform on a Ubuntu server running on VirtualBox.
+
+### Prerequisites
+* [VirtualBox 5.0.20](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant 1.8.1](https://www.vagrantup.com/downloads.html)
+* [Ansible 2.1.0](http://docs.ansible.com/intro_installation.html)
+
 If you have the *pip* Python package manager installed, the easiest way to install the
 correct version of Ansible is to run the following:
 
@@ -25,8 +52,7 @@ correct version of Ansible is to run the following:
 sudo pip install ansible==2.1.0
 ```
 
-Once you have the prerequisites installed on your machine, you can:
-
+### Prepare the host
 ```
 vagrant plugin install vagrant-vbguest
 git clone https://github.com/smart-on-fhir/installer
@@ -40,25 +66,12 @@ cp provisioning/custom_settings_example.yml provisioning/custom_settings.yml
 vi provisioning/custom_settings.yml
 ```
 
-Run the installer:
-
+### Run the Installer
 ```
 vagrant up
 ```
 
 ... wait ~20min while everything installs (depending on your Internet connection speed).
-
-Now visit in a web browser on your local ("host") machine:
-
- * `http://localhost:9090/`  for the Sandbox Manager application
- * `http://localhost:9070/api/smartdstu2/data`  for a FHIR DSTU2 API server
- * `http://localhost:9070/api/smartdstu2/data/metadata`  for the FHIR DSTU2 API conformance
- * `http://localhost:9080/auth/`  for an OAuth2 authorization server
- * `http://localhost:9093`  for a SMART apps server
-
-The authorization server uses the OpenLDAP server running on the virtual machine.
-The two sample accounts are `demo/demo` and `admin/password` by default. You should change
-these for production environments. You can connect to the LDAP server on `localhost:10389`.
 
 You can poke around the virtual machine by doing:
 
@@ -72,14 +85,16 @@ And when you're done you can shut the virtual machine down with:
 vagrant halt
 ```
 
-*Note:* The SMART reference implementation stack is based on the [HSPC Reference Implementation stack](https://healthservices.atlassian.net/wiki/display/HSPC/HSPC+Reference+Implementation) which in turn is based upon [HAPI-FHIR](http://hapifhir.io). The authorization server is [MITREidConnect](http://mitreid-connect.github.io) and the underlying LDAP directory is [OpenLDAP](http://www.openldap.org). Please refer to these sites for details on administering and extending the stack components.
-
 ---
 
-## Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without Vagrant)
+## <a name="nativeinstall"/>Native Install on Ubuntu 16.04
 
-In this example, we are going to skip the inventory and do a local install to the Ubuntu 16.04 machine directly.
+In this install, we are going to build a SMART on FHIR platform directly on an Ubuntu 16.04 server.
 
+### Prerequisites
+* Ubuntu 16.04 machine
+
+### Prepare the server
 From the Ubuntu 16.04 machine:
 ```
 sudo apt-get update
@@ -94,72 +109,65 @@ Modify custom_settings.yml:
 cp custom_settings_example.yml custom_settings.yml
 vi custom_settings.yml
 ```
-    * set "installer_user" to your ssh username
-    * set "services_host" to a real-world route-able IP for your Ubuntu machine
-    * setting passwords, ports, and other properties as desired
 
-Note: it is not necessary to change the -i 'localhost, ' entry to be your hostname as this is referring to the Ansible inventory.
+* set "installer_user" to your ssh username
+* set "services_host" to a real-world route-able IP for your Ubuntu machine
+* setting passwords, ports, and other properties as desired
+
+### Run the Installer
+Make a "local" connection using the "localhost" inventory file:
 
 ```
 sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
 ```
 
-You may run a specific Ansible playbook such as:
-```
-sudo ansible-playbook -c local -i 'localhost,' -vvvv playbook-rebuild-databases.yml
-```
-
-You may run the Ansible playbook for specific tags using the --tags or --skip-tags flags such as:
-```
-sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml --tags "verify"
-```
-
 ---
 
-## Building SMART-on-FHIR on fresh Ubuntu 16.04 remote machine
+## <a name="remoteinstall"/>Remote Install on Ubuntu 16.04 from a controller machine (Mac or Ubuntu)
 
-In this example, we are going to use the inventory to install the platform on a remote Ubuntu 16.04 machine.
+In this install, we are going to build a SMART no FHIR platform remotely using a controller machine.
 
-### Configure the remote machine
-1. Install libraries
+### Prerequisites
+* Ubuntu 16.04 *remote* machine
+* Mac or Ubuntu *controller* machine
+
+### Prepare the remote machine
+#### Install libraries
 ```
 sudo apt-get update
 sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
 sudo pip install ansible==2.1.0
 ```
-2. Set up SSH using certificates
+#### Set up SSH using certificates
 Make sure that you have a user account on the remote machine that
 has passwordless sudo privileges.  Enable SSH from your local machine to
-the remote machine using certificates or password. If using an AWS EC2 Ubuntu
+the remote machine using certificates. If using an AWS EC2 Ubuntu
 instance, your installer_user is "ubuntu" and your key is the .pem file established for access.
 
-### Install remotely (from the local machine)
-1. Install Libraries
+### Prepare the controller machine
 ```
 sudo apt-get update
 sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
 sudo pip install ansible==2.1.0
-```
-2. Get the installer sourcecode
-```
 git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
-3. Configure the inventory
-```
-vi inventory
-```
-    * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
-4. Configure the custom_settings.yml using the custom_settings_example.yml as a reference.
+#### Modify custom_settings.yml
 ```
 cp custom_settings_example.yml custom_settings.yml
 vi custom_settings.yml
 ```
-    * set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
-    * set "installer_user" to your ssh username
-    * set "services_host" to the IP of your remote machine
-    * setting passwords, ports, and other properties as desired
-5. Run the installer for remote installation
+* set "installer_user" to your ssh username
+* set "services_host" to a real-world route-able IP for your Ubuntu machine
+* setting passwords, ports, and other properties as desired
+
+#### Configure the inventory
+```
+vi inventory
+```
+* set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
+
+### Run the Installer from the Controller Machine
 ```
 ansible-playbook -i 'inventory' site.yml
 ```
@@ -293,3 +301,14 @@ alias vpwm='sudo journalctl -u pwm-server.service'
 alias vsand='sudo journalctl -u sandbox-manager-server.service'
 ```
 
+### <a name="windowsnotes"/>Windows Notes
+* Windows Note: Ansible is not supported on Windows. If you want to build a SMART on FHIR VM on Windows, you should
+create a VM instance for Ubuntu 16.04 and perform a
+please use the version of the installer which runs Ansible on the guest machine instead of using the one on the host OS. To enable this mode, please edit `Vagrantfile` by commenting out the "ansible" provisioner and enabling second "shell" provisioner before running `vagrant up`. An alternative options is to follow the
+instructions in the "Building SMART-on-FHIR on fresh Ubuntu 16.04 machine (without Vagrant)" section in this document.
+
+* Windows Note: The default installation of GIT on Windows enables a LF to CRLF conversion
+upon checkout which is going to mess up the install. You will need to make sure that this
+conversion is disabled by running:
+
+    ```git config --global core.autocrlf false```
