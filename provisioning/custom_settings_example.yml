@@ -42,16 +42,3 @@ persona_auth_server_newUserUrl: ""
 
 messaging_server_host: "{{services_host}}"
 messaging_server_port: "9091"
-
-#use_custom_ssl_certificates: true
-#custom_ssl_certificates_path: examples/certificates
-#use_secure_http: true
-sample_patients_branch: "master"
-fhir_starter_branch: "v0.1.2"
-cardiac_risk_branch: "v0.1.1"
-bp_centiles_branch: "v0.1.2"
-growth_chart_branch: "v0.1.2"
-fhir_demo_app_branch: "v0.1.0"
-mpr_monitor_branch: "v0.1.0"
-diabetes_monograph_branch: "v0.1.0"
-disease_monograph_branch: "v0.1.0"
