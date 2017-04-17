@@ -34,6 +34,8 @@ When complete, you will have a SMART on FHIR platform!
 The two sample accounts are `demo/demo` and `admin/password`.
 You can connect to the LDAP server on `localhost:10389`.
 
+* *See [SMART on FHIR Platform Systems](#platformsystems)*
+
 ---
 
 ## <a name="localvm"/>VM Instance Install using VirtualBox
@@ -174,6 +176,28 @@ ansible-playbook -i 'inventory' site.yml
 
 ---
 
+## <a name="platformsystems"/>SMART on FHIR Platform Components
+
+The SMART on FHIR platform consists of several open-source systems that together support the SMART on FHIR launch and security specification for apps.
+These open-source systems are reference systems, meaning they have not been created with the intention of supporting production use cases "out of the box".
+Please contact each of these open-source projects with further questions.
+
+| Functional Role            | System Name              | More Information                                                     |
+| -------------------------- | ------------------------ | -------------------------------------------------------------------- |
+| DSTU2 FHIR Server          | HSPC Reference API       | https://bitbucket.org/hspconsortium/reference-api                    |
+|                            | HAPI FHIR                | http://jamesagnew.github.io/hapi-fhir/                               |
+| OAuth2 Server              | HSPC Reference Auth      | https://bitbucket.org/hspconsortium/reference-auth                   |
+|                            | MITRE Open ID Connect    | https://github.com/mitreid-connect/OpenID-Connect-Java-Spring-Server |
+| SMART Launch Simulator     | HSPC Sandbox Manager     | https://bitbucket.org/hspconsortium/sandbox-manager                  |
+| Cardiac Risk App           | Cardiac Risk App         | https://github.com/smart-on-fhir/cardiac-risk-app                    |
+| BP Centiles App            | BP Centiles App          | https://github.com/smart-on-fhir/bp-centiles-app                     |
+| Growth Chart App           | Growth Chart App         | https://github.com/smart-on-fhir/growth-chart-app                    |
+| Sandbox Manager            | HSPC Sandbox Manager     | https://bitbucket.org/hspconsortium/sandbox-manager                  |
+| User Management            | ApacheDS                 | http://directory.apache.org/apacheds                                 |
+| Messaging Server           | HSPC Reference Messaging | https://bitbucket.org/hspconsortium/reference-messaging              |
+
+---
+
 ## Tips and Tricks
 
 ### AWS Test Configuration
@@ -254,7 +278,7 @@ The installer creates servers that log to the journal.  You can view the journal
 * sudo journalctl -u api-dstu2-server.service
 * sudo journalctl -u auth-server.service
 
-Use the -f option tail the logs. 
+Use the -f option tail the logs.
 
 ### Aliases
 The installer creates several aliases that can be used to help you manage and navigate the sandbox system.
