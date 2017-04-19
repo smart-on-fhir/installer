@@ -53,7 +53,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
 #    ansible.verbose="vvvv"
-#    ansible.tags=["api-dstu2-all"]
+    ansible.tags=["smart-platform"]
     ansible.playbook = "provisioning/site.yml"
   end
 

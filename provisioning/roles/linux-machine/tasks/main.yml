@@ -167,41 +167,41 @@
   mysql_user: name='' host={{mysql_connect_host}} state=absent
 
 - name: ensures {{install_dir}}/scripts dir exists
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   file: path={{user_scripts_home}}
         state=directory
 
 - name: ensures {{install_dir}}/jobs dir exists
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   file: path={{user_jobs_home}}
         state=directory
 
 - name: ensures {{install_dir}}/jobs output dir exists
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   file: path="{{user_jobs_home}}/output"
         state=directory
 
 - name: install AWS shell
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   pip: name="aws-shell"
 
 - name: Create the AWS config directory
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   file: path={{install_dir}}/.aws
         state=directory
         mode=0755
 
 - name: Copy AWS CLI config
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   template: src=aws_cli_config.j2 dest="{{install_dir}}/.aws/config" mode=0600
 
 - name: initialize crontab file SHELL
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   cron:
     name: SHELL
@@ -209,7 +209,7 @@
     value: /bin/bash
 
 - name: initialize crontab file PATH
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   cron:
     name: PATH
@@ -217,28 +217,28 @@
     value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 - name: create script aws-snapshot-job.sh
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   template: src=aws-snapshot-job.sh.j2
             dest={{user_scripts_home}}/aws-snapshot-job.sh
             mode=0755
 
 - name: create script aws-remove-snapshot.sh
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   template: src=aws-remove-snapshot.sh.j2
             dest={{user_scripts_home}}/aws-remove-snapshot.sh
             mode=0755
 
 - name: create script aws-take-snapshot.sh
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   template: src=aws-take-snapshot.sh.j2
             dest={{user_scripts_home}}/aws-take-snapshot.sh
             mode=0755
 
 - name: create script aws-describe-snapshots.sh
-  tags: [linux-all, smart-platform]
+  tags: [linux-all, smart-production]
   become_user: "{{username}}"
   template: src=aws-describe-snapshots.sh.j2
             dest={{user_scripts_home}}/aws-describe-snapshots.sh
@@ -246,7 +246,7 @@
 
 # create a cron job for nightly reset to be run at 6 AM UTC, or 1 AM US-EST
 - name: create cron job to snapshot to AWS
-  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-production]
   when: enable_aws_snapshot
   become_user: "{{username}}"
   cron:

@@ -13,7 +13,12 @@ auth_webapp_ldap_project: "reference-auth-server-ldap-webapp-deprecated"
 auth_server_database: oic
 auth_db_file: "{{install_dir}}/auth_server_db.hsql"
 
-auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
-auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
-persona_auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
-persona_auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
+# add these values to support new users
+auth_server_newUserUrl: ""
+#auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
+auth_server_forgotPasswordUrl: ""
+#auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
+persona_auth_server_newUserUrl: ""
+#persona_auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
+persona_auth_server_forgotPasswordUrl: ""
+#persona_auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
