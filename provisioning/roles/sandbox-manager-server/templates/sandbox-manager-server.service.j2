@@ -4,7 +4,7 @@ Description=Sandbox Mgr3 Service
 [Service]
 User={{username}}
 TimeoutStartSec=infinity
-WorkingDirectory={{install_dir}}/hspc/sandbox-manager/target
+WorkingDirectory={{hspc_install_dir}}/sandbox-manager/target
 {% if use_secure_http and not use_custom_ssl_certificates %}
 ExecStart={{java_home}}/bin/java \
   -Xms{{sandbox_manager_server_initial_memory}} \

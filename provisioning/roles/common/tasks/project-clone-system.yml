@@ -1,0 +1,13 @@
+---
+# vars:
+#   project: project object to be cloned
+
+- name: "clone project {{project}}"
+  include: "roles/common/tasks/clone-system.yml"
+  vars:
+    repo_base_url: "{{project.repo.base_url}}"
+    repo_name: "{{project.repo.name}}"
+    repo_tag: "{{project.repo.tag | default('')}}"
+    repo_branch: "{{project.repo.branch | default('')}}"
+    target_base_folder: "{{project.target.base_folder}}"
+    target_project_name: "{{project.target.name}}"

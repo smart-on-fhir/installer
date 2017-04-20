@@ -13,7 +13,7 @@
 - name: checkout repository hspc_repo_api_webapp_project
   tags: [api-dstu2-all, api-dstu2-code, smart-platform]
   become_user: "{{username}}"
-  git: repo="{{hspc_repos_base}}/{{api_dstu2_repo_api_webapp_project}}"
+  git: repo="{{hspc_repo_base}}/{{api_dstu2_repo_api_webapp_project}}"
        version="{{api_dstu2_repo_api_branch}}"
        dest="{{install_dir}}/hspc/api-dstu2/{{api_dstu2_repo_api_webapp_project}}"
        update={{update_repositories}}

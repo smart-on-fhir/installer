@@ -2,9 +2,9 @@
 - name: checkout repository auth_webapp_project
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
-  git: repo="{{hspc_repos_base}}/{{auth_webapp_project}}"
+  git: repo="{{hspc_repo_base}}/{{auth_webapp_project}}"
        version="{{auth_branch}}"
-       dest="{{install_dir}}/hspc/{{auth_webapp_project}}"
+       dest="{{hspc_install_dir}}/{{auth_webapp_project}}"
        update={{update_repositories}}
        force=yes
        depth=1
@@ -12,9 +12,9 @@
 - name: checkout repository auth_webapp_ldap_project
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
-  git: repo="{{hspc_repos_base}}/{{auth_webapp_ldap_project}}"
+  git: repo="{{hspc_repo_base}}/{{auth_webapp_ldap_project}}"
        version="{{auth_branch}}"
-       dest="{{install_dir}}/hspc/{{auth_webapp_ldap_project}}"
+       dest="{{hspc_install_dir}}/{{auth_webapp_ldap_project}}"
        update={{update_repositories}}
        force=yes
        depth=1
@@ -23,79 +23,31 @@
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
   template: src=log4j.xml.j2
-            dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/src/main/resources/log4j.xml
+            dest={{hspc_install_dir}}/reference-auth-server-ldap-webapp-deprecated/src/main/resources/log4j.xml
 
 - name: patch auth server login screen
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
   template: src=login.jsp.j2
-            dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/WEB-INF/views/login.jsp
-
-- name: patch auth server mysql auth install
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_auth_install.sql.j2
-            dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_auth_install.sql
-
-- name: patch auth server clients rollback
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_clients_rollback.sql.j2
-            dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_clients_rollback.sql
-
-- name: patch auth server database tables
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_database_tables.sql.j2
-             dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_database_tables.sql
-
-- name: patch auth server scopes
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_system_scopes.sql.j2
-            dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_system_scopes.sql
-
-- name: patch auth server users
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_users.sql.j2
-            dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_users.sql
-
-- name: patch auth server clients
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=mysql_clients.sql.j2
-            dest={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql/mysql_clients.sql
-
-- name: patch sandbox-manager mysql auth install
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=sandbox-manager-client.sql.j2
-            dest={{install_dir}}/hspc/sandbox-manager/src/main/resources/db/openidconnect/mysql/sandbox-manager-client.sql
-
-- name: patch patient-picker mysql auth install
-  tags: [auth-all, auth-code, smart-platform]
-  become_user: "{{username}}"
-  template: src=patient-picker-client.sql.j2
-            dest={{install_dir}}/hspc/patient-picker/src/main/resources/db/openidconnect/mysql/patient-picker-client.sql
+            dest={{hspc_install_dir}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/WEB-INF/views/login.jsp
 
 # install SMART logos
 - name: config company-logo.png
   tags: [auth-all, auth-code, smart-platform]
-  copy: src=roles/common/files/images/company-logo.png dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo.png
+  copy: src=roles/common/files/images/company-logo.png dest={{hspc_install_dir}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo.png
 
 - name: config company-logo@2x.png
   tags: [auth-all, auth-code, smart-platform]
-  copy: src=roles/common/files/images/company-logo.png dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo@2x.png
+  copy: src=roles/common/files/images/company-logo.png dest={{hspc_install_dir}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo@2x.png
 
 - name: config company-logo-main-web-top.png
   tags: [auth-all, auth-code, smart-platform]
-  copy: src=roles/common/files/images/company-logo-main-web-top.png dest={{install_dir}}/hspc/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo-main-web-top.png
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest={{hspc_install_dir}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo-main-web-top.png
 
 - name: build hspc auth server
   tags: [auth-all, auth-code, smart-platform]
   become_user: "{{username}}"
-  shell: chdir={{install_dir}}/hspc
+  shell: chdir={{hspc_install_dir}}
        mvn clean install -e -U -f reference-auth-server-ldap-webapp-deprecated/pom.xml
 
 - meta: flush_handlers

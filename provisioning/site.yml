@@ -3,8 +3,8 @@
 
 - include: playbook-rebuild-app-code.yml
 
-- include: playbook-rebuild-services.yml
-
 - include: playbook-rebuild-databases.yml
+
+- include: playbook-rebuild-services.yml
 
 - include: playbook-initialize.yml

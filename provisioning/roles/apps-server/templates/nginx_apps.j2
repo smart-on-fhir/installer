@@ -6,7 +6,7 @@ server {
     listen {{app_server_port}};
 
     location / {
-       root {{install_dir}}/apps/static;
+       root {{apps_install_dir}}/static;
        expires 1h;
        add_header Cache-Control "public";
     }

@@ -2,9 +2,9 @@
 - name: checkout repository messaging_project
   tags: [messaging-all, messaging-code, smart-platform]
   become_user: "{{username}}"
-  git: repo="{{hspc_repos_base}}/{{messaging_project}}"
+  git: repo="{{hspc_repo_base}}/{{messaging_project}}"
        version="{{messaging_branch}}"
-       dest="{{install_dir}}/hspc/{{messaging_project}}"
+       dest="{{hspc_install_dir}}/{{messaging_project}}"
        update={{update_repositories}}
        force=yes
        depth=1
@@ -12,5 +12,5 @@
 - name: build hspc messaging server
   tags: [messaging-all, messaging-code, smart-platform]
   become_user: "{{username}}"
-  shell: chdir={{install_dir}}/hspc
+  shell: chdir={{hspc_install_dir}}
        mvn clean install -e -U -f reference-messaging/pom.xml

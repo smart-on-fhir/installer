@@ -18,24 +18,28 @@
 #   when: not auth_server_preserve_db
   with_items: [".tmp", ".properties", ".script", ".log", ""]
 
-- name: Load Authorization Server DB Schema and Sample Data
+- name: install client scripts
   tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/reference-auth-server-webapp-deprecated/src/main/resources/db/openidconnect/mysql
-         mysql oic < mysql_auth_install.sql
+  template: src="{{item}}.j2" dest="{{hspc_install_dir}}/{{auth_webapp_project}}/src/main/resources/db/openidconnect/mysql/{{item}}"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "sandbox-manager-client.sql"
+    - "patient-picker-client.sql"
+    - "resource-server-client.sql"
 
-- name: load api-dstu2 resource server client
+- name: load clients
   tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/api-dstu2/reference-api-mysql-deprecated/src/main/resources/db/openidconnect/mysql
-         mysql oic < resource-server-client.sql
-
-- name: load sandbox-manager resource server client
-  tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/sandbox-manager/src/main/resources/db/openidconnect/mysql
-         mysql oic < sandbox-manager-client.sql
-
-- name: load patient-picker resource server client
-  tags: [auth-all, auth-data, smart-platform]
-  shell: chdir={{install_dir}}/hspc/patient-picker/src/main/resources/db/openidconnect/mysql
-         mysql oic < patient-picker-client.sql
+  mysql_db: name={{auth_server_database}} state=import target="{{hspc_install_dir}}/{{auth_webapp_project}}/src/main/resources/db/openidconnect/mysql/{{item}}"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "sandbox-manager-client.sql"
+    - "patient-picker-client.sql"
+    - "resource-server-client.sql"
 
 - meta: flush_handlers

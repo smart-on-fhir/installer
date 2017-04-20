@@ -12,6 +12,12 @@
 username: "fhir"
 userpass: "nopass"
 install_dir: "/home/{{username}}"
+apps_install_dir: "{{install_dir}}/apps"
+hspc_install_dir: "{{install_dir}}/hspc"
+m2_repo_folder: "{{install_dir}}/.m2/repository"
+user:
+  environment:
+    config: "{{install_dir}}/.profile"
 
 top_level_domain: "org"
 second_level_domain: "smarthealthit"
@@ -31,9 +37,6 @@ update_repositories: "yes"
 # unles you are switching to a different version of Jetty or Java
 java_home: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
 jetty_download_url: "http://central.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.3.6.v20151106/jetty-runner-9.3.6.v20151106.jar"
-
-# HSPC Repositories
-hspc_repos_base: "https://bitbucket.org/hspconsortium"
 
 # Database configuration
 mysql_host: "localhost"
@@ -80,25 +83,63 @@ fhir_server_security_mode: "secured"
 # Set this to either "true" or "false" to allow an open endpoint at /open
 fhir_server_allow_open_access: true
 
-# General settings for the applications server
+# Artifact Repositories
+smart_repo_base: "https://github.com/smart-on-fhir"
+hspc_repo_base: "https://bitbucket.org/hspconsortium"
+
+# Apps Repositories
 app_server_host: "localhost"
 app_server_port: "9093"
-fhir_starter_repo: "https://github.com/smart-on-fhir/fhir-starter.git"
-cardiac_risk_repo: "https://github.com/smart-on-fhir/cardiac-risk-app.git"
-bp_centiles_repo: "https://github.com/smart-on-fhir/bp-centiles-app.git"
-growth_chart_repo: "https://github.com/smart-on-fhir/growth-chart-app.git"
-fhir_demo_app_repo: "https://github.com/smart-on-fhir/fhir-demo-app.git"
-patient_picker_app_repo: "{{hspc_repos_base}}/patient-picker.git"
-fhir_starter_branch: "master"
-cardiac_risk_branch: "master"
-bp_centiles_branch: "master"
-growth_chart_branch: "master"
-fhir_demo_app_branch: "master"
-patient_picker_app_branch: "master"
 
-# General settings for the sample patients set
-sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
-sample_patients_branch: "master"
+cardiac_risk_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "cardiac-risk-app"
+    tag: "v0.1.1"
+  target:
+    base_folder: "{{apps_install_dir}}/static/apps"
+    name: "cardiac-risk"
+    folder: "{{apps_install_dir}}/static/apps/cardiac-risk"
+
+bp_centiles_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "bp-centiles-app"
+    tag: "v0.1.2"
+  target:
+    base_folder: "{{apps_install_dir}}/static/apps"
+    name: "bp-centiles"
+    folder: "{{apps_install_dir}}/static/apps/bp-centiles"
+
+growth_chart_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "growth-chart-app"
+    tag: "v0.1.2"
+  target:
+    base_folder: "{{apps_install_dir}}/static/apps"
+    name: "growth-chart"
+    folder: "{{apps_install_dir}}/static/apps/growth-chart"
+
+# todo get this from a maven release
+patient_picker_project_info:
+  repo:
+    base_url: "{{hspc_repo_base}}"
+    name: "patient-picker"
+    tag: "1.0"
+  target:
+    base_folder: "{{hspc_install_dir}}"
+    name: "patient-picker"
+    folder: "{{hspc_install_dir}}/patient-picker"
+
+sample_patients_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "sample-patients"
+  target:
+    base_folder: "{{apps_install_dir}}/static/apps"
+    name: "growth-chart"
+    folder: "{{apps_install_dir}}/static/apps/growth-chart"
 
 # choose how many sample patients to load in the server or set to 9999 for all of them
 include_custom_patients: false
@@ -236,7 +277,7 @@ nginx_home: "/etc/nginx"
 fhir_home: "/home/fhir"
 installer_user: "vagrant"
 installer_user_home: "/home/{{installer_user}}"
-installer_home: "{installer_user_home}/installer"
+installer_home: "{{installer_user_home}}/installer"
 
 user_scripts_home: "{{install_dir}}/scripts"
 user_jobs_home: "{{install_dir}}/jobs"

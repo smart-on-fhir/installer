@@ -1,56 +1,56 @@
 ---
 - name: install apache-tomcat
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   become_user: "{{username}}"
   unarchive: src="{{tomcat_artifact_url}}"
              dest="{{install_dir}}"
              creates="{{tomcat_home}}"
 
 - name: configure tomcat server
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   become_user: "{{username}}"
   template: src=server.xml.j2
             dest="{{tomcat_home}}/conf/server.xml"
 
 - name: remove tomcat default webapps
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   become_user: "{{username}}"
   file: path="{{tomcat_home}}/webapps" state=absent
 
 - name: initialize tomcat webapps
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   become_user: "{{username}}"
   file: path="{{tomcat_home}}/webapps" state=directory
 
 - name: configure tomcat to only host pwm
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   become_user: "{{username}}"
-  shell: "cp -r {{install_dir}}/hspc/pwm/target/pwm-1.7 {{tomcat_home}}/webapps/ROOT"
+  shell: "cp -r {{hspc_install_dir}}/pwm/target/pwm-1.7 {{tomcat_home}}/webapps/ROOT"
 
 - name: configure pwm server service
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   template: src=pwm-server.service.j2
             dest=/etc/systemd/system/pwm-server.service
             owner=root group=root mode=0644
 
 - name: enable pwm server service
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   shell: systemctl enable pwm-server.service
 
 - name: reload systemd daemon
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   shell: systemctl daemon-reload
 
 - name: stop pwm server
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   service: name=pwm-server state=stopped
 
 - name: restart pwm server
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   service: name=pwm-server enabled=yes state=restarted
 
 - name: configure nginx (pwm server)
-  tags: [pwm-all, pwm-server, smart-platform]
+  tags: [pwm-all, pwm-server, smart-production]
   template: src=nginx_pwm.j2 dest=/etc/nginx/sites-enabled/pwm owner=root group=root mode=0644
   notify:
     - restart nginx
@@ -58,5 +58,5 @@
 - meta: flush_handlers
 
 - name: verify pwm-server is available
-  tags: [pwm-all, pwm-server, verify, smart-platform]
+  tags: [pwm-all, pwm-server, verify, smart-production]
   wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}
