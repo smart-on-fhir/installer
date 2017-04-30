@@ -1,0 +1,52 @@
+---
+- name: checkout repository messaging_project
+  tags: [messaging-all, messaging-code, smart-platform]
+  become_user: "{{username}}"
+  git: repo="{{hspc_repo_base}}/{{messaging_project}}"
+       version="{{messaging_branch}}"
+       dest="{{hspc_install_dir}}/{{messaging_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: build hspc messaging server
+  tags: [messaging-all, messaging-code, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{hspc_install_dir}}
+       mvn clean install -e -U -f reference-messaging/pom.xml
+
+- name: configure messaging server service
+  tags: [messaging-all, messaging-server, smart-platform]
+  template: src=messaging-server.service.j2
+            dest=/etc/systemd/system/messaging-server.service
+            owner=root group=root mode=0644
+
+- name: enable messaging server service
+  tags: [messaging-all, messaging-server, smart-platform]
+  shell: systemctl enable messaging-server.service
+
+- name: reload systemd daemon
+  tags: [messaging-all, messaging-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop messaging server
+  tags: [messaging-all, messaging-server, smart-platform]
+  service: name=messaging-server state=stopped
+
+- name: restart messaging server
+  tags: [messaging-all, messaging-server, smart-platform]
+  service: name=messaging-server enabled=yes state=restarted
+
+- name: configure nginx (messaging server)
+  tags: [messaging-all, messaging-server, smart-platform]
+  template: src=nginx_messaging.j2 dest=/etc/nginx/sites-enabled/messaging owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: verify messaging-server is available
+  tags: [messaging-all, messaging-server, verify, smart-platform]
+  wait_for: host={{messaging_server_internal_host}} port={{messaging_server_internal_port}}
+
+- meta: flush_handlers

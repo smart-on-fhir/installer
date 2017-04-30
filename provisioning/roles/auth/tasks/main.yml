@@ -1,0 +1,95 @@
+---
+- name: create hspc-reference-auth project home
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{username}}"
+  file: path="{{hspc_install_dir}}/{{item}}" state=directory
+  with_items:
+    - "{{auth_server_project_info.target.name}}"
+    - "{{auth_server_project_info.target.name}}/src"
+    - "{{auth_server_project_info.target.name}}/src/main"
+    - "{{auth_server_project_info.target.name}}/src/main/webapp"
+    - "{{auth_server_project_info.target.name}}/src/main/webapp/WEB-INF"
+    - "{{auth_server_project_info.target.name}}/src/main/webapp/WEB-INF/views"
+    - "{{auth_server_project_info.target.name}}/src/main/webapp/static"
+    - "{{auth_server_project_info.target.name}}/src/main/webapp/static/images"
+    - "{{auth_server_project_info.target.name}}/src/main/resources"
+    - "{{auth_server_project_info.target.name}}/src/main/resources/db"
+    - "{{auth_server_project_info.target.name}}/src/main/resources/db/openidconnect"
+    - "{{auth_server_project_info.target.name}}/src/main/resources/db/openidconnect/mysql"
+
+- name: pom.xml overlay
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{username}}"
+  template: src=pom.xml.j2
+            dest={{auth_server_project_info.target.folder}}/pom.xml
+
+- name: patch auth server login screen
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{username}}"
+  template: src=login.jsp.j2
+            dest={{auth_server_project_info.target.folder}}/src/main/webapp/WEB-INF/views/login.jsp
+
+- name: install SMART logos
+  tags: [auth-all, auth-code, smart-platform]
+  copy: src=roles/common/files/images/{{item}}
+        dest={{auth_server_project_info.target.folder}}/src/main/webapp/static/images/{{item}}
+  with_items:
+    - "company-logo.png"
+    - "company-logo@2x.png"
+    - "company-logo-main-web-top.png"
+
+- name: build hspc auth server
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{auth_server_project_info.target.folder}}
+       mvn clean install -e -U
+
+- name: Configure MySQL user
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{mysql_privilage}} state=present
+
+- name: Drop the Authorization Server database
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_db: name={{auth_server_database}} state=absent
+
+- name: Create the Authorization Server database
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_db: name={{auth_server_database}} state=present
+
+- name: clear auth server data
+  tags: [auth-all, auth-data, smart-platform]
+  file: path={{auth_db_file}}{{item}} state=absent
+# todo figure this out
+#   when: not auth_server_preserve_db
+  with_items: [".tmp", ".properties", ".script", ".log", ""]
+
+- name: install client scripts
+  tags: [auth-all, auth-data, smart-platform]
+  template: src="{{item}}.j2" dest="{{auth_server_project_info.target.folder}}/src/main/resources/db/openidconnect/mysql/{{item}}"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "sandbox-manager-client.sql"
+    - "patient-picker-client.sql"
+    - "resource-server-client.sql"
+
+- name: load clients
+  tags: [auth-all, auth-data, smart-platform]
+  mysql_db: name={{auth_server_database}} state=import target="{{auth_server_project_info.target.folder}}/src/main/resources/db/openidconnect/mysql/{{item}}"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "sandbox-manager-client.sql"
+    - "patient-picker-client.sql"
+    - "resource-server-client.sql"
+
+- include: auth.yml
+
+- include: persona-auth.yml
+
+- meta: flush_handlers
+

@@ -23,16 +23,16 @@ The SMART on FHIR platform is tested on Ubuntu 16.04.  Other linux-based systems
 ### SMART on FHIR Platfrom
 When complete, you will have a SMART on FHIR platform!
 
-* `{host}:9090/` for the Sandbox Manager application
+* `{host}:9080/` for the Sandbox Manager application
 * `{host}:9070/api/smartdstu2/data` for a FHIR DSTU2 API server
 * `{host}:9070/api/smartdstu2/data/metadata` for the FHIR DSTU2 API conformance
-* `{host}:9080/auth/` for an OAuth2 authorization server
+* `{host}:9060/auth/` for an OAuth2 authorization server
 * `{host}:9093` for a SMART apps server
 * `{host}:10389` for an ApacheDS LDAP server
 * `{host}:3306` for a MySQL database
 
-The two sample accounts are `demo/demo` and `admin/password`.
-You can connect to the LDAP server on `localhost:10389`.
+The two sample accounts are `demo/demo` and `admin/password`.  The `demo` account is used to
+simulate a clinician login and the `admin` account is used on the auth server to manage application registrations and tokens.
 
 * *See [SMART on FHIR Platform Systems](#platformsystems)*
 
@@ -127,7 +127,7 @@ sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
 
 ## <a name="remoteinstall"/>Remote Install on Ubuntu 16.04 from a controller machine (Mac or Ubuntu)
 
-In this install, we are going to build a SMART no FHIR platform remotely using a controller machine.
+In this install, we are going to build a SMART on FHIR platform remotely using a controller machine.
 
 ### Prerequisites
 * Ubuntu 16.04 *remote* machine
@@ -171,7 +171,7 @@ vi inventory
 
 ### Run the Installer from the Controller Machine
 ```
-ansible-playbook -i 'inventory' site.yml
+ansible-playbook -i inventory site.yml
 ```
 
 ---

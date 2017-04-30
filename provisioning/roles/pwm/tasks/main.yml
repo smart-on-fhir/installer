@@ -1,0 +1,111 @@
+---
+- name: checkout repository pwm_project
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{username}}"
+  git: repo="{{hspc_repo_base}}/{{pwm_project}}"
+       version="{{pwm_branch}}"
+       dest="{{hspc_install_dir}}/{{pwm_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo.png dest="{{hspc_install_dir}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo.png"
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo@2x.png dest="{{hspc_install_dir}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo@2x.png"
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest="{{hspc_install_dir}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo-main-web-top.png"
+
+- name: patch PwmConfiguration.xml
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{username}}"
+  template: src=PwmConfiguration.xml.j2
+            dest="{{hspc_install_dir}}/{{pwm_project}}/src/main/webapp/WEB-INF/PwmConfiguration.xml"
+
+- name: build hspc pwm server
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{username}}"
+  shell: chdir={{hspc_install_dir}}
+       mvn clean install -e -U -f {{pwm_project}}/pom.xml
+
+- name: Configure MySQL user
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{mysql_privilage}} state=present
+
+- name: Drop the PWM Server database
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_db: name={{pwm_server_database}} state=absent
+
+- name: Create the PWM Server database
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_db: name={{pwm_server_database}} state=present
+
+- name: install apache-tomcat
+  tags: [pwm-all, pwm-server, smart-production]
+  become_user: "{{username}}"
+  unarchive: src="{{tomcat_artifact_url}}"
+             dest="{{install_dir}}"
+             creates="{{tomcat_home}}"
+
+- name: configure tomcat server
+  tags: [pwm-all, pwm-server, smart-production]
+  become_user: "{{username}}"
+  template: src=server.xml.j2
+            dest="{{tomcat_home}}/conf/server.xml"
+
+- name: remove tomcat default webapps
+  tags: [pwm-all, pwm-server, smart-production]
+  become_user: "{{username}}"
+  file: path="{{tomcat_home}}/webapps" state=absent
+
+- name: initialize tomcat webapps
+  tags: [pwm-all, pwm-server, smart-production]
+  become_user: "{{username}}"
+  file: path="{{tomcat_home}}/webapps" state=directory
+
+- name: configure tomcat to only host pwm
+  tags: [pwm-all, pwm-server, smart-production]
+  become_user: "{{username}}"
+  shell: "cp -r {{hspc_install_dir}}/pwm/target/pwm-1.7 {{tomcat_home}}/webapps/ROOT"
+
+- name: configure pwm server service
+  tags: [pwm-all, pwm-server, smart-production]
+  template: src=pwm-server.service.j2
+            dest=/etc/systemd/system/pwm-server.service
+            owner=root group=root mode=0644
+
+- name: enable pwm server service
+  tags: [pwm-all, pwm-server, smart-production]
+  shell: systemctl enable pwm-server.service
+
+- name: reload systemd daemon
+  tags: [pwm-all, pwm-server, smart-production]
+  shell: systemctl daemon-reload
+
+- name: stop pwm server
+  tags: [pwm-all, pwm-server, smart-production]
+  service: name=pwm-server state=stopped
+
+- name: restart pwm server
+  tags: [pwm-all, pwm-server, smart-production]
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: configure nginx (pwm server)
+  tags: [pwm-all, pwm-server, smart-production]
+  template: src=nginx_pwm.j2 dest=/etc/nginx/sites-enabled/pwm owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: verify pwm-server is available
+  tags: [pwm-all, pwm-server, verify, smart-production]
+  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}

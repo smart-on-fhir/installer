@@ -11,6 +11,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # MYSQL Database
   config.vm.network :forwarded_port, guest: 3306, host: 3307
 
+# Auth Server
+  config.vm.network :forwarded_port, guest: 9060, host: 9060
+# Persona-Auth Server
+  config.vm.network :forwarded_port, guest: 9061, host: 9061
+
 # API_DSTU2 Server
   config.vm.network :forwarded_port, guest: 9070, host: 9070
 # Persona-API_DSTU2 Server
@@ -22,13 +27,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # Persona-API_STU3 Server
   config.vm.network :forwarded_port, guest: 9073, host: 9073
 
-# Auth Server
-  config.vm.network :forwarded_port, guest: 9080, host: 9080
-# Persona-Auth Server
-  config.vm.network :forwarded_port, guest: 9081, host: 9081
-
 # Sandbox Manager
-  config.vm.network :forwarded_port, guest: 9090, host: 9090
+  config.vm.network :forwarded_port, guest: 9080, host: 9080
+
 # Messaging Server
   config.vm.network :forwarded_port, guest: 9091, host: 9091
 # PWM Server
@@ -54,6 +55,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
 #    ansible.verbose="vvvv"
     ansible.tags=["smart-platform"]
+#    ansible.skip_tags=["linux-all"]
     ansible.playbook = "provisioning/site.yml"
   end
 

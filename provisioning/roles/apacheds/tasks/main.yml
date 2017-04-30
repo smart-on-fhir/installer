@@ -1,0 +1,95 @@
+---
+- name: check custom certificate preconditions
+  tags: [apacheds-all, apacheds-code, smart-platform]
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
+- name: remove existing apacheds installation
+  tags: [apacheds-all, apacheds-code, smart-platform]
+  file: path="{{apacheds_home}}" state=absent
+
+# for raw apacheds
+#- name: download apacheds
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  become_user: "{{username}}"
+#  get_url: url={{apacheds_artifact_url}} dest={{install_dir}}
+#
+#- name: extract apacheds
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  become_user: "{{username}}"
+#  unarchive: src="{{install_dir}}/{{apacheds_artifact_name}}" dest="{{install_dir}}" copy=no
+#
+#- name: setenv.sh properties
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  template: src=setenv.sh.j2 dest="{{apacheds_home}}/bin/setenv.sh" owner="{{username}}" group="{{username}}" mode=0744
+#
+- name: extract configured apacheds
+  tags: [apacheds-all, apacheds-code, smart-platform]
+  become_user: "{{username}}"
+  unarchive: src="apacheds-2.0.0-M23-configured.tar" dest="{{install_dir}}"
+
+- name: configure apacheds-server service
+  tags: [apacheds-all, apacheds-server, smart-platform]
+  template: src=apacheds-server.service.j2
+            dest=/etc/systemd/system/apacheds-server.service
+            owner=root group=root mode=0644
+
+- name: enable apacheds-server service
+  tags: [apacheds-all, apacheds-server, smart-platform]
+  shell: systemctl enable apacheds-server.service
+
+- name: reload systemd daemon
+  tags: [apacheds-all, apacheds-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop apacheds-server
+  tags: [apacheds-all, apacheds-server, smart-platform]
+  service: name=apacheds-server state=stopped
+
+- meta: flush_handlers
+
+- name: restart apacheds-server
+  tags: [apacheds-all, apacheds-server, smart-platform]
+  service: name=apacheds-server enabled=yes state=restarted
+
+- name: verify apacheds-server is available
+  tags: [apacheds-all, apacheds-server, verify, smart-platform]
+  wait_for: host={{apacheds_server_internal_host}} port={{apacheds_server_internal_port}}
+
+- name: generate sandbox admin update script
+  tags: [apacheds-all, apacheds-sandbox, smart-platform]
+  become_user: "{{username}}"
+  template: src="update-sandbox-admin-password.ldif.j2"
+            dest="{{apacheds_home}}/update-sandbox-admin-password.ldif"
+
+- name: update sandbox admin
+  tags: [apacheds-all, apacheds-sandbox, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{apacheds_home}}
+         ldapadd
+           -h {{apacheds_server_host}}
+           -p {{apacheds_server_port}}
+           -x -D {{apacheds_server_system_admin_dn}}
+           -w {{apacheds_server_system_admin_initial_password}}
+           -f update-sandbox-admin-password.ldif
+  failed_when: False
+
+- name: generate sandbox demo update script
+  tags: [apacheds-all, apacheds-sandbox, smart-platform]
+  become_user: "{{username}}"
+  template: src="update-sandbox-demo-password.ldif.j2"
+            dest="{{apacheds_home}}/update-sandbox-demo-password.ldif"
+
+- name: update sandbox demo
+  tags: [apacheds-all, apacheds-sandbox, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{apacheds_home}}
+         ldapadd
+           -h {{apacheds_server_host}}
+           -p {{apacheds_server_port}}
+           -x -D {{apacheds_server_system_admin_dn}}
+           -w {{apacheds_server_system_admin_initial_password}}
+           -f update-sandbox-demo-password.ldif
+  failed_when: False
+
+- meta: flush_handlers

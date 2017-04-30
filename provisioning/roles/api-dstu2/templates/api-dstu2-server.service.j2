@@ -1,0 +1,37 @@
+[Unit]
+Description=API-DSTU2-Service
+
+[Service]
+User={{username}}
+TimeoutStartSec=infinity
+WorkingDirectory={{api_dstu2_webapp_info.war_location}}
+
+ExecStart={{java_home}}/bin/java \
+ -Xms{{api_dstu2_server_initial_memory}} \
+ -Xmx{{api_dstu2_server_max_memory}} \
+ -Dserver.address={{api_dstu2_server_internal_host}} \
+ -Dserver.port={{api_dstu2_server_internal_port}} \
+ -Dserver.contextPath={{api_dstu2_server_context}} \
+ -Dspring.profiles.active=multitenant,dstu2 \
+ -Dspring.jpa.hibernate.ddl-auto=none \
+ -Dhspc.platform.api.sandbox.useHspcStarterData=false \
+ -Dhspc.platform.api.security.mode={{api_dstu2_server_security_mode}} \
+ -Dhspc.platform.api.fhir.openContextPath={{api_dstu2_server_open_access_endpoint}} \
+ -Dhspc.platform.api.fhir.db.username={{mysql_user}} \
+ -Dhspc.platform.api.fhir.db.password={{mysql_pass}} \
+ -Dhspc.platform.messaging.url={{messaging_server_url}} \
+ -Dhspc.platform.messaging.subscriptionSupport.enabled=false \
+ -Dhspc.platform.api.fhir.datasource.cache.size=5 \
+ -Dspring.datasource.maxActive=10 \
+ -Dspring.datasource.initialSize=1 \
+ -Dhspc.platform.authorization.url={{auth_server_url}} \
+ -Dhspc.platform.api.sandbox.name={{api_dstu2_server_smart_sandbox}} \
+{% if use_secure_http and not use_custom_ssl_certificates %}
+ -Djavax.net.ssl.trustStore="{{install_dir}}/keystore" \
+ -Djavax.net.ssl.trustStorePassword="{{keystore_password}}" \
+{% endif %}
+ -jar {{api_dstu2_webapp_info.artifact_id}}-{{api_dstu2_webapp_info.version}}.{{api_dstu2_webapp_info.packaging}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

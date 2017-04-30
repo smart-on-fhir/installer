@@ -157,11 +157,41 @@ apacheds_server_host: "localhost"
 apacheds_server_port: "10389"
 apacheds_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
 apacheds_server_url: "ldap://{{apacheds_server_host}}:{{apacheds_server_port}}"
+apacheds_server_system_admin: "admin"
+apacheds_server_system_admin_dn: "uid={{apacheds_server_system_admin}},ou=system"
+# note, this does not change the password in the apache_ds system
+# the apacheds admin password is already set in the apacheds-2.0.0-M23-configured.tar
+# if you would like a different password, change it in ApacheDS after deploy
+# then change it here for other services to use
+apacheds_server_system_admin_initial_password: "secret"
+# if you are changing the ldap password after install, set this to the future password
+# so the services can be configured to use it correctly
+apacheds_server_system_admin_password: "secret"
+# test user
+apacheds_server_sandbox_test_cn: "cn=test"
+apacheds_server_sandbox_test_dn: "{{apacheds_server_sandbox_test_cn}},{{apacheds_server_sandbox_users_context}}"
+# users account
+apacheds_server_sandbox_users_ou: "ou=users"
+apacheds_server_sandbox_users_context: "{{apacheds_server_sandbox_users_ou}},{{apacheds_server_base}}"
+# admin account
+apacheds_server_sandbox_admin: "admin"
+apacheds_server_sandbox_admins_ou: "ou=admins"
+apacheds_server_sandbox_admins_context: "{{apacheds_server_sandbox_admins_ou}},{{apacheds_server_base}}"
+apacheds_server_sandbox_admin_cn: "cn={{apacheds_server_sandbox_admin}}"
+apacheds_server_sandbox_admin_dn: "{{apacheds_server_sandbox_admin_cn}},{{apacheds_server_sandbox_admins_context}}"
+apacheds_server_sandbox_admin_password: "password"
+# demo account
+apacheds_server_sandbox_demo: "demo"
+apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
+apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"
+apacheds_server_sandbox_demo_password: "demo"
+
+
 
 # API DSTU2 Server
 api_dstu2_server_host: "localhost"
 api_dstu2_server_port: "9070"
-api_dstu2_server_context: "/api/"
+api_dstu2_server_context: "/"
 api_dstu2_server_name: "Local DSTU2 FHIR dev server"
 api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 api_dstu2_server_inferred_port: "{{(':'+api_dstu2_server_port|string) if api_dstu2_server_port|int not in (80,443) else ''}}"
@@ -175,7 +205,7 @@ api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_smart_san
 # Persona-API DSTU2 Server
 persona_api_dstu2_server_host: "localhost"
 persona_api_dstu2_server_port: "9071"
-persona_api_dstu2_server_context: "/persona-api/"
+persona_api_dstu2_server_context: "/"
 persona_api_dstu2_server_name: "Local Persona DSTU2 FHIR dev server"
 persona_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 persona_api_dstu2_server_inferred_port: "{{(':'+persona_api_dstu2_server_port|string) if persona_api_dstu2_server_port|int not in (80,443) else ''}}"
@@ -189,7 +219,7 @@ persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_
 # Mock-API DSTU2 Server
 mock_api_dstu2_server_host: "localhost"
 mock_api_dstu2_server_port: "9074"
-mock_api_dstu2_server_context: "/mock-api/"
+mock_api_dstu2_server_context: "/"
 mock_api_dstu2_server_name: "Local Mock DSTU2 FHIR dev server"
 mock_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 mock_api_dstu2_server_inferred_port: "{{(':'+mock_api_dstu2_server_port|string) if mock_api_dstu2_server_port|int not in (80,443) else ''}}"
@@ -200,15 +230,18 @@ mock_api_dstu2_server_smart_sandbox_url: "{{mock_api_dstu2_server_context_url}}{
 mock_api_dstu2_server_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/data"
 mock_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/open"
 
+# API Server schema
+api_dstu2_schema_version: 4
+
 # API Server client
 api_server_oauth2_clientId: "hspc_resource_server"
 api_server_oauth2_clientSecret: "secret"
 
 # SandboxManager Server
 sandbox_manager_server_host: "localhost"
-sandbox_manager_server_port: "9090"
+sandbox_manager_server_port: "9080"
 sandbox_manager_server_internal_host: "localhost"
-sandbox_manager_server_internal_port: "8090"
+sandbox_manager_server_internal_port: "8080"
 sandbox_manager_server_context: "/"
 sandbox_manager_server_name: "Sandbox Manager server"
 sandbox_manager_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -218,12 +251,12 @@ sandbox_manager_server_url: "{{sandbox_manager_server_base_url}}{{sandbox_manage
 
 # Auth Server
 auth_server_host: "localhost"
-auth_server_port: "9080"
+auth_server_port: "9060"
 auth_server_internal_host: "localhost"
-auth_server_internal_port: "8080"
+auth_server_internal_port: "8060"
 # for local install with /auth and /persona from the same host
 # requiring two deployments of the auth server
-auth_server_context: "/auth/"
+auth_server_context: "/"
 auth_server_name: "Authorization Server"
 auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
@@ -235,10 +268,10 @@ auth_server_enable_mock_endpoints: true
 
 # Persona-Auth Server
 persona_auth_server_host: "localhost"
-persona_auth_server_port: "9081"
+persona_auth_server_port: "9061"
 persona_auth_server_internal_host: "localhost"
-persona_auth_server_internal_port: "8081"
-persona_auth_server_context: "/persona-auth/"
+persona_auth_server_internal_port: "8061"
+persona_auth_server_context: "/"
 persona_auth_server_name: "Persona Authorization Server"
 persona_auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 persona_auth_server_inferred_port: "{{(':'+persona_auth_server_port|string) if persona_auth_server_port|int not in (80,443) else ''}}"

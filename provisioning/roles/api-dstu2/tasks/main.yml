@@ -1,0 +1,263 @@
+---
+# get the hspc-reference-api server
+- name: download the hspc_reference_api webapp
+  tags: [api-dstu2-all, api-dstu2-code, smart-platform]
+  become_user: "{{username}}"
+  include: "roles/common/tasks/download-maven-artifact.yml"
+  vars:
+    group_id: "{{api_dstu2_webapp_info.group_id}}"
+    artifact_id: "{{api_dstu2_webapp_info.artifact_id}}"
+    version: "{{api_dstu2_webapp_info.version}}"
+    packaging: "{{api_dstu2_webapp_info.packaging}}"
+
+# prepare the mysql database
+- name: configure mysql user
+  tags: [api-dstu2-all, api-dstu2-data, smart-platform]
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{api_dstu2_mysql_privilage}} state=present
+
+- name: drop the api-dstu2-server database
+  tags: [api-dstu2-all, api-dstu2-data, smart-platform]
+  mysql_db: name={{api_dstu2_database}} state=absent
+
+- name: drop the {{api_dstu2_database}}${{api_dstu2_baseline_snapshot}} snapshot
+  tags: [api-dstu2-all, api-dstu2-data, smart-platform]
+  mysql_db: name="{{api_dstu2_database}}${{api_dstu2_baseline_snapshot}}" state=absent
+
+- name: create the {{api_dstu2_database}} database
+  tags: [api-dstu2-all, api-dstu2-data, smart-platform]
+  mysql_db: name={{api_dstu2_database}} state=present
+
+# configure the api-dstu2-server service
+- name: configure api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=api-dstu2-server.service.j2
+            dest=/etc/systemd/system/api-dstu2-server.service
+            owner=root group=root mode=0644
+
+- name: enable api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl enable api-dstu2-server.service
+
+- name: reload systemd daemon
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=api-dstu2-server state=stopped
+
+- name: configure nginx (api-dstu2-server)
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=nginx_api_dstu2.j2 dest=/etc/nginx/sites-enabled/api_dstu2 owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+# start the api-dstu2-server service
+- name: restart api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=api-dstu2-server enabled=yes state=restarted
+
+- name: verify api-dstu2-server is available
+  tags: [api-dstu2-all, api-dstu2-server, verify, smart-platform]
+  wait_for: host={{api_dstu2_server_internal_host}} port={{api_dstu2_server_internal_port}}
+
+- meta: flush_handlers
+
+# SMART production only
+- name: drop sandbox snapshot
+  include: snapshot-command.yml
+  tags: [smart-production]
+  vars:
+    snapshot_name: "{{api_dstu2_baseline_snapshot}}"
+    snapshot_action: Delete
+
+# load the starter data
+- name: initialize sandbox
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  uri:
+    url: "{{api_dstu2_server_internal_smart_sandbox_url}}/sandbox"
+    method: PUT
+    body: "{ 'teamId': '{{api_dstu2_server_smart_sandbox}}','schemaVersion': '{{api_dstu2_schema_version}}','allowOpenAccess': true,'baselineDate': '{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}' }"
+    body_format: json
+    HEADER_Content-Type: "application/json"
+
+- name: checkout api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{api_dstu2_sample_patients_repo}}
+       version={{api_dstu2_sample_patients_branch}}
+       dest={{install_dir}}/api-dstu2-sample-patients
+       update={{update_repositories}}
+       force=yes
+       depth=1
+  register: api_dstu2_sample_patients_checkout
+
+- name: build api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  shell: chdir={{install_dir}}/api-dstu2-sample-patients/bin
+         python generate.py --write-fhir ../generated-data {{api_dstu2_sample_patients_generator_params}}
+
+- name: list api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: ls {{install_dir}}/api-dstu2-sample-patients/generated-data/*.xml | head -n {{api_dstu2_sample_patients_limit}}
+  register: api_dstu2_sample_patient_files
+
+- name: load api-dstu2-sample patients
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: "chdir={{install_dir}}/api-dstu2-sample-patients/generated-data/
+         curl
+           '{{api_dstu2_server_internal_smart_sandbox_open_fhir_root_url}}/?'
+           -H 'Content-Type: application/xml+fhir'
+           --data-binary @{{item}}"
+  with_items: "{{api_dstu2_sample_patient_files.stdout_lines}}"
+
+- name: list custom patients (json)
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: ls {{install_dir}}/api-dstu2-sample-patients/custom-data/*.json
+  register: api_dstu2_custom_patient_files_json
+
+- name: load custom patients (json)
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  shell: "chdir={{install_dir}}/api-dstu2-sample-patients/custom-data/
+         curl
+           '{{api_dstu2_server_internal_smart_sandbox_open_fhir_root_url}}/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}"
+  with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
+
+# SMART production only
+- include: snapshot-command.yml
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-production]
+  vars:
+    snapshot_name: "{{api_dstu2_baseline_snapshot}}"
+    snapshot_action: Take
+
+# custom-sample-data is loaded nightly after the snapshot is restored
+# checkout the project but don't build it
+- name: checkout api-dstu2-custom-sample-data
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  git: repo={{api_dstu2_custom_sample_data_repo}}
+       version={{api_dstu2_custom_sample_data_branch}}
+       dest={{install_dir}}/api-dstu2-custom-sample-data
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: prepare scripts folder
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  file: path="{{user_scripts_home}}" state=directory
+
+- name: create script process-custom-sample-data.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-platform]
+  become_user: "{{username}}"
+  template: src=process-custom-sample-data.sh.j2
+            dest={{user_scripts_home}}/process-custom-sample-data.sh
+            mode=0755
+
+- name: run the process-custom-sample-data.sh script
+  tags: [api-dstu2-all, api-dstu2-sandbox, smart-platform]
+  become_user: "{{username}}"
+  shell: "{{user_scripts_home}}/process-custom-sample-data.sh ."
+
+# SMART production only
+- name: create script restore-baseline-snapshot.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-production]
+  become_user: "{{username}}"
+  template: src=restore-baseline-snapshot.sh.j2
+            dest={{user_scripts_home}}/restore-baseline-snapshot.sh
+            mode=0755
+
+# SMART production only
+- name: create script reset-database-job.sh
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-production]
+  become_user: "{{username}}"
+  template: src=reset-database-job.sh.j2
+            dest={{user_scripts_home}}/reset-database-job.sh
+            mode=0755
+
+# SMART production only
+# create a cron job for nightly reset to be run at 5 AM UTC, or midnight US-EST
+- name: create cron job to nightly reset the api database
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-production]
+  become_user: "{{username}}"
+  cron:
+    name: "reset api-dstu2 database"
+    minute: "0"
+    hour: "5"
+    job: "{{user_scripts_home}}/reset-database-job.sh >> {{user_jobs_output_home}}/nightly-reset.log"
+
+# Persona server
+- name: configure persona-api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=persona-api-dstu2-server.service.j2
+            dest=/etc/systemd/system/persona-api-dstu2-server.service
+            owner=root group=root mode=0644
+
+- name: enable persona-api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl enable persona-api-dstu2-server.service
+
+- name: reload systemd daemon
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop persona-api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=persona-api-dstu2-server state=stopped
+
+- name: configure nginx (persona-api-dstu2-server)
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=nginx_persona_api_dstu2.j2 dest=/etc/nginx/sites-enabled/persona_api_dstu2 owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: restart persona-api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=persona-api-dstu2-server enabled=yes state=restarted
+
+- name: verify persona-api-dstu2-server is available
+  tags: [api-dstu2-all, api-dstu2-server, verify, smart-platform]
+  wait_for: host={{persona_api_dstu2_server_internal_host}} port={{persona_api_dstu2_server_internal_port}}
+- meta: flush_handlers
+
+# Mock server
+- name: configure mock-api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=mock-api-dstu2-server.service.j2
+            dest=/etc/systemd/system/mock-api-dstu2-server.service
+            owner=root group=root mode=0644
+
+- name: enable mock-api-dstu2-server service
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl enable mock-api-dstu2-server.service
+
+- name: reload systemd daemon
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop mock-api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=mock-api-dstu2-server state=stopped
+
+- name: configure nginx (mock-api-dstu2-server)
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  template: src=nginx_mock_api_dstu2.j2 dest=/etc/nginx/sites-enabled/mock_api_dstu2 owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: restart mock-api-dstu2-server
+  tags: [api-dstu2-all, api-dstu2-server, smart-platform]
+  service: name=mock-api-dstu2-server enabled=yes state=restarted
+
+- name: verify mock-api-dstu2-server is available
+  tags: [api-dstu2-all, api-dstu2-server, verify, smart-platform]
+  wait_for: host={{mock_api_dstu2_server_internal_host}} port={{mock_api_dstu2_server_internal_port}}

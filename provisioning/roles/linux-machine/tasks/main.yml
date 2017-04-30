@@ -152,7 +152,13 @@
            -genkey -alias smart
            -keystore {{install_dir}}/keystore
 
-- name: configure nginx
+- name: configure nginx (default)
+  tags: [linux-all, smart-production]
+  template: src=default.j2 dest=/etc/nginx/sites-enabled/default owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- name: configure nginx (upload.conf)
   tags: [linux-all, smart-platform]
   template: src=upload.conf.j2 dest=/etc/nginx/conf.d/upload.conf owner=root group=root mode=0644
   notify:
