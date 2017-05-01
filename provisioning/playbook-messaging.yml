@@ -6,7 +6,7 @@
     - custom_settings.yml
   roles:
     - common
-    - auth
+    - messaging
 
 - hosts: REMOTEHOST
   remote_user: "{{installer_user}}"
@@ -19,4 +19,4 @@
     - custom_settings.yml
   roles:
     - common
-    - auth
+    - messaging
