@@ -192,10 +192,26 @@ apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
 apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"
 apacheds_server_sandbox_demo_password: "demo"
 
+apacheds_server_initial_memory: 128M
+apacheds_server_max_memory: 256M
+apacheds_version: "apacheds-2.0.0-M23"
+apacheds_artifact_name: "{{apacheds_version}}.tar.gz"
+apacheds_home: "{{install_dir}}/{{apacheds_version}}"
+apacheds_artifact_url: "http://mirrors.sonic.net/apache//directory/apacheds/dist/2.0.0-M23/{{apacheds_artifact_name}}"
+apacheds_server_internal_host: "{{apacheds_server_host}}"
+apacheds_server_internal_port: "{{apacheds_server_port}}"
+
+
 # API Schema
 api_dstu2_schema_version: 4
 
 # API DSTU2 Server
+api_dstu2_server_internal_host: localhost
+api_dstu2_server_internal_port: 8070
+api_dstu2_server_internal_base_url: "http://{{api_dstu2_server_internal_host}}:{{api_dstu2_server_internal_port}}{{api_dstu2_server_context}}"
+api_dstu2_server_internal_smart_sandbox_url: "{{api_dstu2_server_internal_base_url}}{{api_dstu2_server_smart_sandbox}}"
+api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{api_dstu2_server_internal_smart_sandbox_url}}/data"
+api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_internal_smart_sandbox_url}}/open"
 api_dstu2_server_host: "localhost"
 api_dstu2_server_port: "9070"
 api_dstu2_server_context: "/"
@@ -208,6 +224,25 @@ api_dstu2_server_context_url: "{{api_dstu2_server_base_url}}{{api_dstu2_server_c
 api_dstu2_server_smart_sandbox_url: "{{api_dstu2_server_context_url}}{{api_dstu2_server_smart_sandbox}}"
 api_dstu2_server_smart_sandbox_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/data"
 api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/open"
+api_dstu2_server_initial_memory: 128M
+api_dstu2_server_max_memory: 256M
+api_dstu2_webapp_info:
+  group_id: "org.hspconsortium.reference"
+  artifact_id: "hspc-reference-api-webapp-multitenant"
+  version: "1.4.2"
+  packaging: "war"
+  war_location: "{{m2_repo_folder}}/org/hspconsortium/reference/hspc-reference-api-webapp-multitenant/1.4.2"
+api_dstu2_database: "hspc_{{api_dstu2_schema_version}}_{{api_dstu2_server_smart_sandbox}}"
+api_dstu2_baseline_snapshot: initial
+api_dstu2_mysql_privilage: "{{api_dstu2_database}}.*:ALL/*.*:ALL,GRANT"
+api_dstu2_sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
+api_dstu2_sample_patients_branch: "master"
+api_dstu2_custom_sample_data_repo: "https://github.com/smart-on-fhir/custom-sample-data.git"
+api_dstu2_custom_sample_data_branch: "master"
+api_dstu2_sample_patients_limit: 20
+api_dstu2_include_custom_patients: false
+api_dstu2_sample_patients_generator_params: ""
+
 
 # Persona-API DSTU2 Server
 persona_api_dstu2_server_host: "localhost"
@@ -222,6 +257,30 @@ persona_api_dstu2_server_context_url: "{{persona_api_dstu2_server_base_url}}{{pe
 persona_api_dstu2_server_smart_sandbox_url: "{{persona_api_dstu2_server_context_url}}{{persona_api_dstu2_server_smart_sandbox}}"
 persona_api_dstu2_server_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/data"
 persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/open"
+
+# PERSONA DSTU2 API Server settings
+persona_api_dstu2_server_internal_host: localhost
+persona_api_dstu2_server_internal_port: 8071
+persona_api_dstu2_server_internal_base_url: "http://{{persona_api_dstu2_server_internal_host}}:{{persona_api_dstu2_server_internal_port}}{{persona_api_dstu2_server_context}}"
+persona_api_dstu2_server_internal_smart_sandbox_url: "{{persona_api_dstu2_server_internal_base_url}}{{persona_api_dstu2_server_smart_sandbox}}"
+persona_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/data"
+persona_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/open"
+
+# MOCK DSTU2 API Server settings
+mock_api_dstu2_server_internal_host: localhost
+mock_api_dstu2_server_internal_port: 8074
+mock_api_dstu2_server_internal_base_url: "http://{{mock_api_dstu2_server_internal_host}}:{{mock_api_dstu2_server_internal_port}}{{mock_api_dstu2_server_context}}"
+mock_api_dstu2_server_internal_smart_sandbox_url: "{{mock_api_dstu2_server_internal_base_url}}{{mock_api_dstu2_server_smart_sandbox}}"
+mock_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/data"
+mock_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/open"
+
+# Set this to either "open" or "secured" on the primary endpoint /data
+api_dstu2_server_security_mode: secured
+# Set this to none to remove open access
+api_dstu2_server_open_access_endpoint: open
+# Set this to "mock" on the primary endpoint /data
+mock_api_dstu2_server_security_mode: mock
+
 
 # API_STU3 Database
 api_stu3_schema_version: 4
@@ -259,6 +318,15 @@ sandbox_manager_server_inferred_protocol: "{{'https' if use_secure_http else 'ht
 sandbox_manager_server_inferred_port: "{{(':'+sandbox_manager_server_port|string) if sandbox_manager_server_port|int not in (80,443) else ''}}"
 sandbox_manager_server_base_url: "{{sandbox_manager_server_inferred_protocol}}://{{sandbox_manager_server_host}}{{sandbox_manager_server_inferred_port}}"
 sandbox_manager_server_url: "{{sandbox_manager_server_base_url}}{{sandbox_manager_server_context}}"
+sandbox_manager_server_initial_memory: 128M
+sandbox_manager_server_max_memory: 256M
+sandbox_manager_project: "sandbox-manager"
+sandbox_manager_branch: "SMART-SANDBOX"
+sandbox_manager_database: sandman
+sandbox_manager_server_defaultSystemRoles: USER
+sandbox_manager_server_defaultSandboxVisibility: PUBLIC
+sandbox_manager_company_logo_path: static/branding/smart/images/smart-logo.png
+sandbox_manager_company_logo2x_path: static/branding/smart/images/smart-logo@2x.png
 
 # Auth Server
 auth_server_host: "localhost"
@@ -278,6 +346,26 @@ auth_server_external_url: "{{auth_server_base_url}}"
 auth_server_client: "client"
 auth_server_password: "secret"
 auth_server_enable_mock_endpoints: true
+auth_server_initial_memory: 128M
+auth_server_max_memory: 256M
+auth_server_webapp_info:
+  group_id: "org.hspconsortium.reference"
+  artifact_id: "hspc-reference-auth-server-ldap-webapp"
+  version: "1.2"
+  packaging: "war"
+  war_location: "{{hspc_install_dir}}/org/hspconsortium/reference/hspc-reference-auth-server-ldap-webapp/1.2"
+auth_server_project_info:
+  target:
+    base_folder: "{{hspc_install_dir}}"
+    name: "reference-authorization"
+    folder: "{{hspc_install_dir}}/reference-authorization"
+auth_branch: "master"
+auth_webapp_project: "reference-auth-server-webapp-deprecated"
+auth_webapp_ldap_project: "reference-auth-server-ldap-webapp-deprecated"
+auth_server_database: oic
+auth_db_file: "{{install_dir}}/auth_server_db.hsql"
+auth_server_newUserUrl: ""
+auth_server_forgotPasswordUrl: ""
 
 # Persona-Auth Server
 persona_auth_server_host: "localhost"
@@ -291,6 +379,8 @@ persona_auth_server_inferred_port: "{{(':'+persona_auth_server_port|string) if p
 persona_auth_server_base_url: "{{persona_auth_server_inferred_protocol}}://{{persona_auth_server_host}}{{persona_auth_server_inferred_port}}"
 persona_auth_server_url: "{{persona_auth_server_base_url}}{{persona_auth_server_context}}"
 persona_auth_server_enable_mock_endpoints: false
+persona_auth_server_newUserUrl: ""
+persona_auth_server_forgotPasswordUrl: ""
 
 # Messaging Server
 messaging_server_host: "localhost"
@@ -305,6 +395,10 @@ messaging_server_base_url: "{{messaging_server_inferred_protocol}}://{{messaging
 messaging_server_url: "{{messaging_server_base_url}}{{messaging_server_context}}"
 # todo replaces messaging_server_base_url, messaging_server_url
 messaging_server_external_url: "{{messaging_server_base_url}}"
+messaging_server_initial_memory: 128M
+messaging_server_max_memory: 256M
+messaging_branch: "SMART-SANDBOX"
+messaging_project: "reference-messaging"
 
 # PWM Server
 pwm_server_host: "localhost"
@@ -320,6 +414,29 @@ pwm_server_inferred_port: "{{(':'+pwm_server_port|string) if pwm_server_port|int
 #pwm_server_inferred_port: ""
 pwm_server_base_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_host}}{{pwm_server_inferred_port}}"
 pwm_server_url: "{{pwm_server_base_url}}{{pwm_server_context}}"
+pwm_server_initial_memory: 128M
+pwm_server_max_memory: 256M
+pwm_branch: "master"
+pwm_project: "pwm"
+pwm_server_database: pwm
+tomcat_version: 8.5.12
+tomcat_artifact_name: "apache-tomcat-{{tomcat_version}}"
+tomcat_home: "{{install_dir}}/{{tomcat_artifact_name}}"
+tomcat_artifact_host: "http://mirror.metrocast.net/apache/tomcat/tomcat-8/v{{tomcat_version}}/bin"
+tomcat_artifact_url: "{{tomcat_artifact_name}}.tar.gz"
+tomcat_shutdown_port: 8005
+tomcat_redirect_port: 8443
+tomcat_ajp_port: 8009
+tomcat_server_name: Catalina
+tomcat_default_host: localhost
+
+pwm_unlocked: false
+pwm_configpasswordhash: $2a$10$02soH2RZk9WEi3eYcv3h2.sP8eHEyzXw/k6TaUpJkT2v9CcPssA52
+pwm_securitykey_encrypted: DlybqwJ9yN2wYi1ywaqZDGMEVp3WzCow/TMyVKNxAxclbKlBCl/OcAcXAP1xNhtF060jCPD0dfptWzjW2c/kIKf6o/iemTKGnRNDF11UmfCzAesx5CGplI+2StSmvkGl/bmWXTQc+L9xNUPrRdgVNQJVzXvfIaOy8xTTx6s6nPqhOCYnPfuEXKMTSEJo9nXvIEGWurVSRFtCPV/L9QF8YKjuUWvWiA0Ftc/S0dG8FJQ85ohlFsttThUcZ0cf4OswG3EY2oQjlMfNE0RFxe312Tr2F+bcB8UBlb+58TCQe/pOlpABc580yoWkvtTKcxO0zfkeYHIMtGfMZL2Ve6XzHFUODX9/PeZUUhFbjXx99lVzG6ypXautFYKbWmMpc2addjuiH1IEIO7wADREsYcTREtkWjOd5xk8ksB+wX/4zoUPFKCdJ2Pw8oLc6Pm9XQjiU+WEUvcpWWzgha0K2LeCSR2HQeCfu6x62cQgYVQDGawzEvZ5KWdvrBOvfi0jz7ZFmDek3ozmVqWColdkej42Jqhf4rHNjI99AdRvdHUaTatUIf38kNSKVl0v5Vq9mdjYfm+RSvYW3AJooEUSV2MfVM65t7WTSqS+YP6SZZGruHsnG0qJYQNqswfycI6pJhBr3M7WH1VOG13qx3+uXXD9811CTcwoI2Su6kAyNg/0VhEfD9pvaTKzNT0FC+8rODPjcfcBSC3NvLCalCSBTtB4f+UP6pVhRNAVMQ11bR4usVtk9XG2AWAVZQj7aBPtAReOxOfFyCiRtHOiB5wPYM7pnWHTjNMWC/kPaHZnV+yNWgqebAbZGQif7v9PpKjAQWq24b8z1Z9Zn+XHQA8Cm3le7xu7pzQ+WMS9NXBy+CgSpjxPVVlqUxIGUe2SM2oMWq0SrxPxLwpZAXooB+47N/tRKiy8nofTG3FvRktY4U88K1G/8HmPpA/Xix+lzNOM5JYN81dSWa7yBAopORdp+DF7yTuQeAJamh+DoMy6R/vUgdOfntmglaSh8OAlacn16oi6hNdmFEQ9FYNxscRtesEee82r5w2Tf7PxE6zWT9McIlj1wTUxya0AKp/+HAQrWuEeVbZVJmvqlgitWZmFL0SL6pFNwGibXb8T3dxieX2xm0AMSyteIu7x1G+aNBo3DccyOo+Yp34nN4cC5LmonrCEDI6vD0U3RhGX+NSgTrjWQwUlDmjORcc3N+X6dUZLNVchSEG49c/oZVwXd8WRYH/NvBgJQY/11qGsBOgNBCR8hGwEqwMmIZBzrGyPFpVxbj+hRJGz7AQfNp+AtUX5fN7rHeEbNNYIOH3T+Usmv7NyfNpZqQjzZfBtd0kKH11G0wfwzxj1TcrQXtwayUOD8sSWhXraKH398+GAKyMYC/y+auk=
+pwm_db_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
+pwm_sso_authentication_header_name: c8381465-a7f8-4ecc-958d-ec296d6e8671
+pwm_ldap_proxy_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
+pwm_i18n_display_name: SMART Health IT Account Self Service
 
 nginx_home: "/etc/nginx"
 fhir_home: "/home/fhir"
