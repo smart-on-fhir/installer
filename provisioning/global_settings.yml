@@ -10,7 +10,10 @@
 # authentication mechanism. If you need to set up actual password authentication,
 # userpass needs to be a valid SHA-512 hash.
 username: "fhir"
+# todo hosting_username should replace username
+hosting_username: "{{username}}"
 userpass: "nopass"
+hosting_user_home: "/home/{{hosting_username}}"
 install_dir: "/home/{{username}}"
 apps_install_dir: "{{install_dir}}/apps"
 hspc_install_dir: "{{install_dir}}/hspc"
@@ -45,6 +48,9 @@ mysql_endpoint: "{{mysql_host}}:3306"
 mysql_root_pass: "password"
 mysql_user: "fhir"
 mysql_pass: "password"
+# todo replaces mysql_user, mysql_pass
+mysql_username: "{{mysql_user}"
+mysql_password: "{{mysql_pass}}"
 #mysql_privilage: "{{auth_server_database}}.*:ALL/{{sandbox_manager_database}}.*:ALL/*.*:ALL,GRANT"
 mysql_privilage: "*.*:ALL,GRANT"
 mysql_bind_address: "0.0.0.0"
@@ -186,8 +192,6 @@ apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
 apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"
 apacheds_server_sandbox_demo_password: "demo"
 
-
-
 # API DSTU2 Server
 api_dstu2_server_host: "localhost"
 api_dstu2_server_port: "9070"
@@ -216,19 +220,28 @@ persona_api_dstu2_server_smart_sandbox_url: "{{persona_api_dstu2_server_context_
 persona_api_dstu2_server_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/data"
 persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/open"
 
-# Mock-API DSTU2 Server
-mock_api_dstu2_server_host: "localhost"
-mock_api_dstu2_server_port: "9074"
-mock_api_dstu2_server_context: "/"
-mock_api_dstu2_server_name: "Local Mock DSTU2 FHIR dev server"
-mock_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-mock_api_dstu2_server_inferred_port: "{{(':'+mock_api_dstu2_server_port|string) if mock_api_dstu2_server_port|int not in (80,443) else ''}}"
-mock_api_dstu2_server_smart_sandbox: "smartdstu2"
-mock_api_dstu2_server_base_url: "{{mock_api_dstu2_server_inferred_protocol}}://{{mock_api_dstu2_server_host}}{{mock_api_dstu2_server_inferred_port}}"
-mock_api_dstu2_server_context_url: "{{mock_api_dstu2_server_base_url}}{{mock_api_dstu2_server_context}}"
-mock_api_dstu2_server_smart_sandbox_url: "{{mock_api_dstu2_server_context_url}}{{mock_api_dstu2_server_smart_sandbox}}"
-mock_api_dstu2_server_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/data"
-mock_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/open"
+# API_STU3 Database
+api_stu3_schema_version: 4
+api_stu3_server_sandbox: "smartstu3"
+api_stu3_server_database: "hspc_{{api_stu3_schema_version}}_{{api_stu3_server_sandbox}}"
+
+# API_STU3 Server
+api_stu3_server_host: "localhost"
+api_stu3_server_port: "8074"
+api_stu3_server_url: "http://{{api_stu3_server_host}}:{{api_stu3_server_port}}"
+api_stu3_server_external_host: "localhost"
+api_stu3_server_external_port: "9074"
+api_stu3_server_external_url: "http://{{api_stu3_server_external_host}}:{{api_stu3_server_external_port}}"
+api_stu3_server_initial_memory: 128M
+api_stu3_server_max_memory: 256M
+api_stu3_server_artifact_group_id: "org.hspconsortium.reference"
+api_stu3_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
+api_stu3_server_artifact_version: "1.5.2-SNAPSHOT"
+api_stu3_server_artifact_packaging: "jar"
+api_stu3_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_stu3_server_artifact_artifact_id}}/{{api_stu3_server_artifact_version}}/{{api_stu3_server_artifact_artifact_id}}-{{api_stu3_server_artifact_version}}.{{api_stu3_server_artifact_packaging}}"
+
+# API STU3 Server
+api_stu3_server_artifact_group_id
 
 # API Server schema
 api_dstu2_schema_version: 4
@@ -262,6 +275,8 @@ auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
 auth_server_base_url: "{{auth_server_inferred_protocol}}://{{auth_server_host}}{{auth_server_inferred_port}}"
 auth_server_url: "{{auth_server_base_url}}{{auth_server_context}}"
+# todo replaces auth_server_url, auth_server_base_url
+auth_server_external_url: "{{auth_server_base_url}}"
 auth_server_client: "client"
 auth_server_password: "secret"
 auth_server_enable_mock_endpoints: true
@@ -290,6 +305,8 @@ messaging_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 messaging_server_inferred_port: "{{(':'+messaging_server_port|string) if messaging_server_port|int not in (80,443) else ''}}"
 messaging_server_base_url: "{{messaging_server_inferred_protocol}}://{{messaging_server_host}}{{messaging_server_inferred_port}}"
 messaging_server_url: "{{messaging_server_base_url}}{{messaging_server_context}}"
+# todo replaces messaging_server_base_url, messaging_server_url
+messaging_server_external_url: "{{messaging_server_base_url}}"
 
 # PWM Server
 pwm_server_host: "localhost"

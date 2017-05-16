@@ -1,0 +1,84 @@
+---
+- name: "download the api_stu3 webapp"
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/download-maven-artifact.yml"
+  vars:
+    group_id: "{{api_stu3_server_artifact_group_id}}"
+    artifact_id: "{{api_stu3_server_artifact_artifact_id}}"
+    version: "{{api_stu3_server_artifact_version}}"
+    packaging: "{{api_stu3_server_artifact_packaging}}"
+
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/api_stu3"
+
+- name: "copy to the service directory"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{api_stu3_server_artifact_location}}"
+    dest: "{{hosting_user_home}}/api_stu3"
+    remote_src: true
+
+- name: "stop api_stu3"
+  service:
+    name: "api_stu3"
+    state: "stopped"
+  ignore_errors: yes
+
+- name: "drop the api_stu3 database"
+  mysql_db:
+    name: "{{api_stu3_server_database}}"
+    state: absent
+  ignore_errors: yes
+
+- name: "create the {{api_stu3_server_database}} database"
+  mysql_db:
+    name: "{{api_stu3_server_database}}"
+    state: present
+
+- name: "configure api_stu3 service"
+  template:
+    src: "api_stu3.service.j2"
+    dest: "/etc/systemd/system/api_stu3.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "enable api_stu3 service"
+  shell: "systemctl enable api_stu3.service"
+
+- name: "reload systemd daemon"
+  shell: "systemctl daemon-reload"
+
+- name: "start api_stu3"
+  service:
+    name: "api_stu3"
+    state: "started"
+
+- name: "verify api_stu3 is available internally"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "localhost"
+    port: "{{api_stu3_server_port}}"
+
+- name: "configure nginx (api_stu3)"
+  template:
+    src: "api_stu3.j2"
+    dest: "/etc/nginx/sites-enabled/api_stu3"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: "verify api_stu3 is available externally"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "{{api_stu3_server_host}}"
+    port: "{{api_stu3_server_external_port}}"
+
+- meta: flush_handlers
