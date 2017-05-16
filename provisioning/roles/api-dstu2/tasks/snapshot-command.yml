@@ -1,8 +1,0 @@
----
-- name: baseline snapshot
-  uri:
-    url: "{{api_dstu2_server_internal_smart_sandbox_url}}/sandbox/snapshot/{{snapshot_name}}"
-    method: POST
-    body: '{"action": "{{snapshot_action}}"}'
-    body_format: json
-    HEADER_Content-Type: "application/json"

@@ -1,0 +1,14 @@
+---
+# Take a snapshot of a sandbox.
+
+# vars:
+#   sandbox_url: url of the sandbox to clone (ex: https://sb-fhir-dstu2.smarthealthit.org/api/smartdstu2)
+#   snapshot_name: name associated with the snapshot (ex: initial)
+#   snapshot_action: name to give the snapshot {Take, Restore, Delete} (ex: Take)
+- name: baseline snapshot
+  uri:
+    url: "{{sandbox_url}}/sandbox/snapshot/{{snapshot_name}}"
+    method: POST
+    body: '{"action": "{{snapshot_action}}"}'
+    body_format: json
+    HEADER_Content-Type: "application/json"

@@ -67,9 +67,10 @@
 
 # SMART production only
 - name: drop sandbox snapshot
-  include: snapshot-command.yml
+  include: roles/common/tasks/snapshot-command.yml
   tags: [smart-production]
   vars:
+    sandbox_url: "{{api_dstu2_server_internal_smart_sandbox_url}}"
     snapshot_name: "{{api_dstu2_baseline_snapshot}}"
     snapshot_action: Delete
 
@@ -129,9 +130,11 @@
   with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
 
 # SMART production only
-- include: snapshot-command.yml
+- name: take snapshot
+  include: roles/common/tasks/snapshot-command.yml
   tags: [api-dstu2-all, api-dstu2-sandbox, smart-production]
   vars:
+    sandbox_url: "{{api_dstu2_server_internal_smart_sandbox_url}}"
     snapshot_name: "{{api_dstu2_baseline_snapshot}}"
     snapshot_action: Take
 

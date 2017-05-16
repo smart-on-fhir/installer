@@ -1,0 +1,17 @@
+---
+# SMART production only
+- name: drop sandbox snapshot
+  include: roles/common/tasks/snapshot-command.yml
+  vars:
+    sandbox_url: "{{api_stu3_server_url}}/{{api_stu3_server_sandbox}}"
+    snapshot_name: "{{api_stu3_baseline_snapshot}}"
+    snapshot_action: Delete
+
+- name: take snapshot
+  include: roles/common/tasks/snapshot-command.yml
+  vars:
+    sandbox_url: "{{api_stu3_server_url}}/{{api_stu3_server_sandbox}}"
+    snapshot_name: "{{api_stu3_baseline_snapshot}}"
+    snapshot_action: Take
+
+- meta: flush_handlers

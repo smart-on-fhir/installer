@@ -227,6 +227,7 @@ persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_
 api_stu3_schema_version: 4
 api_stu3_server_sandbox: "smartstu3"
 api_stu3_server_database: "hspc_{{api_stu3_schema_version}}_{{api_stu3_server_sandbox}}"
+api_stu3_baseline_snapshot: initial
 
 # API_STU3 Server
 api_stu3_server_host: "localhost"
