@@ -9,7 +9,7 @@
 
 - include: playbook-api-dstu2.yml
 
-- include: playbook-api-dstu3.yml
+- include: playbook_api_dstu3.yml
 
 - include: playbook-messaging.yml
 
