@@ -192,6 +192,9 @@ apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
 apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"
 apacheds_server_sandbox_demo_password: "demo"
 
+# API Schema
+api_dstu2_schema_version: 4
+
 # API DSTU2 Server
 api_dstu2_server_host: "localhost"
 api_dstu2_server_port: "9070"
@@ -239,12 +242,6 @@ api_stu3_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
 api_stu3_server_artifact_version: "1.5.2-SNAPSHOT"
 api_stu3_server_artifact_packaging: "jar"
 api_stu3_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_stu3_server_artifact_artifact_id}}/{{api_stu3_server_artifact_version}}/{{api_stu3_server_artifact_artifact_id}}-{{api_stu3_server_artifact_version}}.{{api_stu3_server_artifact_packaging}}"
-
-# API STU3 Server
-api_stu3_server_artifact_group_id
-
-# API Server schema
-api_dstu2_schema_version: 4
 
 # API Server client
 api_server_oauth2_clientId: "hspc_resource_server"
