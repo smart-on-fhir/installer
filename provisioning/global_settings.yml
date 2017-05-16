@@ -408,35 +408,8 @@ aws_access_key_id: "changeme"
 aws_secret_access_key: "changeme"
 aws_ec2_volume_id: "changeme"
 
-# Maximu size of sample patient data files
+# Maximum size of sample patient data files
 max_upload_size: "5M"
-
-#delete below
-
-# Self-signed SSL certificates settings (if generating self-signed certificates)
-default_ssl_country: "US"
-default_ssl_province: "MA"
-default_ssl_locality: "Boston"
-default_ssl_organization: "Example Company"
-default_ssl_division: "support"
-default_ssl_email: "support@{{domain_name}}"
-app_server_ssl_country: "{{default_ssl_country}}"
-app_server_ssl_province: "{{default_ssl_province}}"
-app_server_ssl_locality: "{{default_ssl_locality}}"
-app_server_ssl_organization: "{{default_ssl_organization}}"
-app_server_ssl_division: "{{default_ssl_division}}"
-app_server_ssl_email: "{{default_ssl_email}}"
-
-# LDAP server configuration
-ldap_server_organization: "SMART Heathcare IT"
-ldap_server_domain: "{{domain_name}}"
-ldap_server_host: "localhost"
-ldap_server_port: "10389"
-ldap_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
-ldap_server_uri: "ldap://{{ldap_server_host}}:{{ldap_server_port}}"
-ldap_server_admin_password: "sample-password"
-ldap_server_account_admin_password: "password"
-ldap_server_account_demo_password: "demo"
 
 # Email server account
 email_account_description: "SMART Account Services"
