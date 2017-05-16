@@ -1,7 +1,0 @@
----
-messaging_server_initial_memory: 128M
-messaging_server_max_memory: 256M
-
-# Version control information
-messaging_branch: "SMART-SANDBOX"
-messaging_project: "reference-messaging"

@@ -6,18 +6,12 @@
     - custom_settings.yml
   roles:
     - common
-    - apacheds-common
     - apacheds-server
-    - pwm-common
     - pwm-server
-    - api-dstu2-common
     - api-dstu2-server
     - apps-server
-    - messaging-common
     - messaging-server
-    - sandbox-manager-common
     - sandbox-manager-server
-    - auth-common
     - auth-server
 
 - hosts: REMOTEHOST
@@ -31,16 +25,10 @@
     - custom_settings.yml
   roles:
     - common
-    - apacheds-common
     - apacheds-server
-    - pwm-common
     - pwm-server
-    - api-dstu2-common
     - api-dstu2-server
     - apps-server
-    - messaging-common
     - messaging-server
-    - sandbox-manager-common
     - sandbox-manager-server
-    - auth-common
     - auth-server

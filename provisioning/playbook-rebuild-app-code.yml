@@ -5,18 +5,12 @@
     - global_settings.yml
     - custom_settings.yml
   roles:
-    - apacheds-common
     - apacheds-code
-    - pwm-common
     - pwm-code
-    - api-dstu2-common
     - api-dstu2-code
     - apps-code
-    - messaging-common
     - messaging-code
-    - sandbox-manager-common
     - sandbox-manager-code
-    - auth-common
     - auth-code
 
 - hosts: REMOTEHOST
@@ -29,16 +23,10 @@
     - global_settings.yml
     - custom_settings.yml
   roles:
-    - apacheds-common
     - apacheds-code
-    - pwm-common
     - pwm-code
-    - api-dstu2-common
     - api-dstu2-code
     - apps-code
-    - messaging-common
     - messaging-code
-    - sandbox-manager-common
     - sandbox-manager-code
-    - auth-common
     - auth-code
