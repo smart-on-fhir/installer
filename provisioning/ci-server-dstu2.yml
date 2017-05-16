@@ -15,7 +15,6 @@
     fhir_server_preserve_db: true
     app_server_host: "ci.fhir.me"
     app_server_port: "443"
-    include_custom_patients: true
     fhir_server_branch: v0.1.2
     auth_server_branch: f0.1.0
     auth_ldap_server_branch: f0.1.0

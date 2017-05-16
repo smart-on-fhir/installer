@@ -42,7 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "SMART on FHIR Platform"
-    vb.memory = "5120"
+    vb.memory = "6144"
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
@@ -56,6 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
 #    ansible.verbose="vvvv"
     ansible.tags=["smart-platform"]
+#    ansible.playbook = "provisioning/playbook_api_stu3.yml"
     ansible.playbook = "provisioning/site.yml"
   end
 

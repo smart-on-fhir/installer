@@ -31,7 +31,7 @@ echo "Creating output folder $OUTPUT_FOLDER"
 mkdir -p $OUTPUT_FOLDER
 
 # restore to the baseline snapshot
-source {{user_scripts_home}}/restore-baseline-snapshot.sh .
+source {{user_scripts_home}}/restore-dstu2-baseline-snapshot.sh .
 
 if [ $? -ne 0 ]
 then
@@ -39,17 +39,17 @@ then
 fi
 
 # restart the api-dstu2 server (to clear out the hibernate sequence caching
-sudo service api-dstu2-server restart
+2sudo service api-dstu2-server restart
 
 # wait for a few minutes
 sleep 2m
 
 # process the custom sample data
-source {{user_scripts_home}}/process-custom-sample-data.sh .
+source {{user_scripts_home}}/process-dstu2-custom-sample-data.sh .
 
 if [ $? -ne 0 ]
 then
     handleLastError "Failed to process custom sample data"
 fi
 
-echo "reset-database-job.sh completed successfully!"
+echo "reset-dstu2-database-job.sh completed successfully!"

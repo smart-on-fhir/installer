@@ -1,0 +1,28 @@
+[Unit]
+Description=HSPC API STU3 Server
+
+[Service]
+User={{hosting_username}}
+TimeoutStartSec=infinity
+WorkingDirectory={{hosting_user_home}}/api_stu3
+
+ExecStart={{java_home}}/bin/java \
+ -Xms{{api_stu3_server_initial_memory}} \
+ -Xmx{{api_stu3_server_max_memory}} \
+ -Dserver.port={{api_stu3_server_port}} \
+ -Dhspc.platform.api.fhir.db.host={{mysql_host}} \
+ -Dhspc.platform.api.fhir.db.username={{mysql_username}} \
+ -Dhspc.platform.api.fhir.db.password={{mysql_password}} \
+ -Dhspc.platform.api.sandbox.useHspcStarterData=false \
+ -Dhspc.platform.authorization.url={{auth_server_external_url}} \
+ -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
+{% if use_secure_http %}
+ -Dserver.ssl.key-store={{hosting_user_home}}/keystore \
+ -Dserver.ssl.key-store-password={{keystore_password}} \
+ -Dserver.ssl.keyStoreType=JKS \
+{% endif %}
+ -jar {{api_stu3_server_artifact_artifact_id}}-{{api_stu3_server_artifact_version}}.{{api_stu3_server_artifact_packaging}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

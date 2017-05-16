@@ -14,7 +14,6 @@ userpass: "nopass"
 install_dir: "/home/{{username}}"
 apps_install_dir: "{{install_dir}}/apps"
 hspc_install_dir: "{{install_dir}}/hspc"
-m2_repo_folder: "{{install_dir}}/.m2/repository"
 user:
   environment:
     config: "{{install_dir}}/.profile"
@@ -141,10 +140,6 @@ sample_patients_project_info:
     name: "growth-chart"
     folder: "{{apps_install_dir}}/static/apps/growth-chart"
 
-# choose how many sample patients to load in the server or set to 9999 for all of them
-include_custom_patients: false
-api_dstu2_sample_patients_generator_params: "--id-prefix SMART"
-
 app_server_base: "{{
     'https' if use_secure_http else 'http'}}://{{app_server_host}}{{
     (':'+app_server_port|string) if app_server_port|int not in (80,443) else ''}}"
@@ -218,8 +213,7 @@ api_dstu2_sample_patients_branch: "master"
 api_dstu2_custom_sample_data_repo: "https://github.com/smart-on-fhir/custom-sample-data.git"
 api_dstu2_custom_sample_data_branch: "master"
 api_dstu2_sample_patients_limit: "20"
-api_dstu2_include_custom_patients: "false"
-api_dstu2_sample_patients_generator_params: ""
+api_dstu2_sample_patients_generator_params: "--id-prefix SMART"
 api_dstu2_server_internal_host: "localhost"
 api_dstu2_server_internal_port: "8070"
 api_dstu2_server_internal_base_url: "http://{{api_dstu2_server_internal_host}}:{{api_dstu2_server_internal_port}}{{api_dstu2_server_context}}"
@@ -354,8 +348,8 @@ messaging_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
 messaging_server_inferred_port: "{{(':'+messaging_server_port|string) if messaging_server_port|int not in (80,443) else ''}}"
 messaging_server_base_url: "{{messaging_server_inferred_protocol}}://{{messaging_server_host}}{{messaging_server_inferred_port}}"
 messaging_server_url: "{{messaging_server_base_url}}{{messaging_server_context}}"
-messaging_server_initial_memory: 128M
-messaging_server_max_memory: 256M
+messaging_server_initial_memory: 64M
+messaging_server_max_memory: 128M
 messaging_branch: "SMART-SANDBOX"
 messaging_project: "reference-messaging"
 
@@ -453,3 +447,35 @@ email_smtp_password: "changeme"
 email_smtp_password_encrypted: "changeme"
 email_admin_address: "changeme@example.com"
 email_contact_addresss: "support@example.org"
+
+# Migration Properties
+hosting_username: "{{username}}"
+hosting_user_home: "/home/{{hosting_username}}"
+m2_repo_folder: "{{hosting_user_home}}/.m2/repository"
+mysql_username: "{{mysql_user}}"
+mysql_password: "{{mysql_pass}}"
+
+api_stu3_server_artifact_group_id: "org.hspconsortium.reference"
+api_stu3_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
+api_stu3_server_artifact_version: "1.5.2-SNAPSHOT"
+api_stu3_server_artifact_packaging: "jar"
+api_stu3_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_stu3_server_artifact_artifact_id}}/{{api_stu3_server_artifact_version}}/{{api_stu3_server_artifact_artifact_id}}-{{api_stu3_server_artifact_version}}.{{api_stu3_server_artifact_packaging}}"
+
+api_stu3_schema_version: 4
+api_stu3_server_sandbox: "smartstu3"
+api_stu3_server_database: "hspc_{{api_stu3_schema_version}}_{{api_stu3_server_sandbox}}"
+api_stu3_server_host: "localhost"
+api_stu3_server_port: "8072"
+api_stu3_server_url: "http://{{api_stu3_server_host}}:{{api_stu3_server_port}}"
+api_stu3_server_external_host: "localhost"
+api_stu3_server_external_port: "9072"
+api_stu3_server_external_url: "http://{{api_stu3_server_external_host}}:{{api_stu3_server_external_port}}"
+api_stu3_server_initial_memory: 128M
+api_stu3_server_max_memory: 256M
+
+api_server_default_sandbox_url: "{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/data"
+
+# todo trim the trailing /
+auth_server_external_url: "{{auth_server_url}}"
+# todo trim the trailing /
+messaging_server_external_url: "{{messaging_server_url}}"

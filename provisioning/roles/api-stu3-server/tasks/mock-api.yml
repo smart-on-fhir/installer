@@ -1,0 +1,34 @@
+---
+- name: configure mock-api-stu3-server service
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  template: src=mock-api-stu3-server.service.j2
+            dest=/etc/systemd/system/mock-api-stu3-server.service
+            owner=root group=root mode=0644
+
+- name: enable mock-api-stu3-server service
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  shell: systemctl enable mock-api-stu3-server.service
+
+- name: reload systemd daemon
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop mock-api-stu3-server
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  service: name=mock-api-stu3-server state=stopped
+
+- name: configure nginx (mock-api-stu3-server)
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  template: src=nginx_mock_api_stu3.j2 dest=/etc/nginx/sites-enabled/mock_api_stu3 owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: restart mock-api-stu3-server
+  tags: [api-stu3-all, api-stu3-server, smart-platform]
+  service: name=mock-api-stu3-server enabled=yes state=restarted
+
+- name: verify mock-api-stu3-server is available
+  tags: [api-stu3-all, api-stu3-server, verify, smart-platform]
+  wait_for: host={{mock_api_stu3_server_internal_host}} port={{mock_api_stu3_server_internal_port}}

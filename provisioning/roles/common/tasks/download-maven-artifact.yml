@@ -1,0 +1,13 @@
+---
+# Download a maven artifact into the local maven repo
+#
+# vars:
+#   group_id: Maven groupId
+#   artifact_id: Maven artifactId
+#   version: Maven version
+#   packaging: Maven packaging
+#   repo: Maven repo, default
+
+- name: "download the {{group_id}}:{{artifact_id}}:{{version}} from Maven"
+  become_user: "{{username}}"
+  shell: "mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.0:get -Dartifact={{group_id}}:{{artifact_id}}:{{version}} -Dpackaging={{packaging | default('war')}} -DremoteRepositories=central::default::https://repo1.maven.apache.org/maven2,snapshot::::https://oss.sonatype.org/content/repositories/snapshots"

@@ -1,0 +1,18 @@
+---
+- name: configure mysql user
+  tags: [api-stu3-all, api-stu3-data, smart-platform]
+  mysql_user: name={{mysql_user}} host=localhost password={{mysql_pass}} priv={{api_stu3_mysql_privilage}} state=present
+
+- name: drop the api-stu3-server database
+  tags: [api-stu3-all, api-stu3-data, smart-platform]
+  mysql_db: name={{api_stu3_database}} state=absent
+
+- name: drop the {{api_stu3_database}}${{api_stu3_baseline_snapshot}} snapshot
+  tags: [api-stu3-all, api-stu3-data, smart-platform]
+  mysql_db: name="{{api_stu3_database}}${{api_stu3_baseline_snapshot}}" state=absent
+
+- name: create the {{api_stu3_database}} database
+  tags: [api-stu3-all, api-stu3-data, smart-platform]
+  mysql_db: name={{api_stu3_database}} state=present
+
+- meta: flush_handlers
