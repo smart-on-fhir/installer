@@ -23,10 +23,10 @@ The SMART on FHIR platform is tested on Ubuntu 16.04.  Other linux-based systems
 ### SMART on FHIR Platfrom
 When complete, you will have a SMART on FHIR platform!
 
-* `{host}:9090/` for the Sandbox Manager application
-* `{host}:9070/api/smartdstu2/data` for a FHIR DSTU2 API server
-* `{host}:9070/api/smartdstu2/data/metadata` for the FHIR DSTU2 API conformance
-* `{host}:9080/auth/` for an OAuth2 authorization server
+* `{host}:9080/` for the Sandbox Manager application
+* `{host}:9071/api/smartdstu2/data` for a FHIR DSTU2 API server
+* `{host}:9071/api/smartdstu2/data/metadata` for the FHIR DSTU2 API conformance
+* `{host}:9060/auth/` for an OAuth2 authorization server
 * `{host}:9093` for a SMART apps server
 * `{host}:10389` for an ApacheDS LDAP server
 * `{host}:3306` for a MySQL database
@@ -248,7 +248,7 @@ ubuntu:~/installer/provisioning$
 
 Then launch the Sandbox Manager app at:
 ```
-http://(your IP address):9090/
+http://(your IP address):9080/
 ```
 
 ### TLS

@@ -187,7 +187,7 @@ apacheds_server_sandbox_test_dn: "{{apacheds_server_sandbox_test_cn}},{{apacheds
 
 # API DSTU2 Server
 api_dstu2_server_host: "localhost"
-api_dstu2_server_port: "9070"
+api_dstu2_server_port: "9071"
 api_dstu2_server_context: "/api/"
 api_dstu2_server_name: "Local DSTU2 FHIR dev server"
 api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -215,7 +215,7 @@ api_dstu2_custom_sample_data_branch: "master"
 api_dstu2_sample_patients_limit: "20"
 api_dstu2_sample_patients_generator_params: "--id-prefix SMART"
 api_dstu2_server_internal_host: "localhost"
-api_dstu2_server_internal_port: "8070"
+api_dstu2_server_internal_port: "8071"
 api_dstu2_server_internal_base_url: "http://{{api_dstu2_server_internal_host}}:{{api_dstu2_server_internal_port}}{{api_dstu2_server_context}}"
 api_dstu2_server_internal_smart_sandbox_url: "{{api_dstu2_server_internal_base_url}}{{api_dstu2_server_smart_sandbox}}"
 api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{api_dstu2_server_internal_smart_sandbox_url}}/data"
@@ -229,13 +229,13 @@ mock_api_dstu2_server_security_mode: "mock"
 
 # Persona-API DSTU2 Server
 persona_api_dstu2_server_internal_host: "localhost"
-persona_api_dstu2_server_internal_port: "8071"
+persona_api_dstu2_server_internal_port: "8171"
 persona_api_dstu2_server_internal_base_url: "http://{{persona_api_dstu2_server_internal_host}}:{{persona_api_dstu2_server_internal_port}}{{persona_api_dstu2_server_context}}"
 persona_api_dstu2_server_internal_smart_sandbox_url: "{{persona_api_dstu2_server_internal_base_url}}{{persona_api_dstu2_server_smart_sandbox}}"
 persona_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/data"
 persona_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/open"
 persona_api_dstu2_server_host: "localhost"
-persona_api_dstu2_server_port: "9071"
+persona_api_dstu2_server_port: "9171"
 persona_api_dstu2_server_context: "/persona-api/"
 persona_api_dstu2_server_name: "Local Persona DSTU2 FHIR dev server"
 persona_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -249,13 +249,13 @@ persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_
 
 # Mock-API DSTU2 Server
 mock_api_dstu2_server_internal_host: "localhost"
-mock_api_dstu2_server_internal_port: "8074"
+mock_api_dstu2_server_internal_port: "9271"
 mock_api_dstu2_server_internal_base_url: "http://{{mock_api_dstu2_server_internal_host}}:{{mock_api_dstu2_server_internal_port}}{{mock_api_dstu2_server_context}}"
 mock_api_dstu2_server_internal_smart_sandbox_url: "{{mock_api_dstu2_server_internal_base_url}}{{mock_api_dstu2_server_smart_sandbox}}"
 mock_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/data"
 mock_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/open"
 mock_api_dstu2_server_host: "localhost"
-mock_api_dstu2_server_port: "9074"
+mock_api_dstu2_server_port: "9271"
 mock_api_dstu2_server_context: "/mock-api/"
 mock_api_dstu2_server_name: "Local Mock DSTU2 FHIR dev server"
 mock_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -273,9 +273,9 @@ api_server_oauth2_clientSecret: "secret"
 
 # SandboxManager Server
 sandbox_manager_server_host: "localhost"
-sandbox_manager_server_port: "9090"
+sandbox_manager_server_port: "9080"
 sandbox_manager_server_internal_host: "localhost"
-sandbox_manager_server_internal_port: "8090"
+sandbox_manager_server_internal_port: "8080"
 sandbox_manager_server_context: "/"
 sandbox_manager_server_name: "Sandbox Manager server"
 sandbox_manager_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -294,9 +294,9 @@ sandbox_manager_company_logo2x_path: static/branding/smart/images/smart-logo@2x.
 
 # Auth Server
 auth_server_host: "localhost"
-auth_server_port: "9080"
+auth_server_port: "9060"
 auth_server_internal_host: "localhost"
-auth_server_internal_port: "8080"
+auth_server_internal_port: "8060"
 # for local install with /auth and /persona from the same host
 # requiring two deployments of the auth server
 auth_server_context: "/auth/"
@@ -322,9 +322,9 @@ auth_server_forgotPasswordUrl: ""
 
 # Persona-Auth Server
 persona_auth_server_host: "localhost"
-persona_auth_server_port: "9081"
+persona_auth_server_port: "9160"
 persona_auth_server_internal_host: "localhost"
-persona_auth_server_internal_port: "8081"
+persona_auth_server_internal_port: "8160"
 persona_auth_server_context: "/persona-auth/"
 persona_auth_server_name: "Persona Authorization Server"
 persona_auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
@@ -465,10 +465,10 @@ api_stu3_schema_version: 4
 api_stu3_server_sandbox: "smartstu3"
 api_stu3_server_database: "hspc_{{api_stu3_schema_version}}_{{api_stu3_server_sandbox}}"
 api_stu3_server_host: "localhost"
-api_stu3_server_port: "8072"
+api_stu3_server_port: "8074"
 api_stu3_server_url: "http://{{api_stu3_server_host}}:{{api_stu3_server_port}}"
 api_stu3_server_external_host: "localhost"
-api_stu3_server_external_port: "9072"
+api_stu3_server_external_port: "9074"
 api_stu3_server_external_url: "http://{{api_stu3_server_external_host}}:{{api_stu3_server_external_port}}"
 api_stu3_server_initial_memory: 128M
 api_stu3_server_max_memory: 256M
