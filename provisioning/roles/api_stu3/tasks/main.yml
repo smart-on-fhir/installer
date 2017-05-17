@@ -28,14 +28,14 @@
   ignore_errors: yes
 
 - name: "drop the api_stu3 database"
-  tags: [api-dstu2-data]
+  tags: [api_stu3_data]
   mysql_db:
     name: "{{api_stu3_server_database}}"
     state: absent
   ignore_errors: yes
 
 - name: "create the {{api_stu3_server_database}} database"
-  tags: [api-dstu2-data]
+  tags: [api_stu3_data]
   mysql_db:
     name: "{{api_stu3_server_database}}"
     state: present
