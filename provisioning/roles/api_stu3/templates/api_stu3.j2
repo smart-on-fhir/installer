@@ -16,11 +16,7 @@ server {
       proxy_set_header X-NginX-Proxy true;
 
       access_log /var/log/nginx/api_stu3_access.log;
-{% if use_secure_http %}
-      proxy_pass https://api_stu3;
-{% else %}
       proxy_pass http://api_stu3;
-{% endif %}
       proxy_redirect off;
     }
 

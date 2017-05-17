@@ -13,6 +13,7 @@ ExecStart={{java_home}}/bin/java \
  -Dhspc.platform.api.fhir.db.host={{mysql_host}} \
  -Dhspc.platform.api.fhir.db.username={{mysql_username}} \
  -Dhspc.platform.api.fhir.db.password={{mysql_password}} \
+ -Dhspc.platform.api.sandbox.name={{api_stu3_server_sandbox}} \
  -Dhspc.platform.api.sandbox.useHspcStarterData=false \
  -Dhspc.platform.authorization.url={{auth_server_external_url}} \
  -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
