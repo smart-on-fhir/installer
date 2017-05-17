@@ -29,7 +29,7 @@ server {
 
 {% if api_stu3_server_external_port != 80 and http_redirect %}
 server {
-    server_name {{api_stu3_server_host}};
+    server_name {{api_stu3_server_external_host}};
     listen 80;
     listen [::]:80;
     return 301 https://$server_name$request_uri;
