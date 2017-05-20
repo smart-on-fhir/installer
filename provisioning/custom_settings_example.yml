@@ -35,10 +35,12 @@ auth_server_host: "{{services_host}}"
 auth_server_port: "9060"
 auth_server_password: "secret"
 auth_server_newUserUrl: ""
+auth_server_forgotPasswordUrl: ""
 
 persona_auth_server_host: "{{services_host}}"
 persona_auth_server_port: "9160"
 persona_auth_server_newUserUrl: ""
+persona_auth_server_forgotPasswordUrl: ""
 
 messaging_server_host: "{{services_host}}"
 messaging_server_port: "9091"
