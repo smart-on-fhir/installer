@@ -1,0 +1,37 @@
+[Unit]
+Description=HSPC Auth Service
+
+[Service]
+User={{hosting_username}}
+TimeoutStartSec=infinity
+WorkingDirectory={{hosting_user_home}}/auth/project/target
+
+ExecStart={{java_home}}/bin/java \
+ -Xms{{auth_server_initial_memory}} \
+ -Xmx{{auth_server_max_memory}} \
+ -Djetty.port={{auth_server_internal_port}} \
+ -Djetty.host={{auth_server_internal_host}} \
+ -Doidc.datasource.mysql.url=jdbc:mysql://{{auth_server_mysql_host}}:{{mysql_port}}/{{auth_server_database}} \
+ -Doidc.datasource.mysql.username={{mysql_username}} \
+ -Doidc.datasource.mysql.password={{mysql_password}} \
+ -Doidc.issuer={{auth_server_external_url}} \
+ -Dhspc.platform.persona.oauthUserLoginEndpointURL={{auth_server_external_url}}/j_spring_security_check \
+ -DCONTEXT_FHIR_ENDPOINT={{auth_server_CONTEXT_FHIR_ENDPOINT}} \
+ -DCONTEXT_RESOLVE_ENDPOINT={{patient_picker_server_external_url}} \
+ -Dhspc.platform.jwt.key={{hspc_platform_jwt_key}} \
+ -Dhspc.platform.sandbox.host={{sandman_server_external_url}} \
+ -Dhspc.platform.persona.cookieDomain={{auth_server_persona_cookie_domain}} \
+ -Dldap.url={{apacheds_server_external_url}} \
+ -Dldap.server={{apacheds_server_external_url}}/{{apacheds_server_base}} \
+ -Dldap.base={{apacheds_server_base}} \
+ -Dldap.userDn={{apacheds_server_system_admin_dn}} \
+ -Dldap.password={{apacheds_server_system_admin_password}} \
+ -DnewUserUrl={{auth_server_newUserUrl}} \
+ -DforgotPasswordUrl={{auth_server_forgotPasswordUrl}} \
+  -jar {{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}} \
+ --config {{hosting_user_home}}/jetty.xml \
+ smart-{{auth_server_artifact_artifact_id}}-{{auth_server_artifact_version}}.war
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

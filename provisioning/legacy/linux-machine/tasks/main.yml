@@ -1,0 +1,258 @@
+---
+- name: installer profile
+  tags: [linux-all, smart-platform]
+  template: src=.bash_profile.j2 dest={{installer_user_home}}/.bash_profile
+
+- name: check custom certificate preconditions
+  tags: [linux-all, smart-platform]
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
+- name: disable apt update on startup
+  tags: [linux-all, smart-platform]
+  service: name=apt-daily.service enabled=no
+
+- name: disable apt update timer
+  tags: [linux-all, smart-platform]
+  service: name=apt-daily.timer enabled=no
+
+- name: update aptitude cache
+  tags: [linux-all, smart-platform]
+  apt: update_cache=yes
+  register: result
+  until: result|succeeded
+  retries: 10
+  delay: 10
+
+- name: install prerequisite packages
+  tags: [linux-all, smart-platform]
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - acl
+         - aptitude
+         - curl
+         - git
+         - nginx
+         - maven
+         - mysql-server
+         - openjdk-8-jdk
+         - python-psycopg2
+         - python-jinja2
+         - python-httplib2
+         - python-mysqldb
+         - python-requests
+         - python-pycurl
+         - python-pip
+         - ldap-utils
+         - ssl-cert
+         - cron
+         - jq
+
+- name: upgrade server packages
+  tags: [linux-all, smart-platform]
+  apt: upgrade=full
+
+- name: create group
+  tags: [linux-all, smart-platform]
+  group: name="{{hosting_username}}"
+
+- name: create user
+  tags: [linux-all, smart-platform]
+  user: name="{{hosting_username}}" password="{{hosting_userpass}}" update_password="on_create"
+        group="{{hosting_username}}" groups=sudo
+        shell=/bin/bash
+
+- name: download jetty-runner
+  tags: [linux-all, smart-platform]
+  become_user: "{{hosting_username}}"
+  get_url:
+          url={{jetty_download_url}}
+          dest={{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}}
+
+- name: config jetty-runner
+  tags: [linux-all, smart-platform]
+  copy: src=jetty.xml dest={{hosting_user_home}}/jetty.xml
+
+- name: create ssl certificates directory
+  tags: [linux-all, smart-platform]
+  when: use_secure_http
+  file: path=/etc/nginx/ssl state=directory owner=root group=root mode=0640
+
+- name: generate self-signed ssl certificate
+  tags: [linux-all, smart-platform]
+  when: use_secure_http and not use_custom_ssl_certificates
+  shell: creates=/etc/nginx/ssl/{{certificate_crt_filename}}
+         /bin/echo -e "{{self_signed_certificate_ssl_country}}\n{{self_signed_certificate_ssl_province}}\n{{self_signed_certificate_ssl_locality}}\n{{self_signed_certificate_ssl_organization}}\n{{self_signed_certificate_ssl_division}}\n{{domain_name}}\n{{self_signed_certificate_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/{{certificate_key_filename}} -out /etc/nginx/ssl/{{certificate_crt_filename}}
+  notify:
+        - restart nginx
+
+- name: copy custom ssl certificates
+  tags: [linux-all, smart-platform]
+  when: use_secure_http and use_custom_ssl_certificates
+  copy: src="{{custom_ssl_certificates_path}}/{{certificate_crt_filename}}"
+        dest=/etc/nginx/ssl/{{certificate_crt_filename}}
+  notify:
+        - restart nginx
+
+- name: copy custom ssl certificates
+  tags: [linux-all, smart-platform]
+  when: use_secure_http and use_custom_ssl_certificates
+  copy: src="{{custom_ssl_certificates_path}}/{{certificate_key_filename}}"
+        dest=/etc/nginx/ssl/{{certificate_key_filename}}
+  notify:
+        - restart nginx
+
+- name: remove server certificate from truststore
+  tags: [linux-all, smart-platform]
+  when: use_secure_http and use_custom_ssl_certificates
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -delete -trustcacerts
+           -alias {{certificate_truststore_alias}}
+           -file /etc/nginx/ssl/{{certificate_crt_filename}}
+           -keystore {{hosting_user_home}}/keystore
+
+- name: import server certificate in truststore
+  tags: [linux-all, smart-platform]
+  when: use_secure_http and use_custom_ssl_certificates
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -importcert -trustcacerts
+           -alias {{certificate_truststore_alias}}
+           -file /etc/nginx/ssl/{{certificate_crt_filename}}
+           -keystore {{hosting_user_home}}/keystore
+
+- name: add www-data user to ssl-cert group
+  tags: [linux-all, smart-platform]
+  when: use_secure_http
+  user: name=www-data groups=ssl-cert
+
+- name: list private key files
+  tags: [linux-all, smart-platform]
+  find:
+    paths: "/etc/nginx/ssl"
+    patterns: "*.key"
+  register: keys
+
+- name: set private key permissions
+  tags: [linux-all, smart-platform]
+  when: use_secure_http
+  file: path="{{item.path}}" group=ssl-cert mode=640
+  with_items: "{{keys.files}}"
+
+- name: clear truststore
+  tags: [linux-all, smart-platform]
+  file: name={{hosting_user_home}}/keystore state=absent
+
+- name: initialize truststore
+  tags: [linux-all, smart-platform]
+  become_user: "{{hosting_username}}"
+  when: use_secure_http
+  shell: /bin/echo -e "{{keystore_password}}\n{{keystore_password}}\n\n\n\n\n\n\nyes\n" | keytool
+           -genkey -alias smart
+           -keystore {{hosting_user_home}}/keystore
+
+- name: configure nginx
+  tags: [linux-all, smart-platform]
+  template: src=upload.conf.j2 dest=/etc/nginx/conf.d/upload.conf owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- name: Configure MySQL user
+  tags: [linux-all, smart-platform]
+  mysql_user: name={{mysql_username}} host={{mysql_connect_host}} password={{mysql_password}} priv={{mysql_privilage}} state=present
+
+- name: Drop annonomous MySQL user
+  tags: [linux-all, smart-platform]
+  mysql_user: name='' host={{mysql_connect_host}} state=absent
+
+- name: ensures {{hosting_user_home}}/scripts dir exists
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  file: path={{hosting_user_scripts_home}}
+        state=directory
+
+- name: ensures {{hosting_user_home}}/jobs dir exists
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  file: path={{hosting_user_jobs_home}}
+        state=directory
+
+- name: ensures {{hosting_user_home}}/jobs output dir exists
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  file: path="{{hosting_user_jobs_home}}/output"
+        state=directory
+
+- name: install AWS shell
+  tags: [linux-all, smart-production]
+  pip: name="aws-shell"
+
+- name: Create the AWS config directory
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  file: path={{hosting_user_home}}/.aws
+        state=directory
+        mode=0755
+
+- name: Copy AWS CLI config
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=aws_cli_config.j2 dest="{{hosting_user_home}}/.aws/config" mode=0600
+
+- name: initialize crontab file SHELL
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  cron:
+    name: SHELL
+    env: yes
+    value: /bin/bash
+
+- name: initialize crontab file PATH
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  cron:
+    name: PATH
+    env: yes
+    value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+- name: create script aws-snapshot-job.sh
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=aws-snapshot-job.sh.j2
+            dest={{hosting_user_scripts_home}}/aws-snapshot-job.sh
+            mode=0755
+
+- name: create script aws-remove-snapshot.sh
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=aws-remove-snapshot.sh.j2
+            dest={{hosting_user_scripts_home}}/aws-remove-snapshot.sh
+            mode=0755
+
+- name: create script aws-take-snapshot.sh
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=aws-take-snapshot.sh.j2
+            dest={{hosting_user_scripts_home}}/aws-take-snapshot.sh
+            mode=0755
+
+- name: create script aws-describe-snapshots.sh
+  tags: [linux-all, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=aws-describe-snapshots.sh.j2
+            dest={{hosting_user_scripts_home}}/aws-describe-snapshots.sh
+            mode=0755
+
+# create a cron job for nightly reset to be run at 6 AM UTC, or 1 AM US-EST
+- name: create cron job to snapshot to AWS
+  tags: [api-dstu2-all, api-dstu2-sandbox, api-dstu2-cron, smart-production]
+  when: enable_aws_snapshot
+  become_user: "{{hosting_username}}"
+  cron:
+    name: "server snapshot"
+    minute: "0"
+    hour: "6"
+    job: "{{hosting_user_scripts_home}}/aws-snapshot-job.sh >> {{hosting_user_jobs_output_home}}/server-snapshot.log"
+
+- meta: flush_handlers

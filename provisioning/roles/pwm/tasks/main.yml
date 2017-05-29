@@ -1,0 +1,125 @@
+---
+- name: "checkout repository pwm_project"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  git: repo="{{hspc_repo_base}}/{{pwm_project}}"
+       version="{{pwm_branch}}"
+       dest="{{hosting_user_home}}/{{pwm_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo.png"
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo@2x.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo@2x.png"
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo-main-web-top.png"
+
+- name: "patch PwmConfiguration.xml"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=PwmConfiguration.xml.j2
+            dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/PwmConfiguration.xml"
+
+- name: "build hspc pwm server"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/{{pwm_project}}
+       mvn clean install -e -U
+
+- name: "Configure MySQL user"
+  when: enable_pwm
+  mysql_user: name={{pwm_project}} host=localhost password={{mysql_password}} priv={{mysql_privilage}} state=present
+
+- name: "Drop the PWM Server database"
+  when: enable_pwm
+  mysql_db: name={{pwm_server_database}} state=absent
+
+- name: "Create the PWM Server database"
+  when: enable_pwm
+  mysql_db: name={{pwm_server_database}} state=present
+
+- name: "install apache-tomcat"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  unarchive: src="apache-tomcat-8.5.12.tar.gz"
+             dest="{{hosting_user_home}}"
+             creates="{{tomcat_home}}"
+
+- name: "configure tomcat server"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=server.xml.j2
+            dest="{{tomcat_home}}/conf/server.xml"
+
+- name: "remove tomcat default webapps"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file: path="{{tomcat_home}}/webapps" state=absent
+
+- name: "initialize tomcat webapps"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file: path="{{tomcat_home}}/webapps" state=directory
+
+- name: "configure tomcat to only host pwm"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  shell: "cp -r {{hosting_user_home}}/pwm/target/pwm-1.7 {{tomcat_home}}/webapps/ROOT"
+
+- name: "configure pwm server service"
+  when: enable_pwm
+  template: src=pwm-server.service.j2
+            dest=/etc/systemd/system/pwm-server.service
+            owner=root group=root mode=0644
+
+- name: "enable pwm server service"
+  when: enable_pwm
+  shell: systemctl enable pwm-server.service
+
+- name: "reload systemd daemon"
+  when: enable_pwm
+  shell: systemctl daemon-reload
+
+- name: "stop pwm server"
+  when: enable_pwm
+  service: name=pwm-server state=stopped
+
+- name: "restart pwm server"
+  when: enable_pwm
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: "configure nginx (pwm server)"
+  when: enable_pwm
+  template: src=nginx_pwm.j2 dest=/etc/nginx/sites-enabled/pwm owner=root group=root mode=0644
+  notify:
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "verify pwm-server is available"
+  when: enable_pwm
+  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}
+
+- name: "stop pwm server"
+  when: enable_pwm
+  service: name=pwm-server state=stopped
+
+- name: "restart pwm server to rebuild the database tables"
+  when: enable_pwm
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: "verify pwm-server is available"
+  when: enable_pwm
+  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}

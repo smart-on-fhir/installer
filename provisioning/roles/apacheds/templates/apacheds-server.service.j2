@@ -1,0 +1,21 @@
+[Unit]
+Description=ApacheDS Service
+
+[Service]
+Type=forking
+
+Environment=ADS_SHUTDOWN_PORT=10390
+Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+Environment='JAVA_OPTS=-Xms{{apacheds_server_initial_memory}} -Xmx{{apacheds_server_max_memory}} -XX:MaxPermSize={{apacheds_server_max_perm_memory}} -Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+ExecStart={{apacheds_home}}/bin/apacheds.sh start
+ExecStop={{apacheds_home}}/bin/apacheds.sh stop
+
+User={{hosting_username}}
+Group={{hosting_username}}
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

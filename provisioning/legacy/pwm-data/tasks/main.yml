@@ -1,0 +1,14 @@
+---
+- name: Configure MySQL user
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_user: name={{mysql_username}} host=localhost password={{mysql_password}} priv={{mysql_privilage}} state=present
+
+- name: Drop the PWM Server database
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_db: name={{pwm_server_database}} state=absent
+
+- name: Create the PWM Server database
+  tags: [pwm-all, pwm-data, smart-production]
+  mysql_db: name={{pwm_server_database}} state=present
+
+- meta: flush_handlers

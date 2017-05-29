@@ -9,5 +9,5 @@
 #   repo: Maven repo, default
 
 - name: "download the {{group_id}}:{{artifact_id}}:{{version}} from Maven"
-  become_user: "{{username}}"
+  become_user: "{{hosting_username}}"
   shell: "mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.0:get -Dartifact={{group_id}}:{{artifact_id}}:{{version}} -Dpackaging={{packaging | default('war')}} -DremoteRepositories=central::default::https://repo1.maven.apache.org/maven2,snapshot::::https://oss.sonatype.org/content/repositories/snapshots"

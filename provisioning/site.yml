@@ -1,10 +1,16 @@
 ---
-- include: playbook-rebuild-linux.yml
+- include: playbook_linux.yml
 
-- include: playbook-rebuild-app-code.yml
+- include: playbook_apacheds.yml
 
-- include: playbook-rebuild-databases.yml
+- include: playbook_pwm.yml
 
-- include: playbook-rebuild-services.yml
+- include: playbook_auth.yml
 
-- include: playbook-initialize.yml
+- include: playbook_api.yml
+
+- include: playbook_messaging.yml
+
+- include: playbook_sandman.yml
+
+- include: playbook_apps.yml

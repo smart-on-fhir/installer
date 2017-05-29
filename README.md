@@ -219,10 +219,10 @@ Here is the custom_settings.yml file:
 installer_user: "ubuntu"
 services_host: "x.x.x.x" (your IP address)
 sample_patients_branch: "hapi-patients-testing"
-app_server_host: "{{services_host}}"
+app_server_external_host: "{{services_host}}"
 api_dstu2_server_host: "{{services_host}}"
 persona_api_dstu2_server_host: "{{services_host}}"
-sandbox_manager_server_host: "{{services_host}}"
+sandman_server_external_host: "{{services_host}}"
 auth_server_host: "{{services_host}}"
 persona_auth_server_host: "{{services_host}}"
 messaging_server_host: "{{services_host}}"
@@ -291,8 +291,8 @@ ubuntu$ alias
 
 These aliases are helpful to navigate the most important folders.
 ```
-alias f='cd $FHIR_HOME'
-alias i='cd $INSTALLER_HOME'
+alias f='cd $hosting_user_home'
+alias i='cd $installer_project_home'
 alias n='cd $NGINX_SITES'
 alias p='cd $PROVISIONING_HOME'
 alias s='cd $SERVICE_HOME'

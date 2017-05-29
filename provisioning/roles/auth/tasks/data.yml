@@ -1,0 +1,38 @@
+---
+- name: "copy the auth database scripts"
+  template:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/auth/mysql/{{item}}"
+    mode: "0700"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "mysql_index_tuning.sql"
+    - "bilirubin_chart_client.sql"
+    - "messaging_client.sql"
+    - "patient_data_manager_client.sql"
+    - "patient_picker_client.sql"
+    - "reference_api_client.sql"
+    - "sandman_client.sql"
+
+- name: "load the auth database scripts"
+  mysql_db:
+    name: "{{auth_server_database}}"
+    state: import
+    target: "{{hosting_user_home}}/auth/mysql/{{item}}"
+  with_items:
+    - "mysql_database_tables.sql"
+    - "mysql_users.sql"
+    - "mysql_system_scopes.sql"
+    - "mysql_clients.sql"
+    - "mysql_index_tuning.sql"
+    - "bilirubin_chart_client.sql"
+    - "messaging_client.sql"
+    - "patient_data_manager_client.sql"
+    - "patient_picker_client.sql"
+    - "reference_api_client.sql"
+    - "sandman_client.sql"
+  ignore_errors: yes
+

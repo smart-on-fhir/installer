@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.smarthealthit.sandbox</groupId>
+    <artifactId>smart-{{auth_server_artifact_artifact_id}}</artifactId>
+    <version>{{auth_server_artifact_version}}</version>
+    <packaging>war</packaging>
+
+    <name>Reference Auth - LDAP</name>
+    <description>HSPC Reference Auth LDAP Authorization Server</description>
+    <url>https://healthservices.atlassian.net/wiki/display/HSPC/Healthcare+Services+Platform+Consortium</url>
+
+    <repositories>
+        <repository>
+            <id>releases</id>
+            <name>Release Repo</name>
+            <url>{{release_repository_url}}</url>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <name>Snapshot Repo</name>
+            <url>{{snapshot_repository_url}}</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>{{auth_server_artifact_group_id}}</groupId>
+            <artifactId>{{auth_server_artifact_artifact_id}}</artifactId>
+            <version>${project.version}</version>
+            <type>{{auth_server_artifact_packaging}}</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.hspconsortium.reference</groupId>
+                            <artifactId>hspc-reference-auth-server-ldap-webapp</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

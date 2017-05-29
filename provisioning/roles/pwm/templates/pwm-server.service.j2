@@ -1,0 +1,24 @@
+[Unit]
+Description=PWM Service
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME={{java_home}}
+Environment=CATALINA_HOME={{tomcat_home}}
+Environment=CATALINA_BASE={{tomcat_home}}
+Environment=CATALINA_PID={{tomcat_home}}/temp/tomcat.pid
+Environment='CATALINA_OPTS=-Xms{{pwm_server_initial_memory}} -Xmx{{pwm_server_max_memory}} -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+ExecStart={{tomcat_home}}/bin/startup.sh
+ExecStop={{tomcat_home}}/bin/shutdown.sh
+
+User=fhir
+Group=fhir
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

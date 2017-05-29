@@ -1,0 +1,59 @@
+---
+- name: "create the service directory"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory mode=0755"
+  with_items:
+    - "{{hosting_user_scripts_home}}"
+    - "{{hosting_user_jobs_home}}"
+    - "{{hosting_user_jobs_output_home}}"
+    - "{{hosting_user_aws_config_home}}"
+
+- name: "install AWS shell"
+  when: enable_backup_restore_jobs
+  pip: name="aws-shell"
+
+- name: "Copy AWS CLI config"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template: src=aws_cli_config.j2 dest="{{hosting_user_aws_config_home}}/config" mode=0600
+
+- name: "initialize crontab file SHELL"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  cron:
+    name: SHELL
+    env: yes
+    value: /bin/bash
+
+- name: "initialize crontab file PATH"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  cron:
+    name: PATH
+    env: yes
+    value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+- name: "copy jobs files"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/scripts/{{item}}"
+    mode: "0755"
+  with_items:
+    - "aws-snapshot-job.sh"
+    - "aws-remove-snapshot.sh"
+    - "aws-take-snapshot.sh"
+    - "aws-describe-snapshots.sh"
+
+# create a cron job for nightly reset to be run at 6 AM UTC, or 1 AM US-EST
+- name: "create cron job to snapshot to AWS"
+  when: enable_backup_restore_jobs and enable_aws_snapshot
+  become_user: "{{hosting_username}}"
+  cron:
+    name: "server snapshot"
+    minute: "0"
+    hour: "6"
+    job: "{{hosting_user_home}}/scripts/aws-snapshot-job.sh >> {{hosting_user_home}}/jobs/output/server-snapshot.log"
+

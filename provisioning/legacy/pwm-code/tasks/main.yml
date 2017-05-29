@@ -1,0 +1,37 @@
+---
+- name: checkout repository pwm_project
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{hosting_username}}"
+  git: repo="{{hspc_repo_base}}/{{pwm_project}}"
+       version="{{pwm_branch}}"
+       dest="{{hosting_user_home}}/{{pwm_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo.png"
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo@2x.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo@2x.png"
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [pwm-all, pwm-code, smart-production]
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/public/resources/themes/custom/company-logo-main-web-top.png"
+
+- name: patch PwmConfiguration.xml
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{hosting_username}}"
+  template: src=PwmConfiguration.xml.j2
+            dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/PwmConfiguration.xml"
+
+- name: build hspc pwm server
+  tags: [pwm-all, pwm-code, smart-production]
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}
+       mvn clean install -e -U -f {{pwm_project}}/pom.xml

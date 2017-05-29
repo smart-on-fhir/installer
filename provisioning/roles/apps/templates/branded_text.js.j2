@@ -1,0 +1,10 @@
+angular.module("patientPickerApp.branding", [], ["$provide", function($provide) {
+
+    $provide.value("brandedText", {
+        branded: {
+            mainTitle: "Patient Chooser",
+            copyright: "© Harvard Medical School / Boston Children's Hospital / SMART Health IT, 2017",
+            showCert: false
+        }
+    });
+}]);

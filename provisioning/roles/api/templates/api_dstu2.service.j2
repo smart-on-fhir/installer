@@ -1,0 +1,26 @@
+[Unit]
+Description=hspc api dstu2 server
+
+[Service]
+User={{hosting_username}}
+TimeoutStartSec=infinity
+WorkingDirectory={{hosting_user_home}}/api_dstu2
+
+ExecStart={{java_home}}/bin/java \
+ -Xms{{api_dstu2_server_initial_memory}} \
+ -Xmx{{api_dstu2_server_max_memory}} \
+ -Dserver.port={{api_dstu2_server_internal_port}} \
+ -Dhspc.platform.api.fhir.db.host={{api_mysql_host}} \
+ -Dhspc.platform.api.fhir.db.username={{api_mysql_username}} \
+ -Dhspc.platform.api.fhir.db.password={{api_mysql_password}} \
+ -Dhspc.platform.api.sandbox.name={{api_dstu2_server_sandbox}} \
+ -Dhspc.platform.api.sandbox.useHspcStarterData=false \
+ -Dhspc.platform.authorization.url={{auth_server_external_url}} \
+ -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
+ -Dspring.profiles.active=dstu2,multitenant \
+ -Dhibernate.search.default.indexBase=lucenefiles \
+ -jar {{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

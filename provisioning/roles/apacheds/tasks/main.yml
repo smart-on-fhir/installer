@@ -1,0 +1,82 @@
+---
+- name: "check custom certificate preconditions"
+  fail: msg="please define the path to the custom certificates that you would like to use"
+  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
+
+- name: "remove existing apacheds installation"
+  become_user: "{{hosting_username}}"
+  file: path="{{apacheds_home}}" state=absent
+
+# for raw apacheds
+#- name: download apacheds
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  become_user: "{{hosting_username}}"
+#  get_url: url={{apacheds_artifact_url}} dest={{hosting_user_home}}
+#
+#- name: extract apacheds
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  become_user: "{{hosting_username}}"
+#  unarchive: src="{{hosting_user_home}}/{{apacheds_artifact_name}}" dest="{{hosting_user_home}}" copy=no
+#
+#- name: setenv.sh properties
+#  tags: [apacheds-all, apacheds-server, smart-platform]
+#  template: src=setenv.sh.j2 dest="{{apacheds_home}}/bin/setenv.sh" owner="{{hosting_username}}" group="{{hosting_username}}" mode=0744
+#
+- name: "extract configured apacheds"
+  become_user: "{{hosting_username}}"
+  unarchive: src="apacheds-2.0.0-M23-configured.tar" dest="{{hosting_user_home}}"
+
+- name: "configure apacheds-server service"
+  template: src=apacheds-server.service.j2
+            dest=/etc/systemd/system/apacheds-server.service
+            owner=root group=root mode=0644
+
+- name: "enable apacheds-server service"
+  shell: systemctl enable apacheds-server.service
+
+- name: "reload systemd daemon"
+  shell: systemctl daemon-reload
+
+- name: "stop apacheds-server"
+  service: name=apacheds-server state=stopped
+
+- meta: flush_handlers
+
+- name: "restart apacheds-server"
+  service: name=apacheds-server enabled=yes state=restarted
+
+- name: "verify apacheds-server is available"
+  wait_for: host={{apacheds_server_internal_host}} port={{apacheds_server_internal_port}}
+
+- name: "generate sandbox admin update script"
+  become_user: "{{hosting_username}}"
+  template: src="update-sandbox-admin-password.ldif.j2"
+            dest="{{apacheds_home}}/update-sandbox-admin-password.ldif"
+
+- name: "update sandbox admin"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{apacheds_home}}
+         ldapadd
+           -h {{apacheds_server_external_host}}
+           -p {{apacheds_server_external_port}}
+           -x -D {{apacheds_server_system_admin_dn}}
+           -w {{apacheds_server_system_admin_initial_password}}
+           -f update-sandbox-admin-password.ldif
+  failed_when: False
+
+- name: "generate sandbox demo update script"
+  become_user: "{{hosting_username}}"
+  template: src="update-sandbox-demo-password.ldif.j2"
+            dest="{{apacheds_home}}/update-sandbox-demo-password.ldif"
+
+- name: "update sandbox demo"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{apacheds_home}}
+         ldapadd
+           -h {{apacheds_server_external_host}}
+           -p {{apacheds_server_external_port}}
+           -x -D {{apacheds_server_system_admin_dn}}
+           -w {{apacheds_server_system_admin_initial_password}}
+           -f update-sandbox-demo-password.ldif
+  failed_when: False
+

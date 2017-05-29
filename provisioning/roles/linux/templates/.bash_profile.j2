@@ -1,0 +1,44 @@
+export NGINX_HOME=/etc/nginx
+export NGINX_SITES=$NGINX_HOME/sites-enabled
+export SERVICE_HOME=/etc/systemd/system
+export hosting_user_home={{hosting_user_home}}
+export EDITOR=vi
+
+alias n='cd $NGINX_SITES'
+alias s='cd $SERVICE_HOME'
+
+# tail services
+alias tldap='sudo journalctl -f -u apacheds-server.service'
+alias tpwm='sudo journalctl -f -u pwm-server.service'
+alias tapidstu2='sudo journalctl -f -u api_dstu2.service'
+alias tapistu3v2='sudo journalctl -f -u api_stu3_v2.service'
+alias tapistu3v3='sudo journalctl -f -u api_stu3_v3.service'
+alias tapistu3='sudo journalctl -f -u api_stu3.service'
+alias tauth='sudo journalctl -f -u auth.service'
+alias tmessaging='sudo journalctl -f -u messaging.service'
+alias tapps='sudo journalctl -f -u apps.service'
+alias tpp='sudo journalctl -f -u patient_picker.service'
+alias tsandman='sudo journalctl -f -u sandman.service'
+alias tnginx='sudo journalctl -f -u nginx.service'
+
+# view services
+alias vldap='sudo journalctl -u apacheds-server.service'
+alias vpwm='sudo journalctl -u pwm-server.service'
+alias vapidstu2='sudo journalctl -u api_dstu2.service'
+alias vapistu3v2='sudo journalctl -u api_stu3_v2.service'
+alias vapistu3v3='sudo journalctl -u api_stu3_v3.service'
+alias vapistu3='sudo journalctl -u api_stu3.service'
+alias vauth='sudo journalctl -u auth.service'
+alias vmessaging='sudo journalctl -u messaging.service'
+alias vapps='sudo journalctl -u apps.service'
+alias vpp='sudo journalctl -u patient_picker.service'
+alias vsandman='sudo journalctl -u sandman.service'
+alias vnginx='sudo journalctl -u nginx.service'
+
+alias f='cd $hosting_user_home'
+
+alias stopn='sudo service nginx stop'
+alias startn='sudo service nginx start'
+alias build='~/build.sh'
+alias p='cd $PROVISIONING_HOME'
+alias m='mysql -h {{mysql_host}} -u {{mysql_username}} -p{{mysql_password}}'

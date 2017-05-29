@@ -1,0 +1,13 @@
+---
+- name: configure nginx (sample apps)
+  tags: [apps-all, apps-server, smart-platform]
+  template: src=nginx_apps.j2 dest=/etc/nginx/sites-enabled/apps owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: verify app-server is available
+  tags: [apps-all, apps-server, verify, smart-platform]
+  wait_for: host={{app_server_external_host}} port={{app_server_external_port}}
+

@@ -1,0 +1,20 @@
+[Unit]
+Description=HSPC Messaging Server
+
+[Service]
+User={{hosting_username}}
+TimeoutStartSec=infinity
+WorkingDirectory={{hosting_user_home}}/messaging
+
+ExecStart={{java_home}}/bin/java \
+ -Xms{{messaging_server_initial_memory}} \
+ -Xmx{{messaging_server_max_memory}} \
+ -Dhspc.reference.api.url={{api_server_default_sandbox_url}} \
+ -Dspring.profiles.active={{messaging_profiles}} \
+ -Dmail.server.password={{messaging_mail_server_password}} \
+ -Dmail.server.username={{messaging_mail_server_username}} \
+ -jar {{messaging_server_artifact_artifact_id}}-{{messaging_server_artifact_version}}.{{messaging_server_artifact_packaging}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

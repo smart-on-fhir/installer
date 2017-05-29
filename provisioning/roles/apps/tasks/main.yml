@@ -1,0 +1,96 @@
+---
+- name: checkout cardiac_risk_app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{cardiac_risk_project_info}}"
+
+- name: checkout bp_centiles_app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{bp_centiles_project_info}}"
+
+- name: checkout growth_chart_app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{growth_chart_project_info}}"
+
+- name: checkout patient_picker_app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{patient_picker_project_info}}"
+
+- name: copy patient_picker_app
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  shell: |
+    mkdir -p {{hosting_user_home}}/apps/static/apps/patient-picker
+    cp -r {{patient_picker_project_info.target.folder}}/src/main/webapp/static {{hosting_user_home}}/apps/static/apps/patient-picker
+    cp -r {{patient_picker_project_info.target.folder}}/src/main/webapp/index.html {{hosting_user_home}}/apps/static/apps/patient-picker
+
+- name: patch patient_picker_app branding
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  template: src=branded_text.js.j2
+            dest={{hosting_user_home}}/apps/static/apps/patient-picker/static/js/branding/branded_text.js
+
+- name: branding rights
+  tags: [apps-all, apps-code, smart-platform]
+  file: path={{hosting_user_home}}/apps/static/apps/patient-picker/static/js/branding/branded_text.js state=file owner=root group=root mode=0644
+
+- name: configure sample apps to use a common fhir-client
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  shell: sed -i -e 's/node_modules\/fhirclient\/fhir-client\.js/\.\.\/\.\.\/js\/fhir-client\.js/' {{hosting_user_home}}/apps/static/apps/{{item}}
+  with_items:
+        - bp-centiles/index.html
+        - bp-centiles/launch.html
+        - cardiac-risk/index.html
+        - cardiac-risk/launch.html
+        - growth-chart/index.html
+        - growth-chart/launch.html
+
+- name: extract images used in registration
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  unarchive: src="images.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common javascript
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  unarchive: src="js.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common angular
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  unarchive: src="angular.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common bootstrap
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  unarchive: src="bootstrap.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common stylesheets
+  tags: [apps-all, apps-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  unarchive: src="stylesheets.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: configure nginx (sample apps)
+  tags: [apps-all, apps-server, smart-platform]
+  template: src=nginx_apps.j2 dest=/etc/nginx/sites-enabled/apps owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: verify app-server is available
+  tags: [apps-all, apps-server, verify, smart-platform]
+  wait_for: host={{app_server_external_host}} port={{app_server_external_port}}
+

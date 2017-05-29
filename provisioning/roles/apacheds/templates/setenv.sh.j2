@@ -1,0 +1,3 @@
+export CATALINA_OPTS="$CATALINA_OPTS -Xms{{apacheds_server_initial_memory}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{apacheds_server_max_memory}}"
+export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxPermSize={{apacheds_server_max_perm_memory}}"

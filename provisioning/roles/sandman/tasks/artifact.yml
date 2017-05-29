@@ -1,0 +1,79 @@
+---
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/sandman"
+    - "{{hosting_user_home}}/sandman/mysql"
+    - "{{hosting_user_home}}/sandman/project"
+#    - "{{hosting_user_home}}/sandman/project/src/main/webapp/static/js/templates"
+#    - "{{hosting_user_home}}/sandman/project/src/main/webapp/static/js/branding/smart/images"
+
+- name: "download the sandman webapp"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "{{sandman_server_artifact_group_id}}"
+    artifact_id: "{{sandman_server_artifact_artifact_id}}"
+    version: "{{sandman_server_artifact_version}}"
+    extension: "{{sandman_server_artifact_packaging}}"
+    repository_url: "{{sandman_server_artifact_repository_url}}"
+    dest: "{{hosting_user_home}}/sandman/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
+
+- name: "copy the sandman webapp"
+  copy: src="{{hosting_user_home}}/sandman/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
+        dest="{{hosting_user_home}}/sandman/smart-{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
+        remote_src=true
+
+# currently, the maven overlay doesn't support Spring Boot WAR files
+# so patch the WAR manually
+- name: "extract the sandman webapp"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/sandman/project
+        jar -xvf {{hosting_user_home}}/sandman/smart-{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}
+
+- name: "create the smart images directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/sandman/project/static/js/branding/smart/images"
+    - "{{hosting_user_home}}/sandman/project/static/branding/smart/images"
+
+- name: "patch branded_text.js"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/sandman/project/static/js/branding/{{item}}"
+    mode: "0755"
+  with_items:
+    - "branded_text.js"
+
+- name: "patch sideNav.html"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/sandman/project/static/js/templates/{{item}}"
+    mode: "0755"
+  with_items:
+    - "sideNav.html"
+
+- name: "patch images"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/sandman/project/static/branding/smart/images/{{item}}"
+    mode: "0755"
+  with_items:
+    - "smart-logo.png"
+    - "smart-logo@2x.png"
+    - "smart-logo@3x.png"
+
+- name: "update war file"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/sandman/project
+        jar uf {{hosting_user_home}}/sandman/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}} {{item}}
+  with_items:
+    - "static/js/branding/branded_text.js"
+    - "static/js/templates/sideNav.html"
+    - "static/branding/smart/images/smart-logo.png"
+    - "static/branding/smart/images/smart-logo@2x.png"
+    - "static/branding/smart/images/smart-logo@3x.png"

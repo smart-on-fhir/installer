@@ -1,0 +1,48 @@
+---
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/api"
+    - "{{hosting_user_home}}/api_stu3"
+    - "{{hosting_user_home}}/api_dstu2"
+
+- name: "download the api webapp"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "{{api_server_artifact_group_id}}"
+    artifact_id: "{{api_server_artifact_artifact_id}}"
+    version: "{{api_server_artifact_version}}"
+    extension: "{{api_server_artifact_packaging}}"
+    repository_url: "{{api_server_artifact_repository_url}}"
+    dest: "{{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
+
+- name: "install api_stu3 system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "api_stu3"
+    database: "{{api_stu3_server_database}}"
+    database_reset: "{{api_stu3_mysql_reset_database}}"
+    service_definition_file: "roles/api/templates/api_stu3.service.j2"
+    gateway_definition_file: "roles/api/templates/api_stu3.j2"
+    internal_host: "{{api_server_internal_host}}"
+    internal_port: "{{api_stu3_server_internal_port}}"
+    external_host: "{{api_stu3_server_external_host}}"
+    external_port: "{{api_stu3_server_external_port}}"
+
+- name: "install api_dstu2 system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "api_dstu2"
+    database: "{{api_dstu2_server_database}}"
+    database_reset: "{{api_dstu2_mysql_reset_database}}"
+    service_definition_file: "roles/api/templates/api_dstu2.service.j2"
+    gateway_definition_file: "roles/api/templates/api_dstu2.j2"
+    internal_host: "{{api_server_internal_host}}"
+    internal_port: "{{api_dstu2_server_internal_port}}"
+    external_host: "{{api_dstu2_server_external_host}}"
+    external_port: "{{api_dstu2_server_external_port}}"
+
+- include: "data.yml"
+
+- include: "backup_restore_jobs.yml"

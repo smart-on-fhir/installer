@@ -1,0 +1,77 @@
+---
+# Generic Service Template
+# params:
+#   service_name: name of the service
+#   database: schema associated with the service
+#   database_reset: true to reset the database, false otherwise
+#   service_definition_file: service definition file
+#   gateway_definition_file: nginx gateway definition file
+#   internal_host: internal hostname
+#   internal_port: internal port
+#   external_host: external hostname
+#   external_port: external port
+
+- name: "stop {{service_name}}"
+  service:
+    name: "{{service_name}}"
+    state: "stopped"
+  ignore_errors: yes
+
+- name: "drop the {{database}} database"
+  when: database is defined and database_reset is defined and database_reset
+  mysql_db:
+    name: "{{database}}"
+    state: absent
+  ignore_errors: yes
+
+- name: "create the {{database}} database"
+  when: database is defined
+  mysql_db:
+    name: "{{database}}"
+    state: present
+  ignore_errors: yes
+
+- name: "configure {{service_name}} service"
+  template:
+    src: "{{service_definition_file}}"
+    dest: "/etc/systemd/system/{{service_name}}.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "enable {{service_name}} service"
+  shell: "systemctl enable {{service_name}}.service"
+
+- name: "reload systemd daemon"
+  shell: "systemctl daemon-reload"
+
+- name: "start {{service_name}}"
+  service:
+    name: "{{service_name}}"
+    state: "started"
+
+- name: "verify {{service_name}} is available internally"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "{{internal_host}}"
+    port: "{{internal_port}}"
+
+- name: "configure nginx ({{service_name}})"
+  template:
+    src: "{{gateway_definition_file}}"
+    dest: "/etc/nginx/sites-enabled/{{service_name}}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "verify {{service_name}} is available externally"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "{{external_host}}"
+    port: "{{external_port}}"
+

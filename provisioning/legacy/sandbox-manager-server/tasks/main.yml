@@ -1,0 +1,34 @@
+---
+- name: configure sandbox-manager-server service
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  template: src=sandbox-manager-server.service.j2
+            dest=/etc/systemd/system/sandbox-manager-server.service
+            owner=root group=root mode=0644
+
+- name: enable sandbox-manager-server service
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  shell: systemctl enable sandbox-manager-server.service
+
+- name: reload systemd daemon
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  shell: systemctl daemon-reload
+
+- name: stop sandbox-manager-server
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  service: name=sandbox-manager-server state=stopped
+
+- name: configure nginx (sandbox-manager-server)
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  template: src=nginx_sandbox_manager.j2 dest=/etc/nginx/sites-enabled/sandbox-manager owner=root group=root mode=0644
+  notify:
+    - restart nginx
+
+- meta: flush_handlers
+
+- name: restart sandbox-manager-server
+  tags: [sandbox-manager-all, sandbox-manager-server, smart-platform]
+  service: name=sandbox-manager-server enabled=yes state=restarted
+
+- name: verify sandbox-manager-server is available
+  tags: [sandbox-manager-all, sandbox-manager-server, verify, smart-platform]
+  wait_for: host={{sandman_server_internal_host}} port={{sandman_server_internal_port}}

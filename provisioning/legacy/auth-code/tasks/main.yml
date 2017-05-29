@@ -1,0 +1,53 @@
+---
+- name: checkout repository auth_webapp_project
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  git: repo="{{hspc_repo_base}}/{{auth_webapp_project}}"
+       version="{{auth_branch}}"
+       dest="{{hosting_user_home}}/{{auth_webapp_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: checkout repository auth_webapp_ldap_project
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  git: repo="{{hspc_repo_base}}/{{auth_webapp_ldap_project}}"
+       version="{{auth_branch}}"
+       dest="{{hosting_user_home}}/{{auth_webapp_ldap_project}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: patch auth server log4j
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  template: src=log4j.xml.j2
+            dest={{hosting_user_home}}/reference-auth-server-ldap-webapp-deprecated/src/main/resources/log4j.xml
+
+- name: patch auth server login screen
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  template: src=login.jsp.j2
+            dest={{hosting_user_home}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/WEB-INF/views/login.jsp
+
+# install SMART logos
+- name: config company-logo.png
+  tags: [auth-all, auth-code, smart-platform]
+  copy: src=roles/common/files/images/company-logo.png dest={{hosting_user_home}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo.png
+
+- name: config company-logo@2x.png
+  tags: [auth-all, auth-code, smart-platform]
+  copy: src=roles/common/files/images/company-logo.png dest={{hosting_user_home}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo@2x.png
+
+- name: config company-logo-main-web-top.png
+  tags: [auth-all, auth-code, smart-platform]
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest={{hosting_user_home}}/reference-auth-server-ldap-webapp-deprecated/src/main/webapp/static/images/company-logo-main-web-top.png
+
+- name: build hspc auth server
+  tags: [auth-all, auth-code, smart-platform]
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}
+       mvn clean install -e -U -f reference-auth-server-ldap-webapp-deprecated/pom.xml
+
+- meta: flush_handlers
