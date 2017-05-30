@@ -6,9 +6,9 @@ INSERT INTO client_details (id, client_id, client_secret, client_name, dynamical
     (1, '{{auth_server_client}}', '{{auth_server_password}}', 'Test Client', false, null, 3600, 600, true, null, null, null),
     (2, 'fhir_starter', NULL, 'FHIR Starter', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/fhir.png"),
     (3, 'my_web_app', NULL, 'My Web App', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/my.png"),
-    (4, 'bp_centiles', NULL, 'BP Centiles', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/bpc.png"),
-    (5, 'cardiac_risk', NULL, 'Cardiac Risk', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/cardio.png"),
-    (6, 'growth_chart', NULL, 'Growth Chart', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/pgc.png"),
+    (4, 'bp_centiles', NULL, 'BP Centiles', false, null, 3600, 600, true, "NONE", "PUBLIC", "https://content.hspconsortium.org/images/bp-centiles/bpc2.png"),
+    (5, 'cardiac_risk', NULL, 'Cardiac Risk', false, null, 3600, 600, true, "NONE", "PUBLIC", "https://content.hspconsortium.org/images/cardiac-risk/cardiac-risk.png"),
+    (6, 'growth_chart', NULL, 'Growth Chart', false, null, 3600, 600, true, "NONE", "PUBLIC", "https://content.hspconsortium.org/images/growth-chart/growth-chart.png"),
     (7, 'fhir_demo', NULL, 'FHIR Demo App', false, null, 3600, 600, true, "NONE", "PUBLIC", "{{app_server_external_url}}/images/apps/demo.png");
 
 INSERT INTO client_scope (owner_id, scope) VALUES
