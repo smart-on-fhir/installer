@@ -426,6 +426,8 @@ cardiac_risk_project_info:
     base_folder: "{{hosting_user_home}}/apps/static/apps"
     name: "cardiac-risk"
     folder: "{{hosting_user_home}}/apps/static/apps/cardiac-risk"
+  hosting:
+    client_id: 5
 bp_centiles_project_info:
   repo:
     base_url: "{{smart_repo_base}}"
@@ -435,6 +437,8 @@ bp_centiles_project_info:
     base_folder: "{{hosting_user_home}}/apps/static/apps"
     name: "bp-centiles"
     folder: "{{hosting_user_home}}/apps/static/apps/bp-centiles"
+  hosting:
+    client_id: 4
 growth_chart_project_info:
   repo:
     base_url: "{{smart_repo_base}}"
@@ -444,6 +448,8 @@ growth_chart_project_info:
     base_folder: "{{hosting_user_home}}/apps/static/apps"
     name: "growth-chart"
     folder: "{{hosting_user_home}}/apps/static/apps/growth-chart"
+  hosting:
+    client_id: 6
 patient_picker_project_info:
   repo:
     base_url: "{{hspc_repo_base}}"
