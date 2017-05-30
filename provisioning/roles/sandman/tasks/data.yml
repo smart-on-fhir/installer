@@ -1,6 +1,5 @@
 ---
 - name: "copy the sandman database scripts"
-  when: sandman_mysql_reset_database
   template:
     src: "{{item}}.j2"
     dest: "{{hosting_user_home}}/sandman/mysql/{{item}}"
@@ -9,10 +8,10 @@
     - "initialize.sql"
 
 - name: "load the sandman database scripts"
-  when: sandman_mysql_reset_database
   mysql_db:
     name: "{{sandman_server_database}}"
     state: import
     target: "{{hosting_user_home}}/sandman/mysql/{{item}}"
   with_items:
     - "initialize.sql"
+  ignore_errors: yes
