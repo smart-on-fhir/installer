@@ -23,10 +23,10 @@
   with_items:
     - "pom.xml"
 
-#- name: "patch auth server login screen"
-#  become_user: "{{hosting_username}}"
-#  template: src=login.jsp.j2
-#            dest={{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views/login.jsp
+- name: "patch auth server login screen"
+  become_user: "{{hosting_username}}"
+  template: src=login.jsp.j2
+            dest={{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views/login.jsp
 
 # install SMART logos
 - name: "config company-logo.png"
