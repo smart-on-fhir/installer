@@ -1,7 +1,7 @@
 ---
 - name: "copy the auth database scripts"
   template:
-    src: "{{item}}"
+    src: "{{item}}.j2"
     dest: "{{hosting_user_home}}/auth/mysql/{{item}}"
     mode: "0700"
   with_items:

@@ -23,6 +23,10 @@ INSERT INTO client_grant_type (owner_id, grant_type) VALUES
   ((SELECT id from client_details where client_id = 'sand_man'), 'authorization_code'),
   ((SELECT id from client_details where client_id = 'sandman_admin'), 'client_credentials');
 
+INSERT INTO client_authority (owner_id, authority) VALUES
+  ((SELECT id from client_details where client_id = 'sandman_admin'), 'ROLE_ADMIN'),
+  ((SELECT id from client_details where client_id = 'sandman_admin'), 'ROLE_USER');
+
 INSERT INTO whitelisted_site (creator_user_id, client_id) VALUES
   ('admin', 'sand_man');
 
@@ -37,10 +41,6 @@ INSERT INTO whitelisted_site_scope (owner_id, scope) VALUES
 
 INSERT INTO whitelisted_site_scope (owner_id, scope) VALUES
   ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'profile');
-
-INSERT INTO client_authority (owner_id, authority) VALUES
-  ((SELECT id from whitelisted_site where client_id = 'sandman_admin'), 'ROLE_ADMIN'),
-  ((SELECT id from whitelisted_site where client_id = 'sandman_admin'), 'ROLE_USER');
 
 COMMIT;
 
