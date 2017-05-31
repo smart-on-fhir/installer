@@ -6,7 +6,6 @@
     - settings_pwm.yml
     - settings_apacheds.yml
     - settings_sandman.yml
-    - custom_settings.yml
   roles:
     - common
     - pwm
@@ -22,7 +21,6 @@
     - settings_pwm.yml
     - settings_apacheds.yml
     - settings_sandman.yml
-    - custom_settings.yml
   roles:
     - common
     - pwm

@@ -4,7 +4,6 @@
   vars_files:
     - settings.yml
     - settings_apacheds.yml
-    - custom_settings.yml
   roles:
     - apacheds
 
@@ -17,6 +16,5 @@
   vars_files:
     - settings.yml
     - settings_apacheds.yml
-    - custom_settings.yml
   roles:
     - apacheds

@@ -4,7 +4,6 @@
   vars_files:
     - settings.yml
     - settings_apps.yml
-    - custom_settings.yml
   roles:
     - common
     - apps
@@ -18,7 +17,6 @@
   vars_files:
     - settings.yml
     - settings_apps.yml
-    - custom_settings.yml
   roles:
     - common
     - apps

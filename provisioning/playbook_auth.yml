@@ -8,7 +8,6 @@
     - settings_apps.yml
     - settings_sandman.yml
     - settings_apacheds.yml
-    - custom_settings.yml
   roles:
     - common
     - auth
@@ -26,7 +25,6 @@
     - settings_apps.yml
     - settings_sandman.yml
     - settings_apacheds.yml
-    - custom_settings.yml
   roles:
     - common
     - auth

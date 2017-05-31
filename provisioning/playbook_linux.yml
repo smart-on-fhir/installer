@@ -3,7 +3,6 @@
   become: yes
   vars_files:
     - settings.yml
-    - custom_settings.yml
   roles:
     - linux
 
@@ -15,6 +14,5 @@
   become: yes
   vars_files:
     - settings.yml
-    - custom_settings.yml
   roles:
     - linux

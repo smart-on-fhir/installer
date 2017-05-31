@@ -5,7 +5,6 @@
     - settings.yml
     - settings_messaging.yml
     - settings_api.yml
-    - custom_settings.yml
   roles:
     - common
     - messaging
@@ -20,7 +19,6 @@
     - settings.yml
     - settings_messaging.yml
     - settings_api.yml
-    - custom_settings.yml
   roles:
     - common
     - messaging
