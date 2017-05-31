@@ -23,6 +23,7 @@ auth_server_forgotPasswordUrl: ""
 #auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
 auth_server_client: "client"
 auth_server_password: "secret"
+auth_server_enable_mock_endpoints: true
 
 auth_server_mysql_host: "localhost"
 auth_server_database: "oic"
