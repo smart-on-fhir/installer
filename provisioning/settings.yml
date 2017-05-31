@@ -4,11 +4,6 @@
 # To customize the SMART-on-FHIR stack, you can either edit the settings directly in
 # this file or set up custom settings overrides (such as custom_settings.yml)
 
-# Linux
-#installer_user: "vagrant"
-installer_user_home: "/home/{{installer_user}}"
-installer_project_home: "{{installer_user_home}}/installer"
-
 # The user account that will host the servers. If a user account of this name
 # already exists on the system, the installer will not alter its credentials or
 # authentication mechanism. If you need to set up actual password authentication,
@@ -57,24 +52,9 @@ jetty_runner_artifact_packaging: "jar"
 jetty_runner_artifact_repository_url: "{{release_repository_url}}"
 jetty_runner_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
 
-
-
-########################################
-# props refactor
-########################################
-
-
-
-
-
-
-
-
 # Controls whether HTTP requests on port 80 will be
 # redirected to the server's base URLs
 http_redirect: true
-
-enable_pwm: true
 
 aws_output_format: 'json'
 aws_region: "changeme"
@@ -85,16 +65,10 @@ aws_ec2_volume_id: "changeme"
 # Maximum size of sample patient data files
 max_upload_size: "5M"
 
-# todo this is including "false" in the result
-#http_protocol: "{{'https' if use_secure_http else 'http'}}"
-http_protocol: "http"
-
 # When setting up SSL security for the various services, these settings will allow you to
 # specify your own certificates instead of using self-signed certificates.
 # See files/sample-certificates for the names of the certificate files expected by the script
 use_custom_ssl_certificates: false
-#custom_ssl_certificates_path: examples/certificates
-certificate_truststore_alias: "smart"
 
 # Self-signed SSL certificates settings (if generating self-signed certificates)
 self_signed_certificate_ssl_country: "US"
@@ -124,4 +98,7 @@ email_smtp_password: "changeme"
 email_smtp_password_encrypted: "changeme"
 email_admin_address: "changeme@example.com"
 email_contact_addresss: "support@example.org"
+
+#custom_ssl_certificates_path: examples/certificates
+certificate_truststore_alias: "smart"
 

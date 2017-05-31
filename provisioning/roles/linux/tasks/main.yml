@@ -2,7 +2,7 @@
 - name: "installer profile"
   template:
     src: ".bash_profile.j2"
-    dest: "{{installer_user_home}}/.bash_profile"
+    dest: "~/.bash_profile"
 
 - name: check custom certificate preconditions
   fail: msg="please define the path to the custom certificates that you would like to use"

@@ -96,14 +96,6 @@
   notify:
         - restart nginx
 
-- name: copy custom ssl certificates
-  tags: [linux-all, smart-platform]
-  when: use_secure_http and use_custom_ssl_certificates
-  copy: src="{{custom_ssl_certificates_path}}/{{certificate_key_filename}}"
-        dest=/etc/nginx/ssl/{{certificate_key_filename}}
-  notify:
-        - restart nginx
-
 - name: remove server certificate from truststore
   tags: [linux-all, smart-platform]
   when: use_secure_http and use_custom_ssl_certificates
