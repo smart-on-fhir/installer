@@ -3,6 +3,12 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_sandman.yml
+    - settings_apps.yml
+    - settings_messaging.yml
+    - settings_auth.yml
+    - settings_pwm.yml
+    - settings_api.yml
     - custom_settings.yml
   roles:
     - common
@@ -16,6 +22,12 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_sandman.yml
+    - settings_apps.yml
+    - settings_messaging.yml
+    - settings_auth.yml
+    - settings_pwm.yml
+    - settings_api.yml
     - custom_settings.yml
   roles:
     - common

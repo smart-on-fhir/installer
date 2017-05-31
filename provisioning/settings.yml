@@ -1,12 +1,11 @@
 ---
-
 # *** Main configuration file for the SMART-on-FHIR Installer ***
 
 # To customize the SMART-on-FHIR stack, you can either edit the settings directly in
 # this file or set up custom settings overrides (such as custom_settings.yml)
 
 # Linux
-installer_user: "vagrant"
+#installer_user: "vagrant"
 installer_user_home: "/home/{{installer_user}}"
 installer_project_home: "{{installer_user_home}}/installer"
 
@@ -22,29 +21,60 @@ hosting_user_jobs_home: "{{hosting_user_home}}/jobs"
 hosting_user_jobs_output_home: "{{hosting_user_jobs_home}}/output"
 hosting_user_scripts_home: "{{hosting_user_home}}/scripts"
 
+# When set to true, https is used
+use_secure_http: false
+
+certificate_crt_filename: "self-signed-certificate.crt"
+certificate_key_filename: "self-signed-certificate.key"
+
+# Settigs for Jetty and Oracle Java. You probably won't have to alter these
+# unles you are switching to a different version of Jetty or Java
+java_home: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
+
+hspc_platform_jwt_key: "devKeyDoNotUseInProductionShouldBeOverwrittenInProdConfiguration"
+
 top_level_domain: "org"
 second_level_domain: "smarthealthit"
 additional_subdomains: ""
 domain_name: "{{additional_subdomains}}{{second_level_domain}}.{{top_level_domain}}"
 
+# Artifact Repositories
+m2_repo_folder: "{{hosting_user_home}}/.m2/repository"
+snapshot_repository_url: "https://oss.sonatype.org/content/repositories/snapshots"
+release_repository_url: "https://repo1.maven.org/maven2/"
+smart_repo_base: "https://github.com/smart-on-fhir"
+hspc_repo_base: "https://bitbucket.org/hspconsortium"
 # By default Ansible will update the local copies of the servers code from
 # the source repositories. Set this to "no" if you would rather not have the
 # repositories updated on each run.
 update_repositories: "yes"
 
-hspc_platform_jwt_key: "devKeyDoNotUseInProductionShouldBeOverwrittenInProdConfiguration"
+# jetty_runner Artifact
+jetty_runner_artifact_group_id: "org.eclipse.jetty"
+jetty_runner_artifact_artifact_id: "jetty-runner"
+jetty_runner_artifact_version: "9.3.6.v20151106"
+jetty_runner_artifact_packaging: "jar"
+jetty_runner_artifact_repository_url: "{{release_repository_url}}"
+jetty_runner_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
 
-# When set to true, https is used
-use_secure_http: false
+
+
+########################################
+# props refactor
+########################################
+
+
+
+
+
+
+
 
 # Controls whether HTTP requests on port 80 will be
 # redirected to the server's base URLs
 http_redirect: true
 
 enable_pwm: true
-enable_api_sample_data: true
-enable_backup_restore_jobs: false
-enable_aws_snapshot: false
 
 aws_output_format: 'json'
 aws_region: "changeme"
@@ -64,8 +94,6 @@ http_protocol: "http"
 # See files/sample-certificates for the names of the certificate files expected by the script
 use_custom_ssl_certificates: false
 #custom_ssl_certificates_path: examples/certificates
-certificate_crt_filename: "self-signed-certificate.crt"
-certificate_key_filename: "self-signed-certificate.key"
 certificate_truststore_alias: "smart"
 
 # Self-signed SSL certificates settings (if generating self-signed certificates)
@@ -87,305 +115,6 @@ mysql_privilage: "*.*:ALL,GRANT"
 #mysql_bind_address: "0.0.0.0"
 mysql_connect_host: "%"
 
-# Settigs for Jetty and Oracle Java. You probably won't have to alter these
-# unles you are switching to a different version of Jetty or Java
-java_home: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
-
-# Artifact Repositories
-m2_repo_folder: "{{hosting_user_home}}/.m2/repository"
-snapshot_repository_url: "https://oss.sonatype.org/content/repositories/snapshots"
-release_repository_url: "https://repo1.maven.org/maven2/"
-smart_repo_base: "https://github.com/smart-on-fhir"
-hspc_repo_base: "https://bitbucket.org/hspconsortium"
-
-# jetty_runner Artifact
-jetty_runner_artifact_group_id: "org.eclipse.jetty"
-jetty_runner_artifact_artifact_id: "jetty-runner"
-jetty_runner_artifact_version: "9.3.6.v20151106"
-jetty_runner_artifact_packaging: "jar"
-jetty_runner_artifact_repository_url: "{{release_repository_url}}"
-jetty_runner_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
-
-# Auth Artifact
-auth_server_artifact_group_id: "org.hspconsortium.reference"
-auth_server_artifact_artifact_id: "hspc-reference-auth-server-ldap-webapp"
-auth_server_artifact_version: "1.6.1-SNAPSHOT"
-auth_server_artifact_packaging: "war"
-auth_server_artifact_repository_url: "{{snapshot_repository_url}}"
-auth_server_mysql_host: "localhost"
-auth_server_database: "oic"
-auth_server_internal_host: "localhost"
-auth_server_internal_port: "8060"
-auth_server_external_host: "{{services_host}}"
-auth_server_external_port: "9060"
-auth_server_external_url: "{{http_protocol}}://{{auth_server_external_host}}:{{auth_server_external_port}}"
-auth_server_initial_memory: 128M
-auth_server_max_memory: 256M
-#auth_server_persona_cookie_domain: smarthealthit.org
-auth_server_hspc_account_cookie_name: smart-login-cookie
-auth_server_persona_cookie_name: smart-persona-login-cookie
-auth_server_persona_cookie_domain: localhost
-auth_server_CONTEXT_FHIR_ENDPOINT: "{{api_dstu2_server_external_url}},{{api_stu3_server_external_url}}"
-auth_mysql_reset_database: false
-auth_server_newUserUrl: ""
-#auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
-auth_server_forgotPasswordUrl: ""
-#auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
-auth_server_client: "client"
-auth_server_password: "secret"
-
-# Auth Server
-#auth_server_host: "localhost"
-#auth_server_port: "9060"
-# for local install with /auth and /persona from the same host
-# requiring two deployments of the auth server
-#auth_server_context: "/auth/"
-#auth_server_name: "Authorization Server"
-#auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-#auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
-#auth_server_base_url: "{{auth_server_inferred_protocol}}://{{auth_server_host}}{{auth_server_inferred_port}}"
-#auth_server_url: "{{auth_server_base_url}}{{auth_server_context}}"
-#auth_server_client: "client"
-#auth_server_password: "secret"
-#auth_server_enable_mock_endpoints: true
-#auth_server_initial_memory: 128M
-#auth_server_max_memory: 256M
-#auth_branch: "master"
-#auth_webapp_project: "reference-auth-server-webapp-deprecated"
-#auth_webapp_ldap_project: "reference-auth-server-ldap-webapp-deprecated"
-#auth_server_database: oic
-#auth_db_file: "{{hosting_user_home}}/auth_server_db.hsql"
-
-# Persona-Auth Server
-#persona_auth_server_host: "localhost"
-#persona_auth_server_port: "9160"
-#persona_auth_server_internal_host: "localhost"
-#persona_auth_server_internal_port: "8160"
-#persona_auth_server_context: "/persona-auth/"
-#persona_auth_server_name: "Persona Authorization Server"
-#persona_auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-#persona_auth_server_inferred_port: "{{(':'+persona_auth_server_port|string) if persona_auth_server_port|int not in (80,443) else ''}}"
-#persona_auth_server_base_url: "{{persona_auth_server_inferred_protocol}}://{{persona_auth_server_host}}{{persona_auth_server_inferred_port}}"
-#persona_auth_server_url: "{{persona_auth_server_base_url}}{{persona_auth_server_context}}"
-#persona_auth_server_enable_mock_endpoints: false
-#persona_auth_server_newUserUrl: ""
-#persona_auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
-#persona_auth_server_forgotPasswordUrl: ""
-#persona_auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
-
-
-# api common properties
-api_server_artifact_group_id: "org.hspconsortium.reference"
-api_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
-api_server_artifact_version: "1.5.2"
-api_server_artifact_packaging: "jar"
-api_server_artifact_repository_url: "{{release_repository_url}}"
-api_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
-api_mysql_host: "{{mysql_host}}"
-api_mysql_username: "{{mysql_username}}"
-api_mysql_password: "{{mysql_password}}"
-api_server_internal_host: "localhost"
-api_schema_version: 4
-api_baseline_snapshot: "initial"
-api_server_oauth2_clientId: "hspc_resource_server"
-api_server_oauth2_clientSecret: "secret"
-api_server_default_sandbox_url: "{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/data"
-
-# api_dstu2 artifact
-api_dstu2_server_sandbox: "smartdstu2"
-api_dstu2_server_database: "hspc_{{api_schema_version}}_{{api_dstu2_server_sandbox}}"
-api_dstu2_mysql_reset_database: false
-api_dstu2_server_internal_port: "8071"
-api_dstu2_server_external_host: "{{services_host}}"
-api_dstu2_server_external_port: "9071"
-api_dstu2_server_external_url: "{{http_protocol}}://{{api_dstu2_server_external_host}}:{{api_dstu2_server_external_port}}"
-api_dstu2_server_initial_memory: 128M
-api_dstu2_server_max_memory: 256M
-api_dstu2_sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
-api_dstu2_sample_patients_branch: "master"
-api_dstu2_custom_sample_data_repo: "https://github.com/smart-on-fhir/custom-sample-data.git"
-api_dstu2_custom_sample_data_branch: "master"
-api_dstu2_sample_patients_limit: "10"
-api_dstu2_sample_patients_generator_params: "--id-prefix SMART"
-
-# api_stu3 artifact
-api_stu3_server_sandbox: "smartstu3"
-api_stu3_server_database: "hspc_{{api_schema_version}}_{{api_stu3_server_sandbox}}"
-api_stu3_mysql_reset_database: false
-api_stu3_server_internal_port: "8074"
-api_stu3_server_external_host: "{{services_host}}"
-api_stu3_server_external_port: "9074"
-api_stu3_server_external_url: "{{http_protocol}}://{{api_stu3_server_external_host}}:{{api_stu3_server_external_port}}"
-api_stu3_server_initial_memory: 128M
-api_stu3_server_max_memory: 256M
-
-# sandman artifact
-sandman_server_artifact_group_id: "org.hspconsortium.sandbox"
-sandman_server_artifact_artifact_id: "hspc-sandbox-manager"
-sandman_server_artifact_version: "1.7.0-SNAPSHOT"
-sandman_server_artifact_packaging: "war"
-sandman_server_artifact_repository_url: "{{snapshot_repository_url}}"
-sandman_server_database: "sandman"
-sandman_server_internal_host: "localhost"
-sandman_server_internal_port: "8080"
-sandman_server_external_host: "{{services_host}}"
-sandman_server_external_port: "9080"
-sandman_server_external_url: "{{http_protocol}}://{{sandman_server_external_host}}:{{sandman_server_external_port}}"
-sandman_server_initial_memory: "128M"
-sandman_server_max_memory: "256M"
-sandman_server_env: "prod"
-sandman_server_send_email: "false"
-sandman_server_default_sandbox_creator_roles: "ADMIN,MANAGE_USERS,MANAGE_DATA"
-sandman_server_default_system_roles: "USER"
-sandman_server_default_private_sandbox_roles: "USER,MANAGE_USERS,MANAGE_DATA"
-sandman_server_default_sandbox_visibility: "PUBLIC"
-sandman_server_default_public_sandbox_roles: "USER"
-sandbox_server_admin_access_client_id: "sandman_admin"
-sandbox_server_admin_access_client_secret: "changeme"
-sandman_mysql_reset_database: false
-sandman_server_api_v1_url: "{{api_dstu2_server_external_url}}"
-sandman_server_api_v2_url: "{{api_stu3_server_external_url}}"
-sandman_server_api_v3_url: "{{api_stu3_server_external_url}}"
-sandman_server_api_v4_url: "{{api_stu3_server_external_url}}"
-sandman_company_logo_path: "static/branding/smart/images/smart-logo.png"
-sandman_company_logo2x_path: "static/branding/smart/images/smart-logo@2x.png"
-
-# apacheds server configuration
-apacheds_server_external_host: "{{services_host}}"
-apacheds_server_external_port: "10389"
-apacheds_server_external_url: "ldap://{{apacheds_server_external_host}}:{{apacheds_server_external_port}}"
-apacheds_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
-apacheds_server_initial_memory: 128M
-apacheds_server_max_memory: 256M
-apacheds_server_max_perm_memory: 128M
-apacheds_version: "apacheds-2.0.0-M23"
-apacheds_artifact_name: "{{apacheds_version}}.tar.gz"
-apacheds_home: "{{hosting_user_home}}/{{apacheds_version}}"
-apacheds_artifact_url: "http://mirrors.sonic.net/apache//directory/apacheds/dist/2.0.0-M23/{{apacheds_artifact_name}}"
-apacheds_server_internal_host: "{{apacheds_server_external_host}}"
-apacheds_server_internal_port: "{{apacheds_server_external_port}}"
-apacheds_server_system_admin: "admin"
-apacheds_server_system_admin_dn: "uid={{apacheds_server_system_admin}},ou=system"
-# note, this does not change the password in the apache_ds system
-# the apacheds admin password is already set in the apacheds-2.0.0-M23-configured.tar
-# if you would like a different password, change it in ApacheDS after deploy
-# then change it here for other services to use
-apacheds_server_system_admin_initial_password: "secret"
-# if you are changing the ldap password after install, set this to the future password
-# so the services can be configured to use it correctly
-apacheds_server_system_admin_password: "secret"
-apacheds_server_sandbox_admin: "admin"
-apacheds_server_sandbox_admins_ou: "ou=admins"
-apacheds_server_sandbox_admins_context: "{{apacheds_server_sandbox_admins_ou}},{{apacheds_server_base}}"
-apacheds_server_sandbox_admin_cn: "cn={{apacheds_server_sandbox_admin}}"
-apacheds_server_sandbox_admin_dn: "{{apacheds_server_sandbox_admin_cn}},{{apacheds_server_sandbox_admins_context}}"
-apacheds_server_sandbox_admin_password: "password"
-apacheds_server_sandbox_demo: "demo"
-apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
-apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"
-apacheds_server_sandbox_demo_password: "demo"
-apacheds_server_sandbox_users_ou: "ou=users"
-apacheds_server_sandbox_users_context: "{{apacheds_server_sandbox_users_ou}},{{apacheds_server_base}}"
-apacheds_server_sandbox_test_cn: "cn=test"
-apacheds_server_sandbox_test_dn: "{{apacheds_server_sandbox_test_cn}},{{apacheds_server_sandbox_users_context}}"
-
-# API DSTU2 Server
-#api_dstu2_server_host: "localhost"
-#api_dstu2_server_port: "9071"
-#api_dstu2_server_context: "/api/"
-#api_dstu2_server_name: "Local DSTU2 FHIR dev server"
-#api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-#api_dstu2_server_inferred_port: "{{(':'+api_dstu2_server_port|string) if api_dstu2_server_port|int not in (80,443) else ''}}"
-#api_dstu2_server_smart_sandbox: "smartdstu2"
-#api_dstu2_server_base_url: "{{api_dstu2_server_inferred_protocol}}://{{api_dstu2_server_host}}{{api_dstu2_server_inferred_port}}"
-#api_dstu2_server_context_url: "{{api_dstu2_server_base_url}}{{api_dstu2_server_context}}"
-#api_dstu2_server_smart_sandbox_url: "{{api_dstu2_server_context_url}}{{api_dstu2_server_smart_sandbox}}"
-#api_dstu2_server_smart_sandbox_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/data"
-#api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_smart_sandbox_url}}/open"
-#api_dstu2_server_initial_memory: "128M"
-#api_dstu2_server_max_memory: "256M"
-#api_dstu2_schema_version: "1"
-#api_dstu2_repos_base: "https://bitbucket.org/hspconsortium"
-#api_dstu2_repo_api_mysql_project: "reference-api-mysql-deprecated"
-#api_dstu2_repo_api_webapp_project: "reference-api-webapp-multitenant-deprecated"
-#api_dstu2_repo_api_branch: "SMART-SANDBOX-DSTU2"
-#api_dstu2_database: "hspc_{{api_dstu2_schema_version}}_{{api_dstu2_server_smart_sandbox}}"
-#api_dstu2_mysql_privilage: "{{api_dstu2_database}}.*:ALL/*.*:ALL,GRANT"
-#api_dstu2_server_internal_host: "localhost"
-#api_dstu2_server_internal_port: "8071"
-#api_dstu2_server_internal_base_url: "http://{{api_dstu2_server_internal_host}}:{{api_dstu2_server_internal_port}}{{api_dstu2_server_context}}"
-#api_dstu2_server_internal_smart_sandbox_url: "{{api_dstu2_server_internal_base_url}}{{api_dstu2_server_smart_sandbox}}"
-#api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{api_dstu2_server_internal_smart_sandbox_url}}/data"
-#api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{api_dstu2_server_internal_smart_sandbox_url}}/open"
-# Set this to either "open" or "secured" on the primary endpoint /data
-#api_dstu2_server_security_mode: "secured"
-# Set this to none to remove open access
-#api_dstu2_server_open_access_endpoint: "open"
-# Set this to "mock" on the primary endpoint /data
-#mock_api_dstu2_server_security_mode: "mock"
-
-# Persona-API DSTU2 Server
-#persona_api_dstu2_server_internal_host: "localhost"
-#persona_api_dstu2_server_internal_port: "8171"
-#persona_api_dstu2_server_internal_base_url: "http://{{persona_api_dstu2_server_internal_host}}:{{persona_api_dstu2_server_internal_port}}{{persona_api_dstu2_server_context}}"
-#persona_api_dstu2_server_internal_smart_sandbox_url: "{{persona_api_dstu2_server_internal_base_url}}{{persona_api_dstu2_server_smart_sandbox}}"
-#persona_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/data"
-#persona_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_internal_smart_sandbox_url}}/open"
-#persona_api_dstu2_server_host: "localhost"
-#persona_api_dstu2_server_port: "9171"
-#persona_api_dstu2_server_context: "/persona-api/"
-#persona_api_dstu2_server_name: "Local Persona DSTU2 FHIR dev server"
-#persona_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-#persona_api_dstu2_server_inferred_port: "{{(':'+persona_api_dstu2_server_port|string) if persona_api_dstu2_server_port|int not in (80,443) else ''}}"
-#persona_api_dstu2_server_smart_sandbox: "smartdstu2"
-#persona_api_dstu2_server_base_url: "{{persona_api_dstu2_server_inferred_protocol}}://{{persona_api_dstu2_server_host}}{{persona_api_dstu2_server_inferred_port}}"
-#persona_api_dstu2_server_context_url: "{{persona_api_dstu2_server_base_url}}{{persona_api_dstu2_server_context}}"
-#persona_api_dstu2_server_smart_sandbox_url: "{{persona_api_dstu2_server_context_url}}{{persona_api_dstu2_server_smart_sandbox}}"
-#persona_api_dstu2_server_smart_sandbox_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/data"
-#persona_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{persona_api_dstu2_server_smart_sandbox_url}}/open"
-
-# Mock-API DSTU2 Server
-#mock_api_dstu2_server_internal_host: "localhost"
-#mock_api_dstu2_server_internal_port: "9271"
-#mock_api_dstu2_server_internal_base_url: "http://{{mock_api_dstu2_server_internal_host}}:{{mock_api_dstu2_server_internal_port}}{{mock_api_dstu2_server_context}}"
-#mock_api_dstu2_server_internal_smart_sandbox_url: "{{mock_api_dstu2_server_internal_base_url}}{{mock_api_dstu2_server_smart_sandbox}}"
-#mock_api_dstu2_server_internal_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/data"
-#mock_api_dstu2_server_internal_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_internal_smart_sandbox_url}}/open"
-#mock_api_dstu2_server_host: "localhost"
-#mock_api_dstu2_server_port: "9271"
-#mock_api_dstu2_server_context: "/mock-api/"
-#mock_api_dstu2_server_name: "Local Mock DSTU2 FHIR dev server"
-#mock_api_dstu2_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-#mock_api_dstu2_server_inferred_port: "{{(':'+mock_api_dstu2_server_port|string) if mock_api_dstu2_server_port|int not in (80,443) else ''}}"
-#mock_api_dstu2_server_smart_sandbox: "smartdstu2"
-#mock_api_dstu2_server_base_url: "{{mock_api_dstu2_server_inferred_protocol}}://{{mock_api_dstu2_server_host}}{{mock_api_dstu2_server_inferred_port}}"
-#mock_api_dstu2_server_context_url: "{{mock_api_dstu2_server_base_url}}{{mock_api_dstu2_server_context}}"
-#mock_api_dstu2_server_smart_sandbox_url: "{{mock_api_dstu2_server_context_url}}{{mock_api_dstu2_server_smart_sandbox}}"
-#mock_api_dstu2_server_smart_sandbox_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/data"
-#mock_api_dstu2_server_smart_sandbox_open_fhir_root_url: "{{mock_api_dstu2_server_smart_sandbox_url}}/open"
-
-# PWM Server
-pwm_project: "pwm"
-pwm_branch: "master"
-pwm_server_database: pwm
-pwm_server_internal_host: "localhost"
-pwm_server_internal_port: "8092"
-pwm_server_host: "localhost"
-#pwm_server_host: "service.smarthealthit.org"
-pwm_server_port: "9092"
-pwm_server_initial_memory: 128M
-pwm_server_max_memory: 256M
-pwm_db_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
-pwm_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-pwm_server_inferred_port: "{{(':'+pwm_server_port|string) if pwm_server_port|int not in (80,443) else ''}}"
-pwm_server_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_host}}{{pwm_server_inferred_port}}/"
-pwm_configpasswordhash: $2a$10$02soH2RZk9WEi3eYcv3h2.sP8eHEyzXw/k6TaUpJkT2v9CcPssA52
-pwm_securitykey_encrypted: DlybqwJ9yN2wYi1ywaqZDGMEVp3WzCow/TMyVKNxAxclbKlBCl/OcAcXAP1xNhtF060jCPD0dfptWzjW2c/kIKf6o/iemTKGnRNDF11UmfCzAesx5CGplI+2StSmvkGl/bmWXTQc+L9xNUPrRdgVNQJVzXvfIaOy8xTTx6s6nPqhOCYnPfuEXKMTSEJo9nXvIEGWurVSRFtCPV/L9QF8YKjuUWvWiA0Ftc/S0dG8FJQ85ohlFsttThUcZ0cf4OswG3EY2oQjlMfNE0RFxe312Tr2F+bcB8UBlb+58TCQe/pOlpABc580yoWkvtTKcxO0zfkeYHIMtGfMZL2Ve6XzHFUODX9/PeZUUhFbjXx99lVzG6ypXautFYKbWmMpc2addjuiH1IEIO7wADREsYcTREtkWjOd5xk8ksB+wX/4zoUPFKCdJ2Pw8oLc6Pm9XQjiU+WEUvcpWWzgha0K2LeCSR2HQeCfu6x62cQgYVQDGawzEvZ5KWdvrBOvfi0jz7ZFmDek3ozmVqWColdkej42Jqhf4rHNjI99AdRvdHUaTatUIf38kNSKVl0v5Vq9mdjYfm+RSvYW3AJooEUSV2MfVM65t7WTSqS+YP6SZZGruHsnG0qJYQNqswfycI6pJhBr3M7WH1VOG13qx3+uXXD9811CTcwoI2Su6kAyNg/0VhEfD9pvaTKzNT0FC+8rODPjcfcBSC3NvLCalCSBTtB4f+UP6pVhRNAVMQ11bR4usVtk9XG2AWAVZQj7aBPtAReOxOfFyCiRtHOiB5wPYM7pnWHTjNMWC/kPaHZnV+yNWgqebAbZGQif7v9PpKjAQWq24b8z1Z9Zn+XHQA8Cm3le7xu7pzQ+WMS9NXBy+CgSpjxPVVlqUxIGUe2SM2oMWq0SrxPxLwpZAXooB+47N/tRKiy8nofTG3FvRktY4U88K1G/8HmPpA/Xix+lzNOM5JYN81dSWa7yBAopORdp+DF7yTuQeAJamh+DoMy6R/vUgdOfntmglaSh8OAlacn16oi6hNdmFEQ9FYNxscRtesEee82r5w2Tf7PxE6zWT9McIlj1wTUxya0AKp/+HAQrWuEeVbZVJmvqlgitWZmFL0SL6pFNwGibXb8T3dxieX2xm0AMSyteIu7x1G+aNBo3DccyOo+Yp34nN4cC5LmonrCEDI6vD0U3RhGX+NSgTrjWQwUlDmjORcc3N+X6dUZLNVchSEG49c/oZVwXd8WRYH/NvBgJQY/11qGsBOgNBCR8hGwEqwMmIZBzrGyPFpVxbj+hRJGz7AQfNp+AtUX5fN7rHeEbNNYIOH3T+Usmv7NyfNpZqQjzZfBtd0kKH11G0wfwzxj1TcrQXtwayUOD8sSWhXraKH398+GAKyMYC/y+auk=
-pwm_sso_authentication_header_name: c8381465-a7f8-4ecc-958d-ec296d6e8671
-pwm_ldap_proxy_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
-pwm_i18n_display_name: SMART Health IT Account Self Service
-tomcat_home: "{{hosting_user_home}}/apache-tomcat-8.5.12"
-
 # Email server account
 email_account_description: "SMART Account Services"
 email_smtp_address: "smtp.example.com"
@@ -396,69 +125,3 @@ email_smtp_password_encrypted: "changeme"
 email_admin_address: "changeme@example.com"
 email_contact_addresss: "support@example.org"
 
-# messaging artifact
-messaging_server_artifact_group_id: "org.hspconsortium.reference"
-messaging_server_artifact_artifact_id: "hspc-reference-messaging"
-messaging_server_artifact_version: "1.3.0-SNAPSHOT"
-messaging_server_artifact_packaging: "jar"
-messaging_server_artifact_repository_url: "{{snapshot_repository_url}}"
-messaging_server_internal_host: "localhost"
-messaging_server_internal_port: "8091"
-messaging_server_external_host: "{{services_host}}"
-messaging_server_external_port: "9091"
-messaging_server_external_url: "{{http_protocol}}://{{messaging_server_external_host}}:{{messaging_server_external_port}}"
-messaging_server_initial_memory: 64M
-messaging_server_max_memory: 128M
-messaging_profiles: test
-messaging_mail_server_username:
-messaging_mail_server_password:
-
-# apps artifact
-app_server_external_host: "{{services_host}}"
-app_server_external_port: "9093"
-app_server_external_url: "{{http_protocol}}://{{app_server_external_host}}:{{app_server_external_port}}"
-cardiac_risk_project_info:
-  repo:
-    base_url: "{{smart_repo_base}}"
-    name: "cardiac-risk-app"
-    tag: "v0.1.1"
-  target:
-    base_folder: "{{hosting_user_home}}/apps/static/apps"
-    name: "cardiac-risk"
-    folder: "{{hosting_user_home}}/apps/static/apps/cardiac-risk"
-  hosting:
-    client_id: 5
-bp_centiles_project_info:
-  repo:
-    base_url: "{{smart_repo_base}}"
-    name: "bp-centiles-app"
-    tag: "v0.1.2"
-  target:
-    base_folder: "{{hosting_user_home}}/apps/static/apps"
-    name: "bp-centiles"
-    folder: "{{hosting_user_home}}/apps/static/apps/bp-centiles"
-  hosting:
-    client_id: 4
-growth_chart_project_info:
-  repo:
-    base_url: "{{smart_repo_base}}"
-    name: "growth-chart-app"
-    tag: "v0.1.2"
-  target:
-    base_folder: "{{hosting_user_home}}/apps/static/apps"
-    name: "growth-chart"
-    folder: "{{hosting_user_home}}/apps/static/apps/growth-chart"
-  hosting:
-    client_id: 6
-patient_picker_project_info:
-  repo:
-    base_url: "{{hspc_repo_base}}"
-    name: "patient-picker"
-    tag: "1.0"
-  target:
-    base_folder: "{{hosting_user_home}}"
-    name: "patient-picker"
-    folder: "{{hosting_user_home}}/patient-picker"
-
-patient_picker_server_external_url: "{{app_server_external_url}}/apps/patient-picker"
-bilirubin_risk_chart_server_external_url: "https://bilirubin-risk-chart.hspconsortium.org"

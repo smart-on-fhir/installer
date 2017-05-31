@@ -1,8 +1,9 @@
 ---
-- hosts: all:!REMOTEHOST
+- hosts: all:local:!REMOTEHOST
   become: yes
   vars_files:
     - settings.yml
+    - settings_apacheds.yml
     - custom_settings.yml
   roles:
     - apacheds
@@ -15,6 +16,7 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_apacheds.yml
     - custom_settings.yml
   roles:
     - apacheds

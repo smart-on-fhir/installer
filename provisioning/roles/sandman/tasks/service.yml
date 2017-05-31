@@ -4,7 +4,7 @@
   vars:
     service_name: "sandman"
     database: "{{sandman_server_database}}"
-    database_reset: "{{sandman_mysql_reset_database}}"
+    database_reset: "{{sandman_mysql_reset_database | default(false)}}"
     service_definition_file: "roles/sandman/templates/sandman.service.j2"
     gateway_definition_file: "roles/sandman/templates/sandman.j2"
     internal_host: "{{sandman_server_internal_host}}"

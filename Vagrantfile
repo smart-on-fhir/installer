@@ -58,6 +58,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #    ansible.tags=["smart-platform"]
 #    ansible.playbook = "provisioning/playbook_api_stu3.yml"
     ansible.playbook = "provisioning/site.yml"
+    # append to the auto-generated inventory file
+    ansible.extra_vars = {
+      installer_user: "vagrant",
+      services_host: "localhost",
+      auth_mysql_reset_database: true,
+      api_dstu2_mysql_reset_database: true,
+      api_stu3_mysql_reset_database: true,
+      sandman_mysql_reset_database: true,
+      enable_api_sample_data: true,
+      enable_backup_restore_jobs: false,
+      enable_aws_snapshot: false
+    }
   end
 
   # If you are running the build on a Windows host, please comment out the

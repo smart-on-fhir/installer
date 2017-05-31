@@ -1,4 +1,8 @@
 ---
+# params:
+#  snapshot_name: ex: initial
+#  snapshot_action: ex: Take
+#
 - name: baseline snapshot
   uri:
     url: "{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/sandbox/snapshot/{{snapshot_name}}"

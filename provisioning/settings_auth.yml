@@ -1,0 +1,68 @@
+---
+# Auth Artifact
+auth_server_artifact_group_id: "org.hspconsortium.reference"
+auth_server_artifact_artifact_id: "hspc-reference-auth-server-ldap-webapp"
+auth_server_artifact_version: "1.6.1-SNAPSHOT"
+auth_server_artifact_packaging: "war"
+auth_server_artifact_repository_url: "{{snapshot_repository_url}}"
+auth_server_internal_host: "localhost"
+auth_server_internal_port: "8060"
+auth_server_external_host: "{{services_host | default(localhost)}}"
+auth_server_external_port: "9060"
+auth_server_external_url: "{{http_protocol}}://{{auth_server_external_host}}:{{auth_server_external_port}}"
+auth_server_initial_memory: 128M
+auth_server_max_memory: 256M
+auth_server_hspc_account_cookie_name: smart-login-cookie
+auth_server_persona_cookie_name: smart-persona-login-cookie
+#auth_server_persona_cookie_domain: smarthealthit.org
+auth_server_persona_cookie_domain: localhost
+auth_server_CONTEXT_FHIR_ENDPOINT: "{{api_dstu2_server_external_url}},{{api_stu3_server_external_url}}"
+auth_server_newUserUrl: ""
+#auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
+auth_server_forgotPasswordUrl: ""
+#auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
+auth_server_client: "client"
+auth_server_password: "secret"
+
+auth_server_mysql_host: "localhost"
+auth_server_database: "oic"
+#auth_mysql_reset_database: false
+
+# Auth Server
+#auth_server_host: "localhost"
+#auth_server_port: "9060"
+# for local install with /auth and /persona from the same host
+# requiring two deployments of the auth server
+#auth_server_context: "/auth/"
+#auth_server_name: "Authorization Server"
+#auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+#auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
+#auth_server_base_url: "{{auth_server_inferred_protocol}}://{{auth_server_host}}{{auth_server_inferred_port}}"
+#auth_server_url: "{{auth_server_base_url}}{{auth_server_context}}"
+#auth_server_client: "client"
+#auth_server_password: "secret"
+#auth_server_enable_mock_endpoints: true
+#auth_server_initial_memory: 128M
+#auth_server_max_memory: 256M
+#auth_branch: "master"
+#auth_webapp_project: "reference-auth-server-webapp-deprecated"
+#auth_webapp_ldap_project: "reference-auth-server-ldap-webapp-deprecated"
+#auth_server_database: oic
+#auth_db_file: "{{hosting_user_home}}/auth_server_db.hsql"
+
+# Persona-Auth Server
+#persona_auth_server_host: "localhost"
+#persona_auth_server_port: "9160"
+#persona_auth_server_internal_host: "localhost"
+#persona_auth_server_internal_port: "8160"
+#persona_auth_server_context: "/persona-auth/"
+#persona_auth_server_name: "Persona Authorization Server"
+#persona_auth_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+#persona_auth_server_inferred_port: "{{(':'+persona_auth_server_port|string) if persona_auth_server_port|int not in (80,443) else ''}}"
+#persona_auth_server_base_url: "{{persona_auth_server_inferred_protocol}}://{{persona_auth_server_host}}{{persona_auth_server_inferred_port}}"
+#persona_auth_server_url: "{{persona_auth_server_base_url}}{{persona_auth_server_context}}"
+#persona_auth_server_enable_mock_endpoints: false
+#persona_auth_server_newUserUrl: ""
+#persona_auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
+#persona_auth_server_forgotPasswordUrl: ""
+#persona_auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"

@@ -57,7 +57,7 @@
   vars:
     service_name: "auth"
     database: "{{auth_server_database}}"
-    database_reset: "{{auth_mysql_reset_database}}"
+    database_reset: "{{auth_mysql_reset_database | default(false)}}"
     service_definition_file: "roles/auth/templates/auth.service.j2"
     gateway_definition_file: "roles/auth/templates/auth.j2"
     internal_host: "{{auth_server_internal_host}}"

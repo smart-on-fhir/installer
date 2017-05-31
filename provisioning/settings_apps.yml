@@ -1,0 +1,50 @@
+---
+# apps artifact
+app_server_external_host: "{{services_host | default(localhost)}}"
+app_server_external_port: "9093"
+app_server_external_url: "{{http_protocol}}://{{app_server_external_host}}:{{app_server_external_port}}"
+cardiac_risk_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "cardiac-risk-app"
+    tag: "v0.1.1"
+  target:
+    base_folder: "{{hosting_user_home}}/apps/static/apps"
+    name: "cardiac-risk"
+    folder: "{{hosting_user_home}}/apps/static/apps/cardiac-risk"
+  hosting:
+    client_id: 5
+bp_centiles_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "bp-centiles-app"
+    tag: "v0.1.2"
+  target:
+    base_folder: "{{hosting_user_home}}/apps/static/apps"
+    name: "bp-centiles"
+    folder: "{{hosting_user_home}}/apps/static/apps/bp-centiles"
+  hosting:
+    client_id: 4
+growth_chart_project_info:
+  repo:
+    base_url: "{{smart_repo_base}}"
+    name: "growth-chart-app"
+    tag: "v0.1.2"
+  target:
+    base_folder: "{{hosting_user_home}}/apps/static/apps"
+    name: "growth-chart"
+    folder: "{{hosting_user_home}}/apps/static/apps/growth-chart"
+  hosting:
+    client_id: 6
+patient_picker_project_info:
+  repo:
+    base_url: "{{hspc_repo_base}}"
+    name: "patient-picker"
+    tag: "1.0"
+  target:
+    base_folder: "{{hosting_user_home}}"
+    name: "patient-picker"
+    folder: "{{hosting_user_home}}/patient-picker"
+
+patient_picker_server_external_url: "{{app_server_external_url}}/apps/patient-picker"
+bilirubin_risk_chart_server_external_url: "https://bilirubin-risk-chart.hspconsortium.org"

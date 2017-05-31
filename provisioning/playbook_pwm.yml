@@ -3,6 +3,9 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_pwm.yml
+    - settings_apacheds.yml
+    - settings_sandman.yml
     - custom_settings.yml
   roles:
     - common
@@ -16,6 +19,9 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_pwm.yml
+    - settings_apacheds.yml
+    - settings_sandman.yml
     - custom_settings.yml
   roles:
     - common

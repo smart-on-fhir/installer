@@ -3,6 +3,9 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_api.yml
+    - settings_auth.yml
+    - settings_messaging.yml
     - custom_settings.yml
   roles:
     - common
@@ -16,6 +19,9 @@
   become: yes
   vars_files:
     - settings.yml
+    - settings_api.yml
+    - settings_auth.yml
+    - settings_messaging.yml
     - custom_settings.yml
   roles:
     - common
