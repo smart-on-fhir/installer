@@ -107,49 +107,49 @@
     name: "nginx"
     state: "restarted"
 
-#- name: remove server certificate from truststore
-#  ignore_errors: yes
-#  when: use_secure_http and use_custom_ssl_certificates
-#  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
-#           -delete -trustcacerts
-#           -alias {{certificate_truststore_alias}}
-#           -file /etc/nginx/ssl/{{certificate_crt_filename}}
-#           -keystore {{hosting_user_home}}/keystore
-#
-#- name: import server certificate in truststore
-#  when: use_secure_http and use_custom_ssl_certificates
-#  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
-#           -importcert -trustcacerts
-#           -alias {{certificate_truststore_alias}}
-#           -file /etc/nginx/ssl/{{certificate_crt_filename}}
-#           -keystore {{hosting_user_home}}/keystore
-#
-#- name: add www-data user to ssl-cert group
-#  when: use_secure_http
-#  user: name=www-data groups=ssl-cert
-#
-#- name: list private key files
-#  find:
-#    paths: "/etc/nginx/ssl"
-#    patterns:
-#     - "*.key"
-#     - "*.pem"
-#  register: keys
-#
-#- name: set private key permissions
-#  when: use_secure_http
-#  file: path="{{item.path}}" group=ssl-cert mode=640
-#  with_items: "{{keys.files}}"
-#
-#- name: clear truststore
-#  file: name={{hosting_user_home}}/keystore state=absent
-#
-#- name: initialize truststore
-#  become_user: "{{hosting_username}}"
-#  when: use_secure_http
-#  shell: /bin/echo -e "{{keystore_password}}\n{{keystore_password}}\n\n\n\n\n\n\nyes\n" | keytool
-#           -genkey -alias {{certificate_truststore_alias}}
-#           -keystore {{hosting_user_home}}/keystore
+- name: remove server certificate from truststore
+  ignore_errors: yes
+  when: use_secure_http and use_custom_ssl_certificates
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -delete -trustcacerts
+           -alias {{certificate_truststore_alias}}
+           -file /etc/nginx/ssl/{{certificate_crt_filename}}
+           -keystore {{hosting_user_home}}/keystore
+
+- name: import server certificate in truststore
+  when: use_secure_http and use_custom_ssl_certificates
+  shell: /bin/echo -e "{{keystore_password}}\nyes\n" | keytool
+           -importcert -trustcacerts
+           -alias {{certificate_truststore_alias}}
+           -file /etc/nginx/ssl/{{certificate_crt_filename}}
+           -keystore {{hosting_user_home}}/keystore
+
+- name: add www-data user to ssl-cert group
+  when: use_secure_http
+  user: name=www-data groups=ssl-cert
+
+- name: list private key files
+  find:
+    paths: "/etc/nginx/ssl"
+    patterns:
+     - "*.key"
+     - "*.pem"
+  register: keys
+
+- name: set private key permissions
+  when: use_secure_http
+  file: path="{{item.path}}" group=ssl-cert mode=640
+  with_items: "{{keys.files}}"
+
+- name: clear truststore
+  file: name={{hosting_user_home}}/keystore state=absent
+
+- name: initialize truststore
+  become_user: "{{hosting_username}}"
+  when: use_secure_http
+  shell: /bin/echo -e "{{keystore_password}}\n{{keystore_password}}\n\n\n\n\n\n\nyes\n" | keytool
+           -genkey -alias {{certificate_truststore_alias}}
+           -keystore {{hosting_user_home}}/keystore
 
 - name: configure nginx (default)
   template: src=default.j2 dest=/etc/nginx/sites-enabled/default owner=root group=root mode=0644
