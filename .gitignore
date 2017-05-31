@@ -9,3 +9,4 @@ vagrant/.*
 custom_settings.yml
 
 provisioning/inventory_test_group_vars.yml
+provisioning/inventory_prod_group_vars.yml
