@@ -8,4 +8,4 @@ vagrant/.*
 # This file should not be checked in, instead custom_settings_example.yml should be checked in
 custom_settings.yml
 
-provisioning/inventory-test.yml
+provisioning/inventory_test_group_vars.yml

@@ -2,7 +2,7 @@
 # messaging artifact
 messaging_server_artifact_group_id: "org.hspconsortium.reference"
 messaging_server_artifact_artifact_id: "hspc-reference-messaging"
-messaging_server_artifact_version: "1.3.0-SNAPSHOT"
+messaging_server_artifact_version: "1.3.0"
 messaging_server_artifact_packaging: "jar"
 messaging_server_artifact_repository_url: "{{snapshot_repository_url}}"
 messaging_server_internal_host: "localhost"

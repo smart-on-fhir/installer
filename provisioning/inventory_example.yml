@@ -1,0 +1,10 @@
+---
+installer_user: "ubuntu"
+services_host: "example.com"
+auth_mysql_reset_database: true
+api_dstu2_mysql_reset_database: true
+api_stu3_mysql_reset_database: true
+sandman_mysql_reset_database: true
+enable_api_sample_data: true
+enable_backup_restore_jobs: false
+enable_aws_snapshot: false
