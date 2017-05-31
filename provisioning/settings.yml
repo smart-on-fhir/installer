@@ -84,9 +84,7 @@ mysql_username: "fhir"
 mysql_password: "password"
 mysql_host: "localhost"
 mysql_port: 3306
-#mysql_privilage: "{{auth_server_database}}.*:ALL/{{sandman_server_database}}.*:ALL/*.*:ALL,GRANT"
 mysql_privilage: "*.*:ALL,GRANT"
-#mysql_bind_address: "0.0.0.0"
 mysql_connect_host: "%"
 
 # Email server account

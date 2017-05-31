@@ -11,7 +11,7 @@ api_mysql_host: "{{mysql_host}}"
 api_mysql_username: "{{mysql_username}}"
 api_mysql_password: "{{mysql_password}}"
 api_schema_version: 4
-api_baseline_snapshot: "initial"
+api_baseline_snapshot: "default"
 api_server_default_sandbox_url: "{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/data"
 api_server_oauth2_clientId: "hspc_resource_server"
 api_server_oauth2_clientSecret: "secret"
