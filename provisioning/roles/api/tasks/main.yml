@@ -35,7 +35,7 @@
   vars:
     service_name: "mock_api_stu3"
     database: "{{api_stu3_server_database}}"
-    database_reset: "false"
+    database_reset: false
     service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
     internal_host: "{{api_server_internal_host}}"
@@ -61,7 +61,7 @@
   vars:
     service_name: "mock_api_dstu2"
     database: "{{api_dstu2_server_database}}"
-    database_reset: "false"
+    database_reset: false
     service_definition_file: "roles/api/templates/mock_api_dstu2.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_dstu2.j2"
     internal_host: "{{api_server_internal_host}}"
