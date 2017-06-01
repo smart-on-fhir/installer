@@ -5,7 +5,9 @@
   with_items:
     - "{{hosting_user_home}}/api"
     - "{{hosting_user_home}}/api_stu3"
+    - "{{hosting_user_home}}/mock_api_stu3"
     - "{{hosting_user_home}}/api_dstu2"
+    - "{{hosting_user_home}}/mock_api_dstu2"
 
 - name: "download the api webapp"
   become_user: "{{hosting_username}}"
