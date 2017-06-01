@@ -36,6 +36,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 9093, host: 9093
 # Patient Picker Server
   config.vm.network :forwarded_port, guest: 9094, host: 9094
+# Appointments
+  config.vm.network :forwarded_port, guest: 9095, host: 9095
+# Patient Data Manager
+  config.vm.network :forwarded_port, guest: 9096, host: 9096
 
 # ApacheDS
   config.vm.network :forwarded_port, guest: 10389, host: 10389
