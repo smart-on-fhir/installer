@@ -1,24 +1,22 @@
-upstream api-dstu2 {
-    server 127.0.0.1:{{api_dstu2_server_internal_port}};
+upstream mock_api_dstu2 {
+    server 127.0.0.1:{{mock_api_dstu2_server_internal_port}};
 }
 
 # the nginx server instance
 server {
-{% if api_dstu2_server_host %}
-    server_name {{api_dstu2_server_host}};
-{% endif %}
+    server_name {{mock_api_dstu2_server_external_host}};
 
-    listen {{api_dstu2_server_port}};
+    listen {{mock_api_dstu2_server_external_port}};
 
-    location {{api_dstu2_server_context}} {
+    location / {
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
-      access_log /var/log/nginx/api_dstu2_access.log;
-      proxy_pass http://api-dstu2;
+      access_log /var/log/nginx/mock_api_dstu2_access.log;
+      proxy_pass http://mock_api_dstu2;
       proxy_redirect off;
     }
 
@@ -29,9 +27,9 @@ server {
 {% endif %}
 }
 
-{% if api_dstu2_server_port != 80 and http_redirect %}
+{% if mock_api_dstu2_server_external_port != 80 and use_secure_http %}
 server {
-    server_name {{api_dstu2_server_host}};
+    server_name {{mock_api_dstu2_server_external_host}};
     listen 80;
     listen [::]:80;
     return 301 https://$server_name$request_uri;

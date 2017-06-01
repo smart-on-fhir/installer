@@ -24,6 +24,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 9271, host: 9271
 # API_STU3 Server
   config.vm.network :forwarded_port, guest: 9074, host: 9074
+# Mock-API_STU3 Server
+  config.vm.network :forwarded_port, guest: 9274, host: 9274
 
 # Sandbox Manager
   config.vm.network :forwarded_port, guest: 9080, host: 9080
@@ -107,9 +109,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       messaging_server_external_host: "{{services_host}}",
       messaging_server_external_port: "9091",
       sandman_mysql_reset_database: true,
-      enable_api_sample_data: true,
       enable_backup_restore_jobs: false,
       enable_aws_snapshot: false,
+      enable_api_sample_data: true,
+      enable_mock_endpoints: false,
       messaging_server_initial_memory: "64M",
       messaging_server_max_memory: "128M",
       messaging_profiles: "test",

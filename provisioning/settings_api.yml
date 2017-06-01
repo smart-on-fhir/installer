@@ -20,6 +20,9 @@ api_dstu2_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{a
 api_dstu2_server_sandbox: "smartdstu2"
 api_dstu2_server_database: "hspc_{{api_schema_version}}_{{api_dstu2_server_sandbox}}"
 
+mock_api_dstu2_server_internal_port: "8271"
+mock_api_dstu2_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{mock_api_dstu2_server_external_host}}{{(':'+mock_api_dstu2_server_external_port|string) if mock_api_dstu2_server_external_port|int not in (80,443) else ''}}"
+
 api_dstu2_sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients.git"
 api_dstu2_sample_patients_branch: "master"
 api_dstu2_sample_patients_generator_params: "--id-prefix SMART"
@@ -31,3 +34,6 @@ api_stu3_server_internal_port: "8074"
 api_stu3_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{api_stu3_server_external_host}}{{(':'+api_stu3_server_external_port|string) if api_stu3_server_external_port|int not in (80,443) else ''}}"
 api_stu3_server_sandbox: "smartstu3"
 api_stu3_server_database: "hspc_{{api_schema_version}}_{{api_stu3_server_sandbox}}"
+
+mock_api_stu3_server_internal_port: "8074"
+mock_api_stu3_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{mock_api_stu3_server_external_host}}{{(':'+mock_api_stu3_server_external_port|string) if mock_api_stu3_server_external_port|int not in (80,443) else ''}}"

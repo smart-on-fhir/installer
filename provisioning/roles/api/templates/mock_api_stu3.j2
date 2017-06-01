@@ -1,24 +1,22 @@
-upstream pwm {
-    server 127.0.0.1:{{pwm_server_internal_port}};
+upstream mock_api_stu3 {
+    server 127.0.0.1:{{mock_api_stu3_server_internal_port}};
 }
 
 # the nginx server instance
 server {
-{% if pwm_server_host %}
-    server_name {{pwm_server_host}};
-{% endif %}
+    server_name {{mock_api_stu3_server_external_host}};
 
-    listen {{pwm_server_port}};
+    listen {{mock_api_stu3_server_external_port}};
 
-    location {{/}} {
+    location / {
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
-      access_log /var/log/nginx/pwm_access.log;
-      proxy_pass http://pwm{{/}};
+      access_log /var/log/nginx/mock_api_stu3_access.log;
+      proxy_pass http://mock_api_stu3;
       proxy_redirect off;
     }
 
@@ -29,9 +27,9 @@ server {
 {% endif %}
 }
 
-{% if pwm_server_port != 80 and http_redirect %}
+{% if mock_api_stu3_server_external_port != 80 and use_secure_http %}
 server {
-    server_name {{pwm_server_host}};
+    server_name {{mock_api_stu3_server_external_host}};
     listen 80;
     listen [::]:80;
     return 301 https://$server_name$request_uri;

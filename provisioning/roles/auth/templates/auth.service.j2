@@ -31,7 +31,7 @@ ExecStart={{java_home}}/bin/java \
  -Dldap.password={{apacheds_server_system_admin_password}} \
  -DnewUserUrl={{auth_server_newUserUrl}} \
  -DforgotPasswordUrl={{auth_server_forgotPasswordUrl}} \
- -Dmock.endpoints.enabled={{auth_server_enable_mock_endpoints}} \
+ -Dmock.endpoints.enabled={{enable_mock_endpoints}} \
   -jar {{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}} \
  --config {{hosting_user_home}}/jetty.xml \
  smart-{{auth_server_artifact_artifact_id}}-{{auth_server_artifact_version}}.war
