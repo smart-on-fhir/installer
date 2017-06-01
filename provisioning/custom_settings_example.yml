@@ -21,7 +21,7 @@
 #mysql_username: "fhir"
 #mysql_password: "password"
 #
-#app_server_external_port: "9093"
+#apps_server_external_port: "9093"
 #
 #api_dstu2_server_port: "9071"
 #
@@ -30,7 +30,7 @@
 #sandman_server_external_port: "9080"
 #
 #auth_server_port: "9060"
-#auth_server_password: "secret"
+#auth_server_test_password: "secret"
 #auth_server_newUserUrl: ""
 #auth_server_forgotPasswordUrl: ""
 #

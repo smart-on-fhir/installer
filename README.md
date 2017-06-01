@@ -219,7 +219,7 @@ Here is the custom_settings.yml file:
 installer_user: "ubuntu"
 services_host: "x.x.x.x" (your IP address)
 sample_patients_branch: "hapi-patients-testing"
-app_server_external_host: "{{services_host}}"
+apps_server_external_host: "{{services_host}}"
 api_dstu2_server_host: "{{services_host}}"
 persona_api_dstu2_server_host: "{{services_host}}"
 sandman_server_external_host: "{{services_host}}"

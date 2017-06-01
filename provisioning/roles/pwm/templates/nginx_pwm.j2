@@ -4,11 +4,11 @@ upstream pwm {
 
 # the nginx server instance
 server {
-{% if pwm_server_host %}
-    server_name {{pwm_server_host}};
+{% if pwm_server_external_host %}
+    server_name {{pwm_server_external_host}};
 {% endif %}
 
-    listen {{pwm_server_port}};
+    listen {{pwm_server_external_port}};
 
     location / {
       proxy_set_header X-Real-IP $remote_addr;
@@ -29,9 +29,9 @@ server {
 {% endif %}
 }
 
-{% if pwm_server_port != 80 and http_redirect %}
+{% if pwm_server_external_port != 80 and http_redirect %}
 server {
-    server_name {{pwm_server_host}};
+    server_name {{pwm_server_external_host}};
     listen 80;
     listen [::]:80;
     return 301 https://$server_name$request_uri;

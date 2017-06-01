@@ -16,22 +16,15 @@ hosting_user_jobs_home: "{{hosting_user_home}}/jobs"
 hosting_user_jobs_output_home: "{{hosting_user_jobs_home}}/output"
 hosting_user_scripts_home: "{{hosting_user_home}}/scripts"
 
-# When set to true, https is used
-use_secure_http: false
-
-certificate_crt_filename: "self-signed-certificate.crt"
-certificate_key_filename: "self-signed-certificate.key"
-
 # Settigs for Jetty and Oracle Java. You probably won't have to alter these
 # unles you are switching to a different version of Jetty or Java
 java_home: "/usr/lib/jvm/java-8-openjdk-amd64/jre"
 
-hspc_platform_jwt_key: "devKeyDoNotUseInProductionShouldBeOverwrittenInProdConfiguration"
-
 top_level_domain: "org"
 second_level_domain: "smarthealthit"
 additional_subdomains: ""
-domain_name: "{{additional_subdomains}}{{second_level_domain}}.{{top_level_domain}}"
+domain_name: "{{second_level_domain}}.{{top_level_domain}}"
+full_domain_name: "{{additional_subdomains}}{{domain_name}}"
 
 # Artifact Repositories
 m2_repo_folder: "{{hosting_user_home}}/.m2/repository"
@@ -56,12 +49,6 @@ jetty_runner_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/
 # redirected to the server's base URLs
 http_redirect: true
 
-aws_output_format: 'json'
-aws_region: "changeme"
-aws_access_key_id: "changeme"
-aws_secret_access_key: "changeme"
-aws_ec2_volume_id: "changeme"
-
 # Maximum size of sample patient data files
 max_upload_size: "5M"
 
@@ -79,23 +66,11 @@ self_signed_certificate_ssl_division: "support"
 self_signed_certificate_ssl_email: "support@{{domain_name}}"
 
 # database configuration
-#mysql_root_pass: "password"
 mysql_username: "fhir"
-mysql_password: "password"
 mysql_host: "localhost"
 mysql_port: 3306
 mysql_privilage: "*.*:ALL,GRANT"
 mysql_connect_host: "%"
-
-# Email server account
-email_account_description: "SMART Account Services"
-email_smtp_address: "smtp.example.com"
-email_smtp_port: "587"
-email_smtp_username: "changeme"
-email_smtp_password: "changeme"
-email_smtp_password_encrypted: "changeme"
-email_admin_address: "changeme@example.com"
-email_contact_addresss: "support@example.org"
 
 #custom_ssl_certificates_path: examples/certificates
 certificate_truststore_alias: "smart"

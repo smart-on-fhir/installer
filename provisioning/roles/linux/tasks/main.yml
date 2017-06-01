@@ -78,7 +78,7 @@
 - name: generate self-signed ssl certificate
   when: use_secure_http and not use_custom_ssl_certificates
   shell: creates=/etc/nginx/ssl/{{certificate_crt_filename}}
-         /bin/echo -e "{{self_signed_certificate_ssl_country}}\n{{self_signed_certificate_ssl_province}}\n{{self_signed_certificate_ssl_locality}}\n{{self_signed_certificate_ssl_organization}}\n{{self_signed_certificate_ssl_division}}\n{{domain_name}}\n{{self_signed_certificate_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/{{certificate_key_filename}} -out /etc/nginx/ssl/{{certificate_crt_filename}}
+         /bin/echo -e "{{self_signed_certificate_ssl_country}}\n{{self_signed_certificate_ssl_province}}\n{{self_signed_certificate_ssl_locality}}\n{{self_signed_certificate_ssl_organization}}\n{{self_signed_certificate_ssl_division}}\n{{full_domain_name}}\n{{self_signed_certificate_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/{{certificate_key_filename}} -out /etc/nginx/ssl/{{certificate_crt_filename}}
 
 - name: "restart nginx"
   service:

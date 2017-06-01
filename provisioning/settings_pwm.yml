@@ -2,21 +2,14 @@
 # PWM Server
 pwm_project: "pwm"
 pwm_branch: "master"
-pwm_server_database: pwm
+pwm_server_database: "pwm"
 pwm_server_internal_host: "localhost"
 pwm_server_internal_port: "8092"
-pwm_server_host: "localhost"
-#pwm_server_host: "service.smarthealthit.org"
-pwm_server_port: "9092"
-pwm_server_initial_memory: 128M
-pwm_server_max_memory: 256M
-pwm_db_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
+pwm_server_initial_memory: "128M"
+pwm_server_max_memory: "256M"
+pwm_db_password_encrypted: "gDs7KkJA/xJ6oFT56C2dRA=="
 pwm_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
-pwm_server_inferred_port: "{{(':'+pwm_server_port|string) if pwm_server_port|int not in (80,443) else ''}}"
-pwm_server_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_host}}{{pwm_server_inferred_port}}/"
-pwm_configpasswordhash: $2a$10$02soH2RZk9WEi3eYcv3h2.sP8eHEyzXw/k6TaUpJkT2v9CcPssA52
-pwm_securitykey_encrypted: DlybqwJ9yN2wYi1ywaqZDGMEVp3WzCow/TMyVKNxAxclbKlBCl/OcAcXAP1xNhtF060jCPD0dfptWzjW2c/kIKf6o/iemTKGnRNDF11UmfCzAesx5CGplI+2StSmvkGl/bmWXTQc+L9xNUPrRdgVNQJVzXvfIaOy8xTTx6s6nPqhOCYnPfuEXKMTSEJo9nXvIEGWurVSRFtCPV/L9QF8YKjuUWvWiA0Ftc/S0dG8FJQ85ohlFsttThUcZ0cf4OswG3EY2oQjlMfNE0RFxe312Tr2F+bcB8UBlb+58TCQe/pOlpABc580yoWkvtTKcxO0zfkeYHIMtGfMZL2Ve6XzHFUODX9/PeZUUhFbjXx99lVzG6ypXautFYKbWmMpc2addjuiH1IEIO7wADREsYcTREtkWjOd5xk8ksB+wX/4zoUPFKCdJ2Pw8oLc6Pm9XQjiU+WEUvcpWWzgha0K2LeCSR2HQeCfu6x62cQgYVQDGawzEvZ5KWdvrBOvfi0jz7ZFmDek3ozmVqWColdkej42Jqhf4rHNjI99AdRvdHUaTatUIf38kNSKVl0v5Vq9mdjYfm+RSvYW3AJooEUSV2MfVM65t7WTSqS+YP6SZZGruHsnG0qJYQNqswfycI6pJhBr3M7WH1VOG13qx3+uXXD9811CTcwoI2Su6kAyNg/0VhEfD9pvaTKzNT0FC+8rODPjcfcBSC3NvLCalCSBTtB4f+UP6pVhRNAVMQ11bR4usVtk9XG2AWAVZQj7aBPtAReOxOfFyCiRtHOiB5wPYM7pnWHTjNMWC/kPaHZnV+yNWgqebAbZGQif7v9PpKjAQWq24b8z1Z9Zn+XHQA8Cm3le7xu7pzQ+WMS9NXBy+CgSpjxPVVlqUxIGUe2SM2oMWq0SrxPxLwpZAXooB+47N/tRKiy8nofTG3FvRktY4U88K1G/8HmPpA/Xix+lzNOM5JYN81dSWa7yBAopORdp+DF7yTuQeAJamh+DoMy6R/vUgdOfntmglaSh8OAlacn16oi6hNdmFEQ9FYNxscRtesEee82r5w2Tf7PxE6zWT9McIlj1wTUxya0AKp/+HAQrWuEeVbZVJmvqlgitWZmFL0SL6pFNwGibXb8T3dxieX2xm0AMSyteIu7x1G+aNBo3DccyOo+Yp34nN4cC5LmonrCEDI6vD0U3RhGX+NSgTrjWQwUlDmjORcc3N+X6dUZLNVchSEG49c/oZVwXd8WRYH/NvBgJQY/11qGsBOgNBCR8hGwEqwMmIZBzrGyPFpVxbj+hRJGz7AQfNp+AtUX5fN7rHeEbNNYIOH3T+Usmv7NyfNpZqQjzZfBtd0kKH11G0wfwzxj1TcrQXtwayUOD8sSWhXraKH398+GAKyMYC/y+auk=
-pwm_sso_authentication_header_name: c8381465-a7f8-4ecc-958d-ec296d6e8671
-pwm_ldap_proxy_password_encrypted: gDs7KkJA/xJ6oFT56C2dRA==
-pwm_i18n_display_name: SMART Health IT Account Self Service
+pwm_server_inferred_port: "{{(':'+pwm_server_external_port|string) if pwm_server_external_port|int not in (80,443) else ''}}"
+pwm_server_external_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_external_host}}{{pwm_server_inferred_port}}/"
+pwm_i18n_display_name: "SMART Health IT Account Self Service"
 tomcat_home: "{{hosting_user_home}}/apache-tomcat-8.5.12"

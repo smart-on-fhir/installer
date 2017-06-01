@@ -1,8 +1,8 @@
 ---
 # apps artifact
-app_server_external_host: "{{services_host | default(localhost)}}"
-app_server_external_port: "9093"
-app_server_external_url: "{{http_protocol}}://{{app_server_external_host}}:{{app_server_external_port}}"
+app_server_internal_host: "{{services_host}}"
+app_server_internal_port: "9093"
+apps_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{apps_server_external_host}}{{(':'+apps_server_external_port|string) if apps_server_external_port|int not in (80,443) else ''}}"
 cardiac_risk_project_info:
   repo:
     base_url: "{{smart_repo_base}}"
@@ -46,5 +46,5 @@ patient_picker_project_info:
     name: "patient-picker"
     folder: "{{hosting_user_home}}/patient-picker"
 
-patient_picker_server_external_url: "{{app_server_external_url}}/apps/patient-picker"
+patient_picker_server_external_url: "{{apps_server_external_url}}/apps/patient-picker"
 bilirubin_risk_chart_server_external_url: "https://bilirubin-risk-chart.hspconsortium.org"

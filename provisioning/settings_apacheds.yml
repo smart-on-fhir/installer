@@ -1,6 +1,5 @@
 ---
 # apacheds server configuration
-apacheds_server_external_host: "{{services_host | default(localhost)}}"
 apacheds_server_external_port: "10389"
 apacheds_server_external_url: "ldap://{{apacheds_server_external_host}}:{{apacheds_server_external_port}}"
 apacheds_server_base: "dc={{second_level_domain}},dc={{top_level_domain}}"
@@ -22,13 +21,11 @@ apacheds_server_system_admin_dn: "uid={{apacheds_server_system_admin}},ou=system
 apacheds_server_system_admin_initial_password: "secret"
 # if you are changing the ldap password after install, set this to the future password
 # so the services can be configured to use it correctly
-apacheds_server_system_admin_password: "secret"
 apacheds_server_sandbox_admin: "admin"
 apacheds_server_sandbox_admins_ou: "ou=admins"
 apacheds_server_sandbox_admins_context: "{{apacheds_server_sandbox_admins_ou}},{{apacheds_server_base}}"
 apacheds_server_sandbox_admin_cn: "cn={{apacheds_server_sandbox_admin}}"
 apacheds_server_sandbox_admin_dn: "{{apacheds_server_sandbox_admin_cn}},{{apacheds_server_sandbox_admins_context}}"
-apacheds_server_sandbox_admin_password: "password"
 apacheds_server_sandbox_demo: "demo"
 apacheds_server_sandbox_demo_cn: "cn={{apacheds_server_sandbox_demo}}"
 apacheds_server_sandbox_demo_dn: "{{apacheds_server_sandbox_demo_cn}},{{apacheds_server_sandbox_admins_context}}"

@@ -7,24 +7,17 @@ auth_server_artifact_packaging: "war"
 auth_server_artifact_repository_url: "{{release_repository_url}}"
 auth_server_internal_host: "localhost"
 auth_server_internal_port: "8060"
-auth_server_external_host: "{{services_host | default(localhost)}}"
-auth_server_external_port: "9060"
-auth_server_external_url: "{{http_protocol}}://{{auth_server_external_host}}:{{auth_server_external_port}}"
-auth_server_initial_memory: 128M
-auth_server_max_memory: 256M
+auth_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{auth_server_external_host}}{{(':'+auth_server_external_port|string) if auth_server_external_port|int not in (80,443) else ''}}"
 auth_server_hspc_account_cookie_name: smart-login-cookie
 auth_server_persona_cookie_name: smart-persona-login-cookie
-auth_server_persona_cookie_domain: localhost
+auth_server_persona_cookie_domain: "{{domain_name}}"
 auth_server_CONTEXT_FHIR_ENDPOINT: "{{api_dstu2_server_external_url}},{{api_stu3_server_external_url}}"
-auth_server_newUserUrl: ""
-auth_server_forgotPasswordUrl: ""
-auth_server_client: "client"
-auth_server_password: "secret"
 auth_server_enable_mock_endpoints: true
+auth_server_test_client: "client"
+auth_server_test_password: "secret"
 
 auth_server_mysql_host: "localhost"
 auth_server_database: "oic"
-#auth_mysql_reset_database: false
 
 # Auth Server
 #auth_server_host: "localhost"
@@ -37,8 +30,6 @@ auth_server_database: "oic"
 #auth_server_inferred_port: "{{(':'+auth_server_port|string) if auth_server_port|int not in (80,443) else ''}}"
 #auth_server_base_url: "{{auth_server_inferred_protocol}}://{{auth_server_host}}{{auth_server_inferred_port}}"
 #auth_server_url: "{{auth_server_base_url}}{{auth_server_context}}"
-#auth_server_client: "client"
-#auth_server_password: "secret"
 #auth_server_enable_mock_endpoints: true
 #auth_server_initial_memory: 128M
 #auth_server_max_memory: 256M
@@ -61,6 +52,6 @@ auth_server_database: "oic"
 #persona_auth_server_url: "{{persona_auth_server_base_url}}{{persona_auth_server_context}}"
 #persona_auth_server_enable_mock_endpoints: false
 #persona_auth_server_newUserUrl: ""
-#persona_auth_server_newUserUrl: "{{pwm_server_url}}public/newuser"
+#persona_auth_server_newUserUrl: "{{pwm_server_external_url}}public/newuser"
 #persona_auth_server_forgotPasswordUrl: ""
-#persona_auth_server_forgotPasswordUrl: "{{pwm_server_url}}public/forgottenpassword"
+#persona_auth_server_forgotPasswordUrl: "{{pwm_server_external_url}}public/forgottenpassword"

@@ -92,5 +92,5 @@
 
 - name: verify app-server is available
   tags: [apps-all, apps-server, verify, smart-platform]
-  wait_for: host={{app_server_external_host}} port={{app_server_external_port}}
+  wait_for: host={{apps_server_external_host}} port={{apps_server_external_port}}
 

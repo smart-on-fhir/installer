@@ -1,9 +1,9 @@
 server {
-{% if app_server_external_host %}
-    server_name {{app_server_external_host}};
+{% if apps_server_external_host %}
+    server_name {{apps_server_external_host}};
 {% endif %}
 
-    listen {{app_server_external_port}};
+    listen {{apps_server_external_port}};
 
     location / {
        root {{hosting_user_home}}/apps/static;
@@ -18,9 +18,9 @@ server {
 {% endif %}
 }
 
-{% if app_server_external_port != 80 and http_redirect %}
+{% if apps_server_external_port != 80 and http_redirect %}
 server {
-    server_name {{app_server_external_host}};
+    server_name {{apps_server_external_host}};
     listen 80;
     listen [::]:80;
     return 301 https://$server_name$request_uri;

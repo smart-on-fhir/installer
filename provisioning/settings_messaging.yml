@@ -7,11 +7,6 @@ messaging_server_artifact_packaging: "jar"
 messaging_server_artifact_repository_url: "{{release_repository_url}}"
 messaging_server_internal_host: "localhost"
 messaging_server_internal_port: "8091"
-messaging_server_external_host: "{{services_host | default(localhost)}}"
-messaging_server_external_port: "9091"
-messaging_server_external_url: "{{http_protocol}}://{{messaging_server_external_host}}:{{messaging_server_external_port}}"
-messaging_server_initial_memory: 64M
-messaging_server_max_memory: 128M
-messaging_profiles: test
+messaging_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{messaging_server_external_host}}{{(':'+messaging_server_external_port|string) if messaging_server_external_port|int not in (80,443) else ''}}"
 messaging_mail_server_username:
 messaging_mail_server_password:
