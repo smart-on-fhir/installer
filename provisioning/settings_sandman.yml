@@ -2,6 +2,8 @@
 # sandman artifact
 sandman_server_artifact_group_id: "org.hspconsortium.sandbox"
 sandman_server_artifact_artifact_id: "hspc-sandbox-manager"
+# until 1.7.1 is available
+#sandman_server_artifact_version: "1.7.1"
 sandman_server_artifact_version: "1.8.0-SNAPSHOT"
 sandman_server_artifact_packaging: "war"
 sandman_server_artifact_repository_url: "{{snapshot_repository_url}}"
