@@ -102,9 +102,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       api_dstu2_mysql_reset_database: true,
       api_dstu2_sample_patients_limit: "20",
       mock_api_dstu2_server_external_host: "{{services_host}}",
-      mock_api_dstu2_server_external_port: "9271"
-      mock_api_dstu2_server_initial_memory: "128M"
-      mock_api_dstu2_server_max_memory: "256M"
+      mock_api_dstu2_server_external_port: "9271",
+      mock_api_dstu2_server_initial_memory: "128M",
+      mock_api_dstu2_server_max_memory: "256M",
       api_stu3_server_external_host: "{{services_host}}",
       api_stu3_server_external_port: "9074",
       api_stu3_server_initial_memory: "128M",
