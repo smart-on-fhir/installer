@@ -9,7 +9,6 @@
     - "initialize.sql"
 
 - name: "load the sandman database scripts"
-  become_user: "{{hosting_username}}"
   mysql_db:
     name: "{{sandman_server_database}}"
     state: import
