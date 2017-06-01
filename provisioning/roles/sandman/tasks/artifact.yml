@@ -20,6 +20,7 @@
     dest: "{{hosting_user_home}}/sandman/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
 
 - name: "copy the sandman webapp"
+  become_user: "{{hosting_username}}"
   copy: src="{{hosting_user_home}}/sandman/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
         dest="{{hosting_user_home}}/sandman/smart-{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
         remote_src=true

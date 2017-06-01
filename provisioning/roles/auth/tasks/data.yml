@@ -3,7 +3,7 @@
   template:
     src: "{{item}}.j2"
     dest: "{{hosting_user_home}}/auth/mysql/{{item}}"
-    mode: "0700"
+    mode: "0755"
   with_items:
     - "mysql_database_tables.sql"
     - "mysql_users.sql"
