@@ -19,11 +19,13 @@ INSERT IGNORE INTO client_scope (owner_id, scope) VALUES
   ((SELECT id from client_details where client_id = 'sand_man'), 'openid'),
   ((SELECT id from client_details where client_id = 'sand_man'), 'profile');
 
-INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
-  ((SELECT id from client_details where client_id = 'sand_man'), 'authorization_code');
+# There is no unique constraint on this table so only run this selectively
+#INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
+#  ((SELECT id from client_details where client_id = 'sand_man'), 'authorization_code');
 
-INSERT IGNORE INTO whitelisted_site (creator_user_id, client_id) VALUES
-  ('admin', 'sand_man');
+# There is no unique constraint on this table so only run this selectively
+#INSERT IGNORE INTO whitelisted_site (creator_user_id, client_id) VALUES
+#  ('admin', 'sand_man');
 
 INSERT IGNORE INTO whitelisted_site_scope (owner_id, scope) VALUES
   ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'user/*.*');
@@ -46,8 +48,9 @@ INSERT IGNORE INTO client_details (client_id, client_name, access_token_validity
 INSERT IGNORE INTO client_redirect_uri (owner_id, redirect_uri) VALUES
   ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), '{{sandman_server_external_url}}');
 
-INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
-  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'client_credentials');
+# There is no unique constraint on this table so only run this selectively
+#INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
+#  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'client_credentials');
 
 INSERT IGNORE INTO client_authority (owner_id, authority) VALUES
   ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'ROLE_ADMIN'),
