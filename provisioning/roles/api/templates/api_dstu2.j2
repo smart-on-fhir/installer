@@ -20,6 +20,10 @@ server {
       proxy_redirect off;
     }
 
+    location /api/ {
+        rewrite ^/api(.*)$ $1 last;
+    }
+
 {% if use_secure_http %}
     ssl on;
     ssl_certificate /etc/nginx/ssl/{{certificate_crt_filename}};
