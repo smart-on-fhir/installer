@@ -4,6 +4,8 @@
 # To customize the SMART-on-FHIR stack, you can either edit the settings directly in
 # this file or set up custom settings overrides (such as custom_settings.yml)
 
+ansible_user_home: "/home/{ansible_user}"
+
 # The user account that will host the servers. If a user account of this name
 # already exists on the system, the installer will not alter its credentials or
 # authentication mechanism. If you need to set up actual password authentication,

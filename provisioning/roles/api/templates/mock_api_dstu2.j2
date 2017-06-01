@@ -8,6 +8,10 @@ server {
 
     listen {{mock_api_dstu2_server_external_port}};
 
+    location /mock-api/ {
+        rewrite ^/mock-api(.*)$ $1 last;
+    }
+
     location / {
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

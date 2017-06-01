@@ -8,7 +8,6 @@ The SMART on FHIR platform will be installed on a single machine in one of the f
 
 1. [VM Instance Install](#localvm) (ie: an Ubuntu server running on VirtualBox on a developer machine)
 2. [Native Install](#nativeinstall) (ie: an Ubuntu server)
-3. [Remote Install](#remoteinstall) (ie: a controller machine installs to remote Ubuntu server)
 
 More advanced installations are possible by modifying this installer (mainly custom_settings.yml) but are not supported by our technical team.
 
@@ -121,57 +120,6 @@ Make a "local" connection using the "localhost" inventory file:
 
 ```
 sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
-```
-
----
-
-## <a name="remoteinstall"/>Remote Install on Ubuntu 16.04 from a controller machine (Mac or Ubuntu)
-
-In this install, we are going to build a SMART no FHIR platform remotely using a controller machine.
-
-### Prerequisites
-* Ubuntu 16.04 *remote* machine
-* Mac or Ubuntu *controller* machine
-
-### Prepare the remote machine
-#### Install libraries
-```
-sudo apt-get update
-sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
-sudo pip install ansible==2.1.0
-```
-#### Set up SSH using certificates
-Make sure that you have a user account on the remote machine that
-has passwordless sudo privileges.  Enable SSH from your local machine to
-the remote machine using certificates. If using an AWS EC2 Ubuntu
-instance, your installer_user is "ubuntu" and your key is the .pem file established for access.
-
-### Prepare the controller machine
-```
-sudo apt-get update
-sudo apt-get install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
-sudo pip install ansible==2.1.0
-git clone https://github.com/smart-on-fhir/installer
-cd installer/provisioning
-```
-#### Modify custom_settings.yml
-```
-cp custom_settings_example.yml custom_settings.yml
-vi custom_settings.yml
-```
-* set "installer_user" to your ssh username
-* set "services_host" to a real-world route-able IP for your Ubuntu machine
-* setting passwords, ports, and other properties as desired
-
-#### Configure the inventory
-```
-vi inventory
-```
-* set the REMOTEIP, REMOTEUSER, and KEYFILE as appropriate
-
-### Run the Installer from the Controller Machine
-```
-ansible-playbook -i 'inventory' site.yml
 ```
 
 ---
