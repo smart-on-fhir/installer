@@ -19,32 +19,6 @@
     repository_url: "{{api_server_artifact_repository_url}}"
     dest: "{{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
 
-- name: "install api_stu3 system"
-  include: "roles/common/tasks/service_template.yml"
-  vars:
-    service_name: "api_stu3"
-    database: "{{api_stu3_server_database}}"
-    database_reset: "{{api_stu3_mysql_reset_database | default(false)}}"
-    service_definition_file: "roles/api/templates/api_stu3.service.j2"
-    gateway_definition_file: "roles/api/templates/api_stu3.j2"
-    internal_host: "{{api_server_internal_host}}"
-    internal_port: "{{api_stu3_server_internal_port}}"
-    external_host: "{{api_stu3_server_external_host}}"
-    external_port: "{{api_stu3_server_external_port}}"
-
-- name: "install mock_api_stu3 system"
-  include: "roles/common/tasks/service_template.yml"
-  vars:
-    service_name: "mock_api_stu3"
-    database: "{{api_stu3_server_database}}"
-    database_reset: false
-    service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
-    gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
-    internal_host: "{{api_server_internal_host}}"
-    internal_port: "{{mock_api_stu3_server_internal_port}}"
-    external_host: "{{mock_api_stu3_server_external_host}}"
-    external_port: "{{mock_api_stu3_server_external_port}}"
-
 - name: "install api_dstu2 system"
   include: "roles/common/tasks/service_template.yml"
   vars:
@@ -70,6 +44,33 @@
     internal_port: "{{mock_api_dstu2_server_internal_port}}"
     external_host: "{{mock_api_dstu2_server_external_host}}"
     external_port: "{{mock_api_dstu2_server_external_port}}"
+
+- name: "install api_stu3 system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "api_stu3"
+    database: "{{api_stu3_server_database}}"
+    database_reset: "{{api_stu3_mysql_reset_database | default(false)}}"
+    service_definition_file: "roles/api/templates/api_stu3.service.j2"
+    gateway_definition_file: "roles/api/templates/api_stu3.j2"
+    internal_host: "{{api_server_internal_host}}"
+    internal_port: "{{api_stu3_server_internal_port}}"
+    external_host: "{{api_stu3_server_external_host}}"
+    external_port: "{{api_stu3_server_external_port}}"
+
+# need DNS mapping
+#- name: "install mock_api_stu3 system"
+#  include: "roles/common/tasks/service_template.yml"
+#  vars:
+#    service_name: "mock_api_stu3"
+#    database: "{{api_stu3_server_database}}"
+#    database_reset: false
+#    service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
+#    gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
+#    internal_host: "{{api_server_internal_host}}"
+#    internal_port: "{{mock_api_stu3_server_internal_port}}"
+#    external_host: "{{mock_api_stu3_server_external_host}}"
+#    external_port: "{{mock_api_stu3_server_external_port}}"
 
 - include: "data.yml"
 
