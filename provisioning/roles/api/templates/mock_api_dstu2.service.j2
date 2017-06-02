@@ -21,8 +21,9 @@ ExecStart={{java_home}}/bin/java \
  -Dspring.profiles.active=dstu2,multitenant \
  -Dhibernate.search.default.indexBase=lucenefiles \
 {% if use_secure_http and not use_custom_ssl_certificates %}
- -Djavax.net.ssl.trustStore="{{hosting_user_home}}/keystore" \
- -Djavax.net.ssl.trustStorePassword="{{keystore_password}}" \
+ -Dserver.ssl.key-store={{hosting_user_home}}/keystore \
+ -Dserver.ssl.key-store-password={{keystore_password}} \
+ -Dserver.ssl.key-password={{keystore_password}} \
 {% endif %}
  -jar {{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}
 Restart=always
