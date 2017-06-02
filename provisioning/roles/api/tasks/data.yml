@@ -14,6 +14,7 @@
     body: "{ 'teamId': '{{api_dstu2_server_sandbox}}','schemaVersion': '{{api_schema_version}}','allowOpenAccess': true,'baselineDate': '{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}' }"
     body_format: json
     HEADER_Content-Type: "application/json"
+    validate_certs: no
 
 - name: "checkout {{api_dstu2_sample_patients_repo}}"
   when: enable_api_sample_data
@@ -43,7 +44,8 @@
          curl
            '{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/open/?'
            -H 'Content-Type: application/xml+fhir'
-           --data-binary @{{item}}"
+           --data-binary @{{item}}
+           --insecure"
   with_items: "{{api_dstu2_sample_patient_files.stdout_lines}}"
 
 - name: "list custom patients (json)"
@@ -57,7 +59,8 @@
          curl
            '{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/open/?'
            -H 'Content-Type: application/json+fhir'
-           --data-binary @{{item}}"
+           --data-binary @{{item}}
+           --insecure"
   with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
 
 - include: snapshot-command.yml

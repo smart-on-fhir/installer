@@ -19,6 +19,10 @@ ExecStart={{java_home}}/bin/java \
  -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
  -Dspring.profiles.active=dstu2,multitenant \
  -Dhibernate.search.default.indexBase=lucenefiles \
+{% if use_secure_http and not use_custom_ssl_certificates %}
+ -Djavax.net.ssl.trustStore="{{hosting_user_home}}/keystore" \
+ -Djavax.net.ssl.trustStorePassword="{{keystore_password}}" \
+{% endif %}
  -jar {{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}
 Restart=always
 

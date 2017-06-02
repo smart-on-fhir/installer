@@ -10,3 +10,4 @@
     body: '{"action": "{{snapshot_action}}"}'
     body_format: json
     HEADER_Content-Type: "application/json"
+    validate_certs: no
