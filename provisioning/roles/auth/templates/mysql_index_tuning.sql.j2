@@ -62,3 +62,9 @@ ON client_contact(owner_id);
 CREATE INDEX idx_client_authority_owner_id
 ON client_authority(owner_id);
 
+ALTER TABLE client_grant_type
+ADD UNIQUE KEY uk_client_details (owner_id, grant_type);
+
+ALTER TABLE whitelisted_site
+ADD UNIQUE KEY uk_whitelisted_site (client_id);
+

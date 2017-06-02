@@ -27,8 +27,8 @@ mysql_password: "password"
 
 # apacheds
 apacheds_server_external_host: "{{services_host}}"
-apacheds_server_system_admin_password: "changeme"
-apacheds_server_sandbox_admin_password: "changeme"
+apacheds_server_system_admin_password: "secret"
+apacheds_server_sandbox_admin_password: "password"
 
 # pwm
 pwm_server_external_host: "{{services_host}}"
