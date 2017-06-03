@@ -2,7 +2,7 @@
 - name: "installer profile"
   template:
     src: ".bash_profile.j2"
-    dest: "~/.bash_profile"
+    dest: "{{installer_user_home}}/.bash_profile"
 
 - name: "check custom certificate preconditions"
   fail:
@@ -31,7 +31,6 @@
          - aptitude
          - curl
          - git
-         - nginx
          - maven
          - mysql-server
          - openjdk-8-jdk
@@ -59,18 +58,12 @@
         group="{{hosting_username}}" groups=sudo
         shell=/bin/bash
 
-- name: "download jetty-runner"
-  become_user: "{{hosting_username}}"
-  maven_artifact:
-    group_id: "org.eclipse.jetty"
-    artifact_id: "jetty-runner"
-    version: "9.3.6.v20151106"
-    extension: "jar"
-    repository_url: "{{release_repository_url}}"
-    dest: "{{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}}"
+- name: "Check for installation of nginx"
+  stat: "path=/usr/sbin/nginx"
+  register: nginx_installed
 
-- name: "config jetty-runner"
-  copy: src=jetty.xml dest={{hosting_user_home}}/jetty.xml
+- include: nginx.yml
+  when: not nginx_installed.stat.exists
 
 - name: "create ssl certificates directory"
   when: use_secure_http
@@ -167,6 +160,19 @@
   service:
     name: "nginx"
     state: "restarted"
+
+- name: "download jetty-runner"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "org.eclipse.jetty"
+    artifact_id: "jetty-runner"
+    version: "9.3.6.v20151106"
+    extension: "jar"
+    repository_url: "{{release_repository_url}}"
+    dest: "{{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}}"
+
+- name: "config jetty-runner"
+  copy: src=jetty.xml dest={{hosting_user_home}}/jetty.xml
 
 - name: "Configure MySQL user"
   mysql_user: name={{mysql_username}} host={{mysql_connect_host}} password={{mysql_password}} priv={{mysql_privilage}} state=present

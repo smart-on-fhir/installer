@@ -10,29 +10,17 @@
 #   skip_make_install: true to skip the make_install phase
 
 - name: "download {{library_name}}"
-  become_user: "{{hosting_username}}"
   shell: chdir="{{working_folder}}"
          wget {{library_url}}
 
 - name: "extract {{library_name}}"
-  become_user: "{{hosting_username}}"
   shell: chdir="{{working_folder}}"
          tar -zxf {{library_name}}.tar.gz
 
 - name: "configure {{library_name}}"
   when: skip_configure is undefined and not skip_configure
-  become_user: "{{hosting_username}}"
-  shell: chdir="{{working_folder}}/{{library_name}}"
-         {{configure_command | default('./configure')}}
-
-- name: "make {{library_name}}"
-  when: skip_make is undefined and not skip_make
-  become_user: "{{hosting_username}}"
-  shell: chdir="{{working_folder}}/{{library_name}}"
-         make
-
-- name: "install {{library_name}}"
-  when: skip_make_install is undefined and not skip_make_install
-  become_user: "{{hosting_username}}"
-  shell: chdir="{{working_folder}}/{{library_name}}"
-         sudo make install
+  shell: |
+    cd {{working_folder}}/{{library_name}}
+    {{configure_command | default('./configure')}}
+    make
+    sudo make install

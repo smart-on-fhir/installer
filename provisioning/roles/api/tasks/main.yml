@@ -33,6 +33,7 @@
     external_port: "{{api_dstu2_server_external_port}}"
 
 - name: "install mock_api_dstu2 system"
+  when: enable_mock_endpoints
   include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "mock_api_dstu2"
@@ -59,6 +60,7 @@
     external_port: "{{api_stu3_server_external_port}}"
 
 - name: "install mock_api_stu3 system"
+  when: enable_mock_endpoints
   include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "mock_api_stu3"

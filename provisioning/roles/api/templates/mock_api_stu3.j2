@@ -15,6 +15,13 @@ server {
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
+{% if use_secure_http %}
+      # make sure references in the body include the https protocol
+      sub_filter 'http://{{mock_api_stu3_server_external_host}}'  'https://{{mock_api_stu3_server_external_host}}';
+      sub_filter_once off;
+      sub_filter_types *;
+{% endif %}
+
       access_log /var/log/nginx/mock_api_stu3_access.log;
       proxy_pass http://mock_api_stu3;
       proxy_redirect off;

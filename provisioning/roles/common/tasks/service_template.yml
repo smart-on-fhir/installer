@@ -57,6 +57,7 @@
     port: "{{internal_port}}"
 
 - name: "configure nginx ({{service_name}})"
+  when: gateway_definition_file is defined
   template:
     src: "{{gateway_definition_file}}"
     dest: "/etc/nginx/sites-enabled/{{service_name}}"
@@ -65,11 +66,13 @@
     mode: "0644"
 
 - name: "restart nginx"
+  when: gateway_definition_file is defined
   service:
     name: "nginx"
     state: "restarted"
 
 - name: "verify {{service_name}} is available externally"
+  when: gateway_definition_file is defined
   become_user: "{{hosting_username}}"
   wait_for:
     host: "{{external_host}}"

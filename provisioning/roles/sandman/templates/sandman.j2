@@ -15,6 +15,13 @@ server {
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
+{% if use_secure_http %}
+      # make sure references in the body include the https protocol
+      sub_filter 'http://{{sandman_server_external_host}}'  'https://{{sandman_server_external_host}}';
+      sub_filter_once off;
+      sub_filter_types *;
+{% endif %}
+
       access_log /var/log/nginx/sandman_access.log;
       proxy_pass http://sandman;
       proxy_redirect off;
