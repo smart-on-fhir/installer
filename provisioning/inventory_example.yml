@@ -1,5 +1,5 @@
 ---
-ansible_user: "ubuntu"
+installer_user: "ubuntu"
 hosting_userpass: ""
 
 services_host: "localhost"
