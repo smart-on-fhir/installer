@@ -19,7 +19,7 @@
 
 - name: "configure {{library_name}}"
   when: skip_configure is undefined and not skip_configure
-  command: "{{ item }} chdir=/src/package/"
+  command: "{{ item }} chdir={{working_folder}}/{{library_name}}"
   with_items:
   - "{{configure_command | default('./configure')}}"
   - "make"
