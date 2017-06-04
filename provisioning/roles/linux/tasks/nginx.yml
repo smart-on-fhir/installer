@@ -44,7 +44,7 @@
 
 - name: "Check for installation of openssl-1.0.2f"
   stat: "path={{installer_user_home}}/nginx/openssl-1.0.2f/openssl-1.0.2f"
-  register: openssl_instaled
+  register: openssl_installed
 
 - name: "install openssl-1.0.2f"
   when: not openssl_installed.stat.exists
