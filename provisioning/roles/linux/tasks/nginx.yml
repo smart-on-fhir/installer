@@ -50,7 +50,7 @@
     library_name: "openssl-1.0.2f"
     library_url: "http://www.openssl.org/source/openssl-1.0.2f.tar.gz"
     working_folder: "{{installer_user_home}}/nginx"
-    configure_command: "./config"
+    configure_command: "./config --prefix=/usr/local --openssldir=/usr/local/openssl"
 
 #- name: "Check for installation of nginx-1.11.13"
 #  stat: "path={{installer_user_home}}/nginx/nginx-1.11.13/nginx-1.11.13"
