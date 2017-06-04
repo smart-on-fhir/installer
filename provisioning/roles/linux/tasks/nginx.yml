@@ -23,7 +23,7 @@
   register: pcre_installed
 
 - name: "install pcre"
-  when: not pcre_installed.stat.exists
+#  when: not pcre_installed.stat.exists
   include: "roles/common/tasks/build_library_template.yml"
   vars:
     library_name: "pcre-8.40"
@@ -35,7 +35,7 @@
   register: zlib_instaled
 
 - name: "install zlib-1.2.11"
-  when: not zlib_instaled.stat.exists
+#  when: not zlib_instaled.stat.exists
   include: "roles/common/tasks/build_library_template.yml"
   vars:
     library_name: "zlib-1.2.11"
@@ -47,7 +47,7 @@
   register: openssl_installed
 
 - name: "install openssl-1.0.2f"
-  when: not openssl_installed.stat.exists
+#  when: not openssl_installed.stat.exists
   include: "roles/common/tasks/build_library_template.yml"
   vars:
     library_name: "openssl-1.0.2f"
