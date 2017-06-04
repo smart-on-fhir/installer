@@ -63,7 +63,7 @@
   register: nginx_installed
 
 - include: nginx.yml
-  when: not nginx_installed.stat.exists
+#  when: not nginx_installed.stat.exists
 
 - name: "create ssl certificates directory"
   when: use_secure_http
