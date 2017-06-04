@@ -4,9 +4,6 @@
   file: "path={{item}} state=directory"
   with_items:
     - "{{installer_user_home}}/nginx"
-    - "{{installer_user_home}}/nginx/pcre-8.40"
-    - "{{installer_user_home}}/nginx/zlib-1.2.11"
-    - "{{installer_user_home}}/nginx/openssl-1.0.2f"
 
 - name: "create the service directory"
   file: "path={{item}} state=directory mode=0755"
@@ -19,7 +16,7 @@
     - "/var/log/nginx"
 
 - name: "Check for installation of pcre"
-  stat: "path={{installer_user_home}}/nginx/pcre-8.40/pcre-8.40"
+  stat: "path={{installer_user_home}}/nginx/pcre-8.40"
   register: pcre_installed
 
 - name: "install pcre"
@@ -28,10 +25,10 @@
   vars:
     library_name: "pcre-8.40"
     library_url: "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx/pcre-8.40"
+    working_folder: "{{installer_user_home}}/nginx"
 
 - name: "Check for installation of zlib-1.2.11"
-  stat: "path={{installer_user_home}}/nginx/zlib-1.2.11/zlib-1.2.11"
+  stat: "path={{installer_user_home}}/nginx"
   register: zlib_instaled
 
 - name: "install zlib-1.2.11"
@@ -40,10 +37,10 @@
   vars:
     library_name: "zlib-1.2.11"
     library_url: "http://zlib.net/zlib-1.2.11.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx/zlib-1.2.11"
+    working_folder: "{{installer_user_home}}/nginx"
 
 - name: "Check for installation of openssl-1.0.2f"
-  stat: "path={{installer_user_home}}/nginx/openssl-1.0.2f/openssl-1.0.2f"
+  stat: "path={{installer_user_home}}/nginx/openssl-1.0.2f"
   register: openssl_installed
 
 - name: "install openssl-1.0.2f"
@@ -52,7 +49,7 @@
   vars:
     library_name: "openssl-1.0.2f"
     library_url: "http://www.openssl.org/source/openssl-1.0.2f.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx/openssl-1.0.2f"
+    working_folder: "{{installer_user_home}}/nginx"
     configure_command: "./config"
 
 #- name: "Check for installation of nginx-1.11.13"
