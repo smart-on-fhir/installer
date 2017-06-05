@@ -60,5 +60,5 @@
     library_artifact_name: "nginx-1.11.13"
     library_url: "http://nginx.org/download/nginx-1.11.13.tar.gz"
     working_folder: "{{nginx_build_home}}"
-    configure_command: "./configure --with-http_ssl_module --with-http_sub_module"
+    configure_command: "./configure --with-http_ssl_module --with-http_sub_module --with-openssl={{nginx_build_home}}/openssl"
     skip_link: true
