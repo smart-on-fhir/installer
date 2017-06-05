@@ -9,7 +9,7 @@
     - "{{nginx_build_home}}"
 
 - name: "Check for installation of pcre"
-  stat: "path={{nginx_build_home}}/pcre-8.40"
+  stat: "path={{nginx_build_home}}/pcre"
   register: pcre_installed
 
 - name: "install pcre"
@@ -21,8 +21,8 @@
     library_url: "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
     working_folder: "{{nginx_build_home}}"
 
-- name: "Check for installation of zlib-1.2.11"
-  stat: "path={{nginx_build_home}}/zlib-1.2.11"
+- name: "Check for installation of zlib"
+  stat: "path={{nginx_build_home}}/zlib"
   register: zlib_instaled
 
 - name: "install zlib-1.2.11"
@@ -34,8 +34,8 @@
     library_url: "http://zlib.net/zlib-1.2.11.tar.gz"
     working_folder: "{{nginx_build_home}}"
 
-- name: "Check for installation of openssl-1.0.2f"
-  stat: "path={{nginx_build_home}}/openssl-1.0.2f"
+- name: "Check for installation of openssl"
+  stat: "path={{nginx_build_home}}/openssl"
   register: openssl_installed
 
 - name: "install openssl-1.0.2f"
@@ -48,8 +48,8 @@
     working_folder: "{{nginx_build_home}}"
     configure_command: "./config"
 
-- name: "Check for installation of nginx-1.11.13"
-  stat: "path={{nginx_build_home}}/nginx-1.11.13"
+- name: "Check for installation of nginx"
+  stat: "path={{nginx_build_home}}/nginx"
   register: nginx_installed
 
 - name: "install nginx-1.11.13"
