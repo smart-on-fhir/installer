@@ -6,6 +6,9 @@
 
 installer_user_home: "/home/{{installer_user}}"
 
+nginx_build_home: "/usr/local"
+nginx_home: "{{nginx_build_home}}/nginx"
+
 # The user account that will host the servers. If a user account of this name
 # already exists on the system, the installer will not alter its credentials or
 # authentication mechanism. If you need to set up actual password authentication,

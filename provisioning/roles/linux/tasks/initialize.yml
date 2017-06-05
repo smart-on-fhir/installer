@@ -1,0 +1,74 @@
+---
+- name: "installer profile"
+  template:
+    src: ".bash_profile.j2"
+    dest: "{{installer_user_home}}/.bash_profile"
+
+- name: "disable apt update on startup"
+  service: name=apt-daily.service enabled=no
+
+- name: "disable apt update timer"
+  service: name=apt-daily.timer enabled=no
+
+- name: "update aptitude cache"
+  apt: update_cache=yes
+  register: result
+  until: result|succeeded
+  retries: 10
+  delay: 10
+
+- name: "install prerequisite packages"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt: pkg={{item}} force=yes
+  with_items:
+         - acl
+         - aptitude
+         - curl
+         - git
+         - maven
+         - mysql-server
+         - openjdk-8-jdk
+         - python-psycopg2
+         - python-jinja2
+         - python-httplib2
+         - python-mysqldb
+         - python-requests
+         - python-pycurl
+         - python-pip
+         - ldap-utils
+         - ssl-cert
+         - cron
+         - jq
+         - python-lxml
+
+- name: "upgrade server packages"
+  apt: upgrade=full
+
+- name: "create group"
+  group: name="{{hosting_username}}"
+
+- name: "create user"
+  user: name="{{hosting_username}}" password="{{hosting_userpass}}" update_password="on_create"
+        group="{{hosting_username}}" groups=sudo
+        shell=/bin/bash
+
+- name: "download jetty-runner"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "org.eclipse.jetty"
+    artifact_id: "jetty-runner"
+    version: "9.3.6.v20151106"
+    extension: "jar"
+    repository_url: "{{release_repository_url}}"
+    dest: "{{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}}"
+
+- name: "config jetty-runner"
+  copy: src=jetty.xml dest={{hosting_user_home}}/jetty.xml
+
+- name: "Configure MySQL user"
+  mysql_user: name={{mysql_username}} host={{mysql_connect_host}} password={{mysql_password}} priv={{mysql_privilage}} state=present
+
+- name: "Drop anonymous MySQL user"
+  mysql_user: name='' host={{mysql_connect_host}} state=absent
+

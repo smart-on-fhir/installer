@@ -1,71 +1,10 @@
 ---
-# Builds a nginx server that supports ngx_http_sub_module
-- name: "create the project directory"
-  file: "path={{item}} state=directory"
-  with_items:
-    - "{{installer_user_home}}/nginx"
-
 - name: "create the service directory"
-  file: "path={{item}} state=directory mode=0755"
+  file: "path={{item}} state=directory mode=0755 owner=root group=root"
   with_items:
-    - "/etc/nginx"
-    - "/etc/nginx/conf.d"
-    - "/etc/nginx/sites-available"
-    - "/etc/nginx/sites-enabled"
-    - "/etc/nginx/snippets"
+    - "{{nginx_home}}/conf.d"
+    - "{{nginx_home}}/sites-enabled"
     - "/var/log/nginx"
-
-- name: "Check for installation of pcre"
-  stat: "path={{installer_user_home}}/nginx/pcre-8.40"
-  register: pcre_installed
-
-- name: "install pcre"
-#  when: not pcre_installed.stat.exists
-  include: "roles/common/tasks/build_library_template.yml"
-  vars:
-    library_name: "pcre-8.40"
-    library_url: "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx"
-
-- name: "Check for installation of zlib-1.2.11"
-  stat: "path={{installer_user_home}}/nginx"
-  register: zlib_instaled
-
-- name: "install zlib-1.2.11"
-#  when: not zlib_instaled.stat.exists
-  include: "roles/common/tasks/build_library_template.yml"
-  vars:
-    library_name: "zlib-1.2.11"
-    library_url: "http://zlib.net/zlib-1.2.11.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx"
-
-- name: "Check for installation of openssl-1.0.2f"
-  stat: "path={{installer_user_home}}/nginx/openssl-1.0.2f"
-  register: openssl_installed
-
-- name: "install openssl-1.0.2f"
-#  when: not openssl_installed.stat.exists
-  include: "roles/common/tasks/build_library_template.yml"
-  vars:
-    library_name: "openssl-1.0.2f"
-    library_url: "http://www.openssl.org/source/openssl-1.0.2f.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx"
-    configure_command: "./config --prefix=/usr/local --openssldir=/usr/local/openssl"
-
-#- name: "Check for installation of nginx-1.11.13"
-#  stat: "path={{installer_user_home}}/nginx/nginx-1.11.13/nginx-1.11.13"
-#  register: nginx_instaled
-#
-#- include: nginx.yml
-#  when: not p.stat.exists
-
-- name: "install nginx-1.11.13"
-  include: "roles/common/tasks/build_library_template.yml"
-  vars:
-    library_name: "nginx-1.11.13"
-    library_url: "http://nginx.org/download/nginx-1.11.13.tar.gz"
-    working_folder: "{{installer_user_home}}/nginx"
-    configure_command: "./configure --prefix=/usr --with-http_ssl_module --with-http_sub_module"
 
 - name: "install nginx system"
   include: "roles/common/tasks/service_template.yml"
@@ -74,3 +13,94 @@
     service_definition_file: "roles/linux/templates/nginx.service.j2"
     internal_host: "localhost"
     internal_port: "80"
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "copy nginx.conf"
+  template:
+    src: "nginx.conf.j2"
+    dest: "{{nginx_home}}/conf/nginx.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "configure default site"
+  template:
+    src: "default.j2"
+    dest: "{{nginx_home}}/sites-enabled/default"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "configure upload.conf"
+  template:
+    src: "upload.conf.j2"
+    dest: "{{nginx_home}}/conf.d/upload.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "create ssl certificates directory"
+  when: use_secure_http
+  file:
+    path: "{{nginx_home}}/ssl"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0640"
+
+# create or copy the ssl certificates
+- name: "generate self-signed ssl certificate"
+  when: use_secure_http and not use_custom_ssl_certificates
+  shell: /bin/echo -e "{{self_signed_certificate_ssl_country}}\n{{self_signed_certificate_ssl_province}}\n{{self_signed_certificate_ssl_locality}}\n{{self_signed_certificate_ssl_organization}}\n{{self_signed_certificate_ssl_division}}\n{{full_domain_name}}\n{{self_signed_certificate_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {{nginx_home}}/ssl/{{certificate_key_filename}} -out {{nginx_home}}/ssl/{{certificate_crt_filename}}
+  args:
+    creates: "{{nginx_home}}/ssl/{{certificate_crt_filename}}"
+
+- name: "copy custom ssl certificates"
+  when: use_secure_http and use_custom_ssl_certificates
+  copy:
+    src: "{{custom_ssl_certificates_path}}/{{certificate_crt_filename}}"
+    dest: "{{nginx_home}}/ssl/{{certificate_crt_filename}}"
+    remote_src: true
+
+- name: "copy custom ssl keys"
+  when: use_secure_http and use_custom_ssl_certificates
+  copy:
+    src: "{{custom_ssl_certificates_path}}/{{certificate_key_filename}}"
+    dest: "{{nginx_home}}/ssl/{{certificate_key_filename}}"
+    remote_src: true
+
+- name: "list private key files"
+  find:
+    paths: "{{nginx_home}}/ssl"
+    patterns:
+     - "*.key"
+     - "*.pem"
+  register: keys
+
+- name: "set private key permissions"
+  when: use_secure_http
+  file:
+    path: "{{item.path}}"
+    group: ssl-cert
+    mode: "0640"
+  with_items: "{{keys.files}}"
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "add www-data user to ssl-cert group"
+  when: use_secure_http
+  user:
+    name: "www-data"
+    groups: "ssl-cert"

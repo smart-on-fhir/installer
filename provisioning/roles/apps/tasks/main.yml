@@ -84,7 +84,7 @@
 
 - name: configure nginx (sample apps)
   tags: [apps-all, apps-server, smart-platform]
-  template: src=nginx_apps.j2 dest=/etc/nginx/sites-enabled/apps owner=root group=root mode=0644
+  template: src=nginx_apps.j2 dest={{nginx_home}}/sites-enabled/apps owner=root group=root mode=0644
   notify:
     - restart nginx
 

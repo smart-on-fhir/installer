@@ -1,0 +1,64 @@
+---
+# Builds a nginx server that supports ngx_http_sub_module
+- name: "create the build directory"
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{nginx_build_home}}"
+
+- name: "Check for installation of pcre"
+  stat: "path={{nginx_build_home}}/pcre-8.40"
+  register: pcre_installed
+
+- name: "install pcre"
+  when: not pcre_installed.stat.exists
+  include: "roles/common/tasks/build_library_template.yml"
+  vars:
+    library_name: "pcre"
+    library_artifact_name: "pcre-8.40"
+    library_url: "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz"
+    working_folder: "{{nginx_build_home}}"
+
+- name: "Check for installation of zlib-1.2.11"
+  stat: "path={{nginx_build_home}}/zlib-1.2.11"
+  register: zlib_instaled
+
+- name: "install zlib-1.2.11"
+  when: not zlib_instaled.stat.exists
+  include: "roles/common/tasks/build_library_template.yml"
+  vars:
+    library_name: "zlib"
+    library_artifact_name: "zlib-1.2.11"
+    library_url: "http://zlib.net/zlib-1.2.11.tar.gz"
+    working_folder: "{{nginx_build_home}}"
+
+- name: "Check for installation of openssl-1.0.2f"
+  stat: "path={{nginx_build_home}}/openssl-1.0.2f"
+  register: openssl_installed
+
+- name: "install openssl-1.0.2f"
+  when: not openssl_installed.stat.exists
+  include: "roles/common/tasks/build_library_template.yml"
+  vars:
+    library_name: "openssl"
+    library_artifact_name: "openssl-1.0.2f"
+    library_url: "http://www.openssl.org/source/openssl-1.0.2f.tar.gz"
+    working_folder: "{{nginx_build_home}}"
+    configure_command: "./config"
+
+- name: "Check for installation of nginx-1.11.13"
+  stat: "path={{nginx_build_home}}/nginx-1.11.13"
+  register: nginx_installed
+
+- name: "install nginx-1.11.13"
+  when: not nginx_installed.stat.exists
+  include: "roles/common/tasks/build_library_template.yml"
+  vars:
+    library_name: "nginx"
+    library_artifact_name: "nginx-1.11.13"
+    library_url: "http://nginx.org/download/nginx-1.11.13.tar.gz"
+    working_folder: "{{nginx_build_home}}"
+    configure_command: "./configure --with-http_ssl_module --with-http_sub_module"
+    skip_link: true

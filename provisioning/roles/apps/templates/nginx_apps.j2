@@ -13,8 +13,8 @@ server {
 
 {% if use_secure_http %}
     ssl on;
-    ssl_certificate /etc/nginx/ssl/{{certificate_crt_filename}};
-    ssl_certificate_key /etc/nginx/ssl/{{certificate_key_filename}};
+    ssl_certificate {{nginx_home}}/ssl/{{certificate_crt_filename}};
+    ssl_certificate_key {{nginx_home}}/ssl/{{certificate_key_filename}};
 {% endif %}
 }
 

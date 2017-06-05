@@ -100,7 +100,7 @@
 
 - name: "configure nginx (pwm server)"
   when: enable_pwm
-  template: src=nginx_pwm.j2 dest=/etc/nginx/sites-enabled/pwm owner=root group=root mode=0644
+  template: src=nginx_pwm.j2 dest={{nginx_home}}/sites-enabled/pwm owner=root group=root mode=0644
   notify:
 
 - name: "restart nginx"

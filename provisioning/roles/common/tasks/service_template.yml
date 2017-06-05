@@ -60,7 +60,7 @@
   when: gateway_definition_file is defined
   template:
     src: "{{gateway_definition_file}}"
-    dest: "/etc/nginx/sites-enabled/{{service_name}}"
+    dest: "{{nginx_home}}/sites-enabled/{{service_name}}"
     owner: "root"
     group: "root"
     mode: "0644"
