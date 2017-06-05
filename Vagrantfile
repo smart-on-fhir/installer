@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.extra_vars = {
       installer_user: "vagrant",
       services_host: "localhost",
-      use_secure_http: true,
+      use_secure_http: false,
       use_custom_ssl_certificates: false,
       certificate_crt_filename: "self-signed-certificate.crt",
       certificate_key_filename: "self-signed-certificate.key",
