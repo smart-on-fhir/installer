@@ -3,7 +3,7 @@
   become: yes
   vars_files:
     - settings.yml
-    - settings_messaging.yml
+    - settings_patient_picker.yml
     - settings_api.yml
   roles:
     - common
