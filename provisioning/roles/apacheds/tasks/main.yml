@@ -42,7 +42,7 @@
   service: name=apacheds-server enabled=yes state=restarted
 
 - name: "verify apacheds-server is available"
-  wait_for: host={{apacheds_server_internal_host}} port={{apacheds_server_internal_port}}
+  wait_for: host=localhost port={{apacheds_server_internal_port}}
 
 - name: "generate sandbox admin update script"
   become_user: "{{hosting_username}}"

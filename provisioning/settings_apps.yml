@@ -1,6 +1,5 @@
 ---
 # apps artifact
-app_server_internal_host: "{{services_host}}"
 app_server_internal_port: "9093"
 apps_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{apps_server_external_host}}{{(':'+apps_server_external_port|string) if apps_server_external_port|int not in (80,443) else ''}}"
 cardiac_risk_project_info:

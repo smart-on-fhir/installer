@@ -27,7 +27,6 @@
     database_reset: "{{api_dstu2_mysql_reset_database | default(false)}}"
     service_definition_file: "roles/api/templates/api_dstu2.service.j2"
     gateway_definition_file: "roles/api/templates/api_dstu2.j2"
-    internal_host: "{{api_server_internal_host}}"
     internal_port: "{{api_dstu2_server_internal_port}}"
     external_host: "{{api_dstu2_server_external_host}}"
     external_port: "{{api_dstu2_server_external_port}}"
@@ -41,7 +40,6 @@
     database_reset: false
     service_definition_file: "roles/api/templates/mock_api_dstu2.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_dstu2.j2"
-    internal_host: "{{api_server_internal_host}}"
     internal_port: "{{mock_api_dstu2_server_internal_port}}"
     external_host: "{{mock_api_dstu2_server_external_host}}"
     external_port: "{{mock_api_dstu2_server_external_port}}"
@@ -54,7 +52,6 @@
     database_reset: "{{api_stu3_mysql_reset_database | default(false)}}"
     service_definition_file: "roles/api/templates/api_stu3.service.j2"
     gateway_definition_file: "roles/api/templates/api_stu3.j2"
-    internal_host: "{{api_server_internal_host}}"
     internal_port: "{{api_stu3_server_internal_port}}"
     external_host: "{{api_stu3_server_external_host}}"
     external_port: "{{api_stu3_server_external_port}}"
@@ -68,7 +65,6 @@
     database_reset: false
     service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
-    internal_host: "{{api_server_internal_host}}"
     internal_port: "{{mock_api_stu3_server_internal_port}}"
     external_host: "{{mock_api_stu3_server_external_host}}"
     external_port: "{{mock_api_stu3_server_external_port}}"

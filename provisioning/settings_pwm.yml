@@ -3,7 +3,6 @@
 pwm_project: "pwm"
 pwm_branch: "master"
 pwm_server_database: "pwm"
-pwm_server_internal_host: "localhost"
 pwm_server_internal_port: "8092"
 pwm_server_initial_memory: "128M"
 pwm_server_max_memory: "256M"

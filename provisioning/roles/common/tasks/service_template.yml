@@ -6,7 +6,6 @@
 #   database_reset: true to reset the database, false otherwise
 #   service_definition_file: service definition file
 #   gateway_definition_file: nginx gateway definition file
-#   internal_host: internal hostname
 #   internal_port: internal port
 #   external_host: external hostname
 #   external_port: external port
@@ -53,7 +52,7 @@
 - name: "verify {{service_name}} is available internally"
   become_user: "{{hosting_username}}"
   wait_for:
-    host: "{{internal_host}}"
+    host: "localhost"
     port: "{{internal_port}}"
 
 - name: "configure nginx ({{service_name}})"

@@ -7,7 +7,6 @@
     database_reset: "{{sandman_mysql_reset_database | default(false)}}"
     service_definition_file: "roles/sandman/templates/sandman.service.j2"
     gateway_definition_file: "roles/sandman/templates/sandman.j2"
-    internal_host: "{{sandman_server_internal_host}}"
     internal_port: "{{sandman_server_internal_port}}"
     external_host: "{{sandman_server_external_host}}"
     external_port: "{{sandman_server_external_port}}"

@@ -5,7 +5,6 @@
     service_name: "patient_picker"
     service_definition_file: "roles/patient_picker/templates/patient_picker.service.j2"
     gateway_definition_file: "roles/patient_picker/templates/patient_picker.j2"
-    internal_host: "{{patient_picker_server_internal_host}}"
     internal_port: "{{patient_picker_server_internal_port}}"
     external_host: "{{patient_picker_server_external_host}}"
     external_port: "{{patient_picker_server_external_port}}"

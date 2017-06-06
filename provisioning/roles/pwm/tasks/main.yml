@@ -110,7 +110,7 @@
 
 - name: "verify pwm-server is available"
   when: enable_pwm
-  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}
+  wait_for: host=localhost port={{pwm_server_internal_port}}
 
 - name: "stop pwm server"
   when: enable_pwm
@@ -122,4 +122,4 @@
 
 - name: "verify pwm-server is available"
   when: enable_pwm
-  wait_for: host={{pwm_server_internal_host}} port={{pwm_server_internal_port}}
+  wait_for: host=localhost port={{pwm_server_internal_port}}
