@@ -1,0 +1,45 @@
+---
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/patient_picker"
+    - "{{hosting_user_home}}/patient_picker/mysql"
+    - "{{hosting_user_home}}/patient_picker/project"
+
+- name: "download the patient_picker webapp"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "{{patient_picker_server_artifact_group_id}}"
+    artifact_id: "{{patient_picker_server_artifact_artifact_id}}"
+    version: "{{patient_picker_server_artifact_version}}"
+    extension: "{{patient_picker_server_artifact_packaging}}"
+    repository_url: "{{patient_picker_server_artifact_repository_url}}"
+    dest: "{{hosting_user_home}}/patient_picker/{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}}"
+
+- name: "copy the patient_picker webapp"
+  become_user: "{{hosting_username}}"
+  copy: src="{{hosting_user_home}}/patient_picker/{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}}"
+        dest="{{hosting_user_home}}/patient_picker/smart-{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}}"
+        remote_src=true
+
+- name: "extract the patient_picker webapp"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/patient_picker/project
+        jar -xvf {{hosting_user_home}}/patient_picker/smart-{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}}
+
+- name: "patch branded_text.js"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/patient_picker/project/static/js/branding/{{item}}"
+    mode: "0755"
+  with_items:
+    - "branded_text.js"
+
+- name: "update war file"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/patient_picker/project
+        jar uf {{hosting_user_home}}/patient_picker/{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}} {{item}}
+  with_items:
+    - "static/js/branding/branded_text.js"

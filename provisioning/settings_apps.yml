@@ -36,15 +36,6 @@ growth_chart_project_info:
     folder: "{{hosting_user_home}}/apps/static/apps/growth-chart"
   hosting:
     client_id: 6
-patient_picker_project_info:
-  repo:
-    base_url: "{{hspc_repo_base}}"
-    name: "patient-picker"
-    tag: "1.0"
-  target:
-    base_folder: "{{hosting_user_home}}"
-    name: "patient-picker"
-    folder: "{{hosting_user_home}}/patient-picker"
 
 patient_picker_server_external_url: "{{apps_server_external_url}}/apps/patient-picker"
 bilirubin_risk_chart_server_external_url: "https://bilirubin-risk-chart.hspconsortium.org"

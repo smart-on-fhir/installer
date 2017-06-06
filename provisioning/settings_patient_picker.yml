@@ -1,0 +1,10 @@
+---
+# patient_picker artifact
+patient_picker_server_artifact_group_id: "org.hspconsortium.sandbox"
+patient_picker_server_artifact_artifact_id: "hspc-patient-picker"
+patient_picker_server_artifact_version: "1.1.1"
+patient_picker_server_artifact_packaging: "jar"
+patient_picker_server_artifact_repository_url: "{{snapshot_repository_url}}"
+patient_picker_server_internal_host: "localhost"
+patient_picker_server_internal_port: "8094"
+patient_picker_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{patient_picker_server_external_host}}{{(':'+patient_picker_server_external_port|string) if patient_picker_server_external_port|int not in (80,443) else ''}}"

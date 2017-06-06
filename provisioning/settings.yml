@@ -6,7 +6,7 @@
 
 installer_user_home: "/home/{{installer_user}}"
 
-nginx_build_home: "/usr/local"
+#nginx_build_home: "/usr/local"
 #nginx_home: "{{nginx_build_home}}/nginx"
 nginx_home: "/etc/nginx"
 

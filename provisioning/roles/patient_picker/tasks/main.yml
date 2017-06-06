@@ -1,0 +1,4 @@
+---
+- include: "artifact.yml"
+
+- include: "service.yml"

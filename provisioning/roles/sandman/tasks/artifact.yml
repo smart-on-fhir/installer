@@ -25,8 +25,6 @@
         dest="{{hosting_user_home}}/sandman/smart-{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}"
         remote_src=true
 
-# currently, the maven overlay doesn't support Spring Boot WAR files
-# so patch the WAR manually
 - name: "extract the sandman webapp"
   become_user: "{{hosting_username}}"
   shell: chdir={{hosting_user_home}}/sandman/project
