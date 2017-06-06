@@ -6,7 +6,13 @@ upstream auth {
 server {
     server_name {{auth_server_external_host}};
 
+{% if use_secure_http %}
+    listen {{auth_server_external_port}} ssl;
+    ssl_certificate {{nginx_home}}/ssl/{{certificate_crt_filename}};
+    ssl_certificate_key {{nginx_home}}/ssl/{{certificate_key_filename}};
+{% else %}
     listen {{auth_server_external_port}};
+{% endif %}
 
     location /auth/ {
         rewrite ^/auth(.*)$ $1 last;
@@ -30,12 +36,6 @@ server {
       proxy_pass http://auth;
       proxy_redirect off;
     }
-
-{% if use_secure_http %}
-    ssl on;
-    ssl_certificate {{nginx_home}}/ssl/{{certificate_crt_filename}};
-    ssl_certificate_key {{nginx_home}}/ssl/{{certificate_key_filename}};
-{% endif %}
 }
 
 {% if auth_server_external_port != 80 and use_secure_http %}

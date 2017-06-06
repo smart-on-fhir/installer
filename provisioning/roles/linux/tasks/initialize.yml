@@ -26,6 +26,7 @@
          - aptitude
          - curl
          - git
+         - nginx
          - maven
          - mysql-server
          - openjdk-8-jdk

@@ -6,8 +6,8 @@
 
 - include: initialize.yml
 
-- include: nginx_build.yml
+#- include: nginx_build.yml
 
-- include: nginx.yml
+#- include: nginx.yml
 
 - include: jobs.yml

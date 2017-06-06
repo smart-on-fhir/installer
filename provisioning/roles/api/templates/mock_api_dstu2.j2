@@ -6,7 +6,13 @@ upstream mock_api_dstu2 {
 server {
     server_name {{mock_api_dstu2_server_external_host}};
 
+{% if use_secure_http %}
+    listen {{mock_api_dstu2_server_external_port}} ssl;
+    ssl_certificate {{nginx_home}}/ssl/{{certificate_crt_filename}};
+    ssl_certificate_key {{nginx_home}}/ssl/{{certificate_key_filename}};
+{% else %}
     listen {{mock_api_dstu2_server_external_port}};
+{% endif %}
 
     location /mock-api/ {
         rewrite ^/mock-api(.*)$ $1 last;
@@ -19,23 +25,10 @@ server {
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
-{% if use_secure_http %}
-      # make sure references in the body include the https protocol
-      sub_filter 'http://{{mock_api_dstu2_server_external_host}}'  'https://{{mock_api_dstu2_server_external_host}}';
-      sub_filter_once off;
-      sub_filter_types *;
-{% endif %}
-
       access_log /var/log/nginx/mock_api_dstu2_access.log;
       proxy_pass http://mock_api_dstu2;
       proxy_redirect off;
     }
-
-{% if use_secure_http %}
-    ssl on;
-    ssl_certificate {{nginx_home}}/ssl/{{certificate_crt_filename}};
-    ssl_certificate_key {{nginx_home}}/ssl/{{certificate_key_filename}};
-{% endif %}
 }
 
 {% if mock_api_dstu2_server_external_port != 80 and use_secure_http %}
