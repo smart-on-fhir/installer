@@ -6,14 +6,6 @@
     - "{{nginx_home}}/sites-enabled"
     - "/var/log/nginx"
 
-- name: "install nginx system"
-  include: "roles/common/tasks/service_template.yml"
-  vars:
-    service_name: "nginx"
-    service_definition_file: "roles/linux/templates/nginx.service.j2"
-    internal_host: "localhost"
-    internal_port: "80"
-
 - name: "restart nginx"
   service:
     name: "nginx"

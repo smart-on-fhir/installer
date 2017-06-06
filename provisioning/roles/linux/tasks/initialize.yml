@@ -72,4 +72,3 @@
 
 - name: "Drop anonymous MySQL user"
   mysql_user: name='' host={{mysql_connect_host}} state=absent
-
