@@ -7,11 +7,6 @@
     - "{{nginx_home}}/sites-enabled"
     - "/var/log/nginx"
 
-- name: "restart nginx"
-  service:
-    name: "nginx"
-    state: "restarted"
-
 - name: "copy nginx.conf"
   template:
     src: "nginx.conf.j2"
@@ -35,11 +30,6 @@
     owner: "root"
     group: "root"
     mode: "0644"
-
-- name: "restart nginx"
-  service:
-    name: "nginx"
-    state: "restarted"
 
 - name: "create ssl certificates directory"
   when: use_secure_http
