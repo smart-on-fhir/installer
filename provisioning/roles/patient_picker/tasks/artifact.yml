@@ -32,7 +32,7 @@
   become_user: "{{hosting_username}}"
   template:
     src: "{{item}}.j2"
-    dest: "{{hosting_user_home}}/patient_picker/project/static/js/branding/{{item}}"
+    dest: "{{hosting_user_home}}/patient_picker/project/BOOT-INF/classes/static/js/branding/{{item}}"
     mode: "0755"
   with_items:
     - "branded_text.js"
@@ -42,4 +42,4 @@
   shell: chdir={{hosting_user_home}}/patient_picker/project
         jar uf {{hosting_user_home}}/patient_picker/{{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}} {{item}}
   with_items:
-    - "static/js/branding/branded_text.js"
+    - "BOOT-INF/classes/static/js/branding/branded_text.js"

@@ -62,7 +62,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
 #    ansible.verbose="vvvv"
 #    ansible.tags=["smart-platform"]
-#    ansible.playbook = "provisioning/playbook_api_stu3.yml"
+#    ansible.playbook = "provisioning/playbook_patient_picker.yml"
     ansible.playbook = "provisioning/site.yml"
     # append to the auto-generated inventory file
     ansible.extra_vars = {
@@ -125,9 +125,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       messaging_server_initial_memory: "1M",
       messaging_server_max_memory: "32M",
       messaging_profiles: "test",
+      patient_picker_server_external_host: "{{services_host}}",
+      patient_picker_server_external_port: "9094",
       patient_picker_server_initial_memory: "1M",
       patient_picker_server_max_memory: "32M",
-      patient_picker_profiles: "test",
       sandman_server_external_host: "{{services_host}}",
       sandman_server_external_port: "9080",
       sandman_server_initial_memory: "16M",
