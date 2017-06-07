@@ -12,6 +12,6 @@ git clone https://github.com/smart-on-fhir/installer
 
 cd installer/provisioning
 
-cp custom_settings_example.yml custom_settings.yml
+cp inventory_example.yml inventory
 
 sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml

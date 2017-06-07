@@ -2,13 +2,12 @@
 - hosts: all
   become: yes
   vars_files:
-    - settings.yml
-    - settings_sandman.yml
-    - settings_apps.yml
-    - settings_messaging.yml
-    - settings_auth.yml
-    - settings_pwm.yml
-    - settings_api.yml
+    - roles/linux/defaults/main.yml
+    - roles/apps/defaults/main.yml
+    - roles/messaging/defaults/main.yml
+    - roles/auth/defaults/main.yml
+    - roles/pwm/defaults/main.yml
+    - roles/api/defaults/main.yml
   roles:
     - common
     - sandman

@@ -2,10 +2,9 @@
 - hosts: all
   become: yes
   vars_files:
-    - settings.yml
-    - settings_pwm.yml
-    - settings_apacheds.yml
-    - settings_sandman.yml
+    - roles/linux/defaults/main.yml
+    - roles/apacheds/defaults/main.yml
+    - roles/sandman/defaults/main.yml
   roles:
     - common
     - pwm

@@ -2,7 +2,6 @@
 - hosts: all
   become: yes
   vars_files:
-    - settings.yml
-    - settings_apacheds.yml
+    - roles/linux/defaults/main.yml
   roles:
     - apacheds

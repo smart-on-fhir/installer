@@ -31,6 +31,7 @@
   ignore_errors: yes
 
 - name: "configure {{service_name}} service"
+  when: service_definition_file is defined
   template:
     src: "{{service_definition_file}}"
     dest: "/etc/systemd/system/{{service_name}}.service"
@@ -39,17 +40,21 @@
     mode: "0644"
 
 - name: "enable {{service_name}} service"
+  when: service_definition_file is defined
   shell: "systemctl enable {{service_name}}.service"
 
 - name: "reload systemd daemon"
+  when: service_definition_file is defined
   shell: "systemctl daemon-reload"
 
 - name: "start {{service_name}}"
+  when: service_definition_file is defined
   service:
     name: "{{service_name}}"
     state: "started"
 
 - name: "verify {{service_name}} is available internally"
+  when: service_definition_file is defined
   become_user: "{{hosting_username}}"
   wait_for:
     host: "localhost"

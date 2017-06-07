@@ -2,10 +2,9 @@
 - hosts: all
   become: yes
   vars_files:
-    - settings.yml
-    - settings_api.yml
-    - settings_auth.yml
-    - settings_messaging.yml
+    - roles/linux/defaults/main.yml
+    - roles/auth/defaults/main.yml
+    - roles/messaging/defaults/main.yml
   roles:
     - common
     - api
