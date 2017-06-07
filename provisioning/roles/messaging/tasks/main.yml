@@ -25,4 +25,3 @@
     external_host: "{{messaging_server_external_host}}"
     external_port: "{{messaging_server_external_port}}"
     health_check_url: "http://localhost:8091/resource/health"
-
