@@ -21,9 +21,6 @@ server {
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
 
-      expires 1h;
-      add_header Cache-Control "public";
-
       access_log /var/log/nginx/apps_access.log;
       proxy_pass http://apps;
       proxy_redirect off;
