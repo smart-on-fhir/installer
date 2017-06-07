@@ -1,7 +1,6 @@
 export NGINX_HOME={{nginx_home}}
 export NGINX_SITES=$NGINX_HOME/sites-enabled
 export SERVICE_HOME=/etc/systemd/system
-export hosting_user_home={{hosting_user_home}}
 export EDITOR=vi
 
 alias n='cd $NGINX_SITES'
@@ -38,8 +37,6 @@ alias vapps='sudo journalctl -u apps.service'
 alias vpp='sudo journalctl -u patient_picker.service'
 alias vsandman='sudo journalctl -u sandman.service'
 alias vnginx='sudo journalctl -u nginx.service'
-
-alias f='cd $hosting_user_home'
 
 alias stopn='sudo service nginx stop'
 alias startn='sudo service nginx start'

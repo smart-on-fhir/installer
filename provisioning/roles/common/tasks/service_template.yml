@@ -9,6 +9,7 @@
 #   internal_port: internal port
 #   external_host: external hostname
 #   external_port: external port
+#   health_check_url: optional health_check url
 
 - name: "stop {{service_name}}"
   service:
@@ -76,9 +77,17 @@
     state: "restarted"
 
 - name: "verify {{service_name}} is available externally"
-  when: gateway_definition_file is defined
+  when: health_check_url is undefined
   become_user: "{{hosting_username}}"
   wait_for:
     host: "{{external_host}}"
     port: "{{external_port}}"
 
+- name: "verify {{service_name}} is available externally"
+  when: health_check_url is defined
+  command: "curl --silent {{health_check_url}}"
+  register: result
+  until: result.stdout.find("200 OK") != -1
+  retries: 60
+  delay: 1
+  changed_when: false

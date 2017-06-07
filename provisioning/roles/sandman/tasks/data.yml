@@ -7,6 +7,8 @@
     mode: "0755"
   with_items:
     - "initialize.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
 
 - name: "load the sandman database scripts"
   mysql_db:
@@ -15,4 +17,6 @@
     target: "{{hosting_user_home}}/sandman/mysql/{{item}}"
   with_items:
     - "initialize.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
   ignore_errors: yes
