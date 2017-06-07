@@ -17,6 +17,9 @@
   retries: 10
   delay: 10
 
+- name: setup apt to pull node 6.x
+  shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
 - name: "install prerequisite packages"
   environment:
     DEBIAN_FRONTEND: noninteractive
@@ -41,11 +44,14 @@
          - ssl-cert
          - cron
          - jq
-         - npm
          - python-lxml
+         - npm
+         - nodejs
 
 - name: "upgrade server packages"
   apt: upgrade=full
+
+#sudo update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
 
 - name: "install http-server"
   shell: npm install http-server -g
