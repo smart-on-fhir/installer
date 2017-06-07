@@ -54,7 +54,7 @@
     name: "{{service_name}}"
     state: "started"
 
-- name: "verify {{service_name}} is available internally"
+- name: "verify {{service_name}} is available internally at localhost:{{internal_port}}"
   when: service_definition_file is defined
   become_user: "{{hosting_username}}"
   wait_for:
@@ -76,14 +76,14 @@
     name: "nginx"
     state: "restarted"
 
-- name: "verify {{service_name}} is available externally"
+- name: "verify {{service_name}} is available externally at {{external_host}}:{{external_port}}"
   when: health_check_url is undefined
   become_user: "{{hosting_username}}"
   wait_for:
     host: "{{external_host}}"
     port: "{{external_port}}"
 
-- name: "verify {{service_name}} is available externally"
+- name: "verify {{service_name}} is available externally at {{health_check_url}}"
   when: health_check_url is defined
   command: "curl --silent {{health_check_url}}"
   register: result
