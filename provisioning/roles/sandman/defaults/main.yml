@@ -3,9 +3,9 @@
 sandman_server_artifact_group_id: "org.hspconsortium.sandbox"
 sandman_server_artifact_artifact_id: "hspc-sandbox-manager"
 # until 1.7.1 is available
-sandman_server_artifact_version: "1.7.1"
+sandman_server_artifact_version: "1.8.0-SNAPSHOT"
 sandman_server_artifact_packaging: "war"
-sandman_server_artifact_repository_url: "{{release_repository_url}}"
+sandman_server_artifact_repository_url: "{{snapshot_repository_url}}"
 sandman_server_database: "sandman"
 sandman_server_internal_port: "8080"
 sandman_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{sandman_server_external_host}}{{(':'+sandman_server_external_port|string) if sandman_server_external_port|int not in (80,443) else ''}}"
