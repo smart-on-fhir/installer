@@ -4,37 +4,36 @@ SET AUTOCOMMIT = 0;
 
 START TRANSACTION;
 
-INSERT IGNORE INTO config (id, config_type, key_name, value)
-VALUES
-  (1, 0, 'Patient_1', 'Patient'),
-  (2, 0, 'Patient_2', 'Patient?name=s'),
-  (3, 0, 'Default_Patient_3', 'Patient?birthdate=>2010-01-01&birthdate=<2011-12-31'),
-  (4, 0, 'Observation_1', 'Observation'),
-  (5, 0, 'Observation_2', 'Observation?code=8480-6'),
-  (6, 0, 'Default_Observation_3', 'Observation?category=vital-signs'),
-  (7, 0, 'Observation_4', 'Observation?date=>2010-01-01&date=<2011-12-31'),
-  (8, 0, 'Condition_1', 'Condition'),
-  (9, 0, 'Condition_2', 'Condition?onset=>2010-01-01&onset=<2011-12-31'),
-  (10, 0, 'Procedure_1', 'Procedure'),
-  (11, 0, 'Default_Procedure_2', 'Procedure?date=>2010-01-01&date=<2011-12-31'),
-  (12, 0, 'AllergyIntolerance_1', 'AllergyIntolerance'),
-  (13, 0, 'Default_AllergyIntolerance_2', 'AllergyIntolerance?date=>1999-01-01&date=<2011-12-31'),
-  (14, 0, 'Default_Condition_3', 'Condition?code:text=diabetes');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (1, 0, 'Patient_1', 'Patient');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (2, 0, 'Patient_2', 'Patient?name=s');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (3, 0, 'Default_Patient_3', 'Patient?birthdate=>2010-01-01&birthdate=<2011-12-31');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (4, 0, 'Observation_1', 'Observation');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (5, 0, 'Observation_2', 'Observation?code=8480-6');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (6, 0, 'Default_Observation_3', 'Observation?category=vital-signs');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (7, 0, 'Observation_4', 'Observation?date=>2010-01-01&date=<2011-12-31');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (8, 0, 'Condition_1', 'Condition');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (9, 0, 'Condition_2', 'Condition?onset=>2010-01-01&onset=<2011-12-31');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (10, 0, 'Procedure_1', 'Procedure');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (11, 0, 'Default_Procedure_2', 'Procedure?date=>2010-01-01&date=<2011-12-31');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (12, 0, 'AllergyIntolerance_1', 'AllergyIntolerance');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (13, 0, 'Default_AllergyIntolerance_2', 'AllergyIntolerance?date=>1999-01-01&date=<2011-12-31');
+INSERT IGNORE INTO config (id, config_type, key_name, value) VALUES (14, 0, 'Default_Condition_3', 'Condition?code:text=diabetes');
 
-INSERT IGNORE INTO user (id, created_timestamp, sbm_user_id, name, email)
-VALUES (1, '2017-03-15 16:40:08', 'admin', 'Admin User', 'admin@example.com');
+INSERT IGNORE INTO user (id, created_timestamp, sbm_user_id, name, email) VALUES (1, '2017-03-15 16:40:08', 'admin', 'Admin User', 'admin@example.com');
 
-INSERT IGNORE INTO system_role (user_id, role)
-VALUES (1, 0), (1, 2);
+INSERT IGNORE INTO system_role (user_id, role) VALUES (1, 0);
+INSERT IGNORE INTO system_role (user_id, role) VALUES (1, 2);
 
-INSERT IGNORE INTO user_role (id, role, user_id)
-VALUES (1, 0, 1), (2, 3, 1), (3, 4, 1), (4, 0, 1), (5, 3, 1), (6, 4, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (1, 0, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (2, 3, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (3, 4, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (4, 0, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (5, 3, 1);
+INSERT IGNORE INTO user_role (id, role, user_id) VALUES (6, 4, 1);
 
-INSERT IGNORE INTO auth_client (id, auth_database_id, client_id, client_name, logo_uri)
-VALUES
-  (1, {{bp_centiles_project_info.hosting.client_id}}, 'bp_centiles', 'BP Centiles', 'https://content.hspconsortium.org/images/bp-centiles/bpc2.png'),
-  (2, {{cardiac_risk_project_info.hosting.client_id}}, 'cardiac_risk', 'Cardiac Risk', 'https://content.hspconsortium.org/images/cardiac-risk/cardiac-risk.png'),
-  (3, {{growth_chart_project_info.hosting.client_id}}, 'growth_chart', 'Growth Chart', 'https://content.hspconsortium.org/images/growth-chart/growth-chart.png');
+INSERT IGNORE INTO auth_client (id, auth_database_id, client_id, client_name, logo_uri) VALUES (1, {{bp_centiles_project_info.hosting.client_id}}, 'bp_centiles', 'BP Centiles', 'https://content.hspconsortium.org/images/bp-centiles/bpc2.png');
+INSERT IGNORE INTO auth_client (id, auth_database_id, client_id, client_name, logo_uri) VALUES (2, {{cardiac_risk_project_info.hosting.client_id}}, 'cardiac_risk', 'Cardiac Risk', 'https://content.hspconsortium.org/images/cardiac-risk/cardiac-risk.png');
+INSERT IGNORE INTO auth_client (id, auth_database_id, client_id, client_name, logo_uri) VALUES (3, {{growth_chart_project_info.hosting.client_id}}, 'growth_chart', 'Growth Chart', 'https://content.hspconsortium.org/images/growth-chart/growth-chart.png');
 
 COMMIT;
 
