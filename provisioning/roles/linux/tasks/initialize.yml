@@ -40,13 +40,13 @@
          - python-requests
          - python-pycurl
          - python-pip
-         - ldap-utils
-         - ssl-cert
          - cron
          - jq
          - python-lxml
          - npm
          - nodejs
+         - ldap-utils
+         - ssl-cert
 
 - name: "upgrade server packages"
   apt: upgrade=full
