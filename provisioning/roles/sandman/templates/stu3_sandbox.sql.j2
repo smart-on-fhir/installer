@@ -13,15 +13,6 @@ VALUES (1, 2);
 INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles)
 VALUES (2, 4), (2, 5), (2, 6);
 
-INSERT IGNORE INTO app (created_timestamp, launch_uri, logo_uri, visibility, auth_client_id, created_by_id, logo_id, sandbox_id)
-VALUES
-#  (now(), '{{apps_server_external_url}}/apps/bp-centiles/launch.html',
-#   'https://content.hspconsortium.org/images/bp-centiles/bpc2.png', 0, 1, 1, NULL, 2),
-  (now(), '{{apps_server_external_url}}/apps/cardiac-risk/launch.html',
-   'https://content.hspconsortium.org/images/cardiac-risk/cardiac-risk.png', 0, 2, 1, NULL, 2),
-  (now(), '{{apps_server_external_url}}/apps/growth-chart/launch.html',
-   'https://content.hspconsortium.org/images/growth-chart/growth-chart.png', 0, 3, 1, NULL, 2);
-
 COMMIT;
 
 SET AUTOCOMMIT = 1;
