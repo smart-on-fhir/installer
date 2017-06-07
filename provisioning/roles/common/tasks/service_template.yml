@@ -87,7 +87,7 @@
   when: health_check_url is defined
   command: "curl --silent {{health_check_url}}"
   register: result
-  until: result.stdout.find("200 OK") != -1
+  until: result.stdout.find("OK") != -1
   retries: 60
   delay: 1
   changed_when: false
