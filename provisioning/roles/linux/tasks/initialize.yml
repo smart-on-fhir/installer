@@ -41,6 +41,7 @@
          - ssl-cert
          - cron
          - jq
+         - npm
          - python-lxml
 
 - name: "upgrade server packages"
