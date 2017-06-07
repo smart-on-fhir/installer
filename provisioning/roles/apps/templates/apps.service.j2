@@ -6,7 +6,7 @@ User={{hosting_username}}
 TimeoutStartSec=infinity
 WorkingDirectory={{hosting_user_home}}/apps/static
 
-ExecStart=/usr/bin/http-server -p={{apps_server_internal_port}}
+ExecStart=/usr/local/bin/http-server -p={{apps_server_internal_port}}
 Restart=always
 
 [Install]
