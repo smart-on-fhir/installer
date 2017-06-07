@@ -46,6 +46,9 @@
 - name: "upgrade server packages"
   apt: upgrade=full
 
+- name: "install http-server"
+  shell: npm install http-server -g
+
 - name: "create group"
   group: name="{{hosting_username}}"
 

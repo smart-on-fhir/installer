@@ -65,7 +65,12 @@
 
 - meta: flush_handlers
 
-- name: verify app-server is available
-  tags: [apps-all, apps-server, verify, smart-platform]
-  wait_for: host={{apps_server_external_host}} port={{apps_server_external_port}}
-
+- name: "install apps system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "apps"
+    service_definition_file: "roles/api/templates/apps.service.j2"
+    gateway_definition_file: "roles/api/templates/apps.j2"
+    internal_port: "{{apps_server_internal_port}}"
+    external_host: "{{apps_server_external_host}}"
+    external_port: "{{apps_server_external_port}}"
