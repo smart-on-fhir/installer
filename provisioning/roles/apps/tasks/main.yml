@@ -1,33 +1,33 @@
 ---
 - name: checkout cardiac_risk_app
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   include: "roles/common/tasks/project-clone-system.yml"
   vars:
     project: "{{cardiac_risk_project_info}}"
 
 - name: checkout bp_centiles_app
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   include: "roles/common/tasks/project-clone-system.yml"
   vars:
     project: "{{bp_centiles_project_info}}"
 
 - name: checkout growth_chart_app
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   include: "roles/common/tasks/project-clone-system.yml"
   vars:
     project: "{{growth_chart_project_info}}"
 
 - name: "check out patient_picker project"
+  become_user: "{{hosting_username}}"
   git:
     repo: "{{hspc_repo_base}}/patient-picker.git"
-    dest: "{{hosting_user_home}}/apps/static/apps/patient_picker"
+    dest: "{{hosting_user_home}}/patient_picker/patient_picker"
     version: "{{patient_picker_project_version}}"
 
+#- name: "copy patient_picker to the apps folder"
+#  shell: cp -r
+
 - name: configure sample apps to use a common fhir-client
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   shell: sed -i -e 's/node_modules\/fhirclient\/fhir-client\.js/\.\.\/\.\.\/js\/fhir-client\.js/' {{hosting_user_home}}/apps/static/apps/{{item}}
   with_items:
@@ -39,27 +39,22 @@
         - growth-chart/launch.html
 
 - name: extract images used in registration
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   unarchive: src="images.tar" dest="{{hosting_user_home}}/apps/static/"
 
 - name: extract common javascript
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   unarchive: src="js.tar" dest="{{hosting_user_home}}/apps/static/"
 
 - name: extract common angular
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   unarchive: src="angular.tar" dest="{{hosting_user_home}}/apps/static/"
 
 - name: extract common bootstrap
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   unarchive: src="bootstrap.tar" dest="{{hosting_user_home}}/apps/static/"
 
 - name: extract common stylesheets
-  tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
   unarchive: src="stylesheets.tar" dest="{{hosting_user_home}}/apps/static/"
 
