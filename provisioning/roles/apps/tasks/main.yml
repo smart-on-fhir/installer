@@ -35,7 +35,7 @@
 
 - name: "copy patient_picker to the apps folder"
   become_user: "{{hosting_username}}"
-  shell: cp -r {{hosting_user_home}}/patient_picker/patient_picker/src/*.* {{hosting_user_home}}/apps/static/apps/patient-picker
+  shell: cp -r {{hosting_user_home}}/patient_picker/patient_picker/src/* {{hosting_user_home}}/apps/static/apps/patient-picker
 
 - name: configure sample apps to use a common fhir-client
   become_user: "{{hosting_username}}"
