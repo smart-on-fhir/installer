@@ -29,6 +29,8 @@ mysql_password: "password"
 apacheds_server_external_host: "{{services_host}}"
 apacheds_server_system_admin_password: "secret"
 apacheds_server_sandbox_admin_password: "password"
+# in prod, only install one time
+apacheds_server_installer_enabled: true
 
 # pwm
 pwm_server_external_host: "{{services_host}}"

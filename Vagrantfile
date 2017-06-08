@@ -86,6 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       apacheds_server_external_host: "{{services_host}}",
       apacheds_server_system_admin_password: "secret",
       apacheds_server_sandbox_admin_password: "password",
+      apacheds_server_installer_enabled: true,
       auth_server_external_host: "{{services_host}}",
       auth_server_external_port: "9060",
       auth_server_initial_memory: "32M",
