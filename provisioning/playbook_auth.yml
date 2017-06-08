@@ -8,6 +8,7 @@
     - roles/sandman/defaults/main.yml
     - roles/apacheds/defaults/main.yml
     - roles/pwm/defaults/main.yml
+    - roles/patient_picker/defaults/main.yml
   roles:
     - common
     - auth
