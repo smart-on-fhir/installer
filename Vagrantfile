@@ -13,13 +13,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 # Auth Server
   config.vm.network :forwarded_port, guest: 9060, host: 9060
-# Persona-Auth Server
-  config.vm.network :forwarded_port, guest: 9160, host: 9160
 
 # API_DSTU2 Server
   config.vm.network :forwarded_port, guest: 9071, host: 9071
-# Persona-API_DSTU2 Server
-  config.vm.network :forwarded_port, guest: 9171, host: 9171
 # Mock-API_DSTU2 Server
   config.vm.network :forwarded_port, guest: 9271, host: 9271
 # API_STU3 Server
