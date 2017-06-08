@@ -20,6 +20,12 @@
   vars:
     project: "{{growth_chart_project_info}}"
 
+- name: "check out patient_picker project"
+  git:
+    repo: "{{hspc_repo_base}}/patient-picker.git"
+    dest: "{{hosting_user_home}}/patient_picker/patient_picker"
+    version: "{{patient_picker_project_version}}"
+
 - name: configure sample apps to use a common fhir-client
   tags: [apps-all, apps-code, smart-platform]
   become_user: "{{hosting_username}}"
