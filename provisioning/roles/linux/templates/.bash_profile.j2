@@ -6,6 +6,8 @@ export EDITOR=vi
 alias n='cd $NGINX_SITES'
 alias s='cd $SERVICE_HOME'
 
+alias reload='sudo systemctl daemon-reload'
+
 # tail services
 alias tldap='sudo journalctl -f -u apacheds-server.service'
 alias tpwm='sudo journalctl -f -u pwm-server.service'
