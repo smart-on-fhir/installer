@@ -39,5 +39,5 @@ growth_chart_project_info:
 bilirubin_risk_chart_server_external_url: "https://bilirubin-risk-chart.hspconsortium.org"
 
 patient_picker_project_version: "1.2.0"
-patient_picker_server_internal_port: "8094"
+patient_picker_server_internal_port: "{{apps_server_internal_port}}"
 patient_picker_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{patient_picker_server_external_host}}{{(':'+patient_picker_server_external_port|string) if patient_picker_server_external_port|int not in (80,443) else ''}}"

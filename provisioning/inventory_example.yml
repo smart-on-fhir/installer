@@ -85,9 +85,6 @@ messaging_server_initial_memory: "1M"
 messaging_server_max_memory: "32M"
 messaging_profiles: "production"
 
-patient_picker_server_external_host: "{{services_host}}"
-patient_picker_server_external_port: "9094"
-
 sandman_server_external_host: "{{services_host}}"
 sandman_server_external_port: "9080"
 sandman_server_initial_memory: "16M"
@@ -98,3 +95,6 @@ sandman_mysql_reset_database: true
 
 apps_server_external_host: "{{services_host}}"
 apps_server_external_port: "9093"
+
+patient_picker_server_external_host: "{{apps_server_external_host}}"
+patient_picker_server_external_port: "{{apps_server_external_port}}"

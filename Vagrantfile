@@ -36,8 +36,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 9092, host: 9092
 # Apps Server
   config.vm.network :forwarded_port, guest: 9093, host: 9093
+
 # Patient Picker Server
-  config.vm.network :forwarded_port, guest: 9094, host: 9094
+# Currently hosted inside the apps system
+#  config.vm.network :forwarded_port, guest: 9094, host: 9094
+
 # Appointments
   config.vm.network :forwarded_port, guest: 9095, host: 9095
 # Patient Data Manager
@@ -126,8 +129,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       messaging_server_initial_memory: "1M",
       messaging_server_max_memory: "32M",
       messaging_profiles: "test",
-      patient_picker_server_external_host: "{{services_host}}",
-      patient_picker_server_external_port: "9094",
       sandman_server_external_host: "{{services_host}}",
       sandman_server_external_port: "9080",
       sandman_server_initial_memory: "16M",
@@ -135,7 +136,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       sandman_server_send_email: false,
       sandbox_server_admin_access_client_secret: "changeme",
       apps_server_external_host: "{{services_host}}",
-      apps_server_external_port: "9093"
+      apps_server_external_port: "9093",
+      patient_picker_server_external_host: "{{apps_server_external_host}}",
+      patient_picker_server_external_port: "{{apps_server_external_port}}"
     }
   end
 
