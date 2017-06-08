@@ -128,8 +128,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       messaging_profiles: "test",
       patient_picker_server_external_host: "{{services_host}}",
       patient_picker_server_external_port: "9094",
-      patient_picker_server_initial_memory: "1M",
-      patient_picker_server_max_memory: "32M",
       sandman_server_external_host: "{{services_host}}",
       sandman_server_external_port: "9080",
       sandman_server_initial_memory: "16M",

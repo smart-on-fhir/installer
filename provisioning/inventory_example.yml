@@ -86,9 +86,7 @@ messaging_server_max_memory: "32M"
 messaging_profiles: "production"
 
 patient_picker_server_external_host: "{{services_host}}"
-patient_picker_server_external_port: "443"
-patient_picker_server_initial_memory: "1M"
-patient_picker_server_max_memory: "32M"
+patient_picker_server_external_port: "9094"
 
 sandman_server_external_host: "{{services_host}}"
 sandman_server_external_port: "9080"

@@ -1,15 +1,12 @@
 [Unit]
-Description=HSPC Messaging Server
+Description=HSPC patient_picker Server
 
 [Service]
 User={{hosting_username}}
 TimeoutStartSec=infinity
-WorkingDirectory={{hosting_user_home}}/patient_picker
+WorkingDirectory={{hosting_user_home}}/patient_picker/patient_picker
 
-ExecStart={{java_home}}/bin/java \
- -Xms{{patient_picker_server_initial_memory}} \
- -Xmx{{patient_picker_server_max_memory}} \
- -jar {{patient_picker_server_artifact_artifact_id}}-{{patient_picker_server_artifact_version}}.{{patient_picker_server_artifact_packaging}}
+ExecStart=/usr/bin/http-server src -p {{patient_picker_server_internal_port}}
 Restart=always
 
 [Install]
