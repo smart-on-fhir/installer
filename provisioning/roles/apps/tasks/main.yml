@@ -33,7 +33,7 @@
     dest: "{{hosting_user_home}}/patient_picker/patient_picker"
     version: "{{patient_picker_project_version}}"
 
-- name: "copy patient_picker to the apps folder"
+- name: "copy patient_picker to the apps project"
   become_user: "{{hosting_username}}"
   shell: cp -r {{hosting_user_home}}/patient_picker/patient_picker/src/* {{hosting_user_home}}/apps/static/apps/patient-picker
 
