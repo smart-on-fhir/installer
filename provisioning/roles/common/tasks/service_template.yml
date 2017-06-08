@@ -77,7 +77,7 @@
     state: "restarted"
 
 - name: "verify {{service_name}} is available externally at {{external_host}}:{{external_port}}"
-  when: health_check_url is undefined
+  when: external_host is defined and health_check_url is undefined
   become_user: "{{hosting_username}}"
   wait_for:
     host: "{{external_host}}"
