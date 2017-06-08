@@ -20,8 +20,8 @@
   vars:
     service_name: "messaging"
     service_definition_file: "roles/messaging/templates/messaging.service.j2"
-    gateway_definition_file: "roles/messaging/templates/messaging.j2"
+#    gateway_definition_file: "roles/messaging/templates/messaging.j2"
     internal_port: "{{messaging_server_internal_port}}"
-    external_host: "{{messaging_server_external_host}}"
-    external_port: "{{messaging_server_external_port}}"
-    health_check_url: "{{messaging_server_external_url}}/resource/health"
+#    external_host: "{{messaging_server_external_host}}"
+#    external_port: "{{messaging_server_external_port}}"
+#    health_check_url: "{{messaging_server_external_url}}/resource/health"
