@@ -6,6 +6,7 @@ messaging_server_artifact_version: "1.3.0"
 messaging_server_artifact_packaging: "jar"
 messaging_server_artifact_repository_url: "{{release_repository_url}}"
 messaging_server_internal_port: "8091"
-messaging_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{messaging_server_external_host}}{{(':'+messaging_server_external_port|string) if messaging_server_external_port|int not in (80,443) else ''}}"
+# for SMART, messaging isn't exposed publically
+messaging_server_external_url: "http://{{messaging_server_external_host}}{{(':'+messaging_server_external_port|string) if messaging_server_external_port|int not in (80,443) else ''}}"
 messaging_mail_server_username:
 messaging_mail_server_password:
