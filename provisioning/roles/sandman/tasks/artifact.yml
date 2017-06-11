@@ -30,7 +30,7 @@
   shell: chdir={{hosting_user_home}}/sandman/project
         jar -xvf {{hosting_user_home}}/sandman/smart-{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}}
 
-- name: "create the smart images directory"
+- name: "create the smart directories"
   become_user: "{{hosting_username}}"
   file: "path={{item}} state=directory"
   with_items:
@@ -46,7 +46,7 @@
   with_items:
     - "branded_text.js"
 
-- name: "patch sideNav.html"
+- name: "patch templates"
   become_user: "{{hosting_username}}"
   copy:
     src: "{{item}}"
@@ -54,6 +54,7 @@
     mode: "0755"
   with_items:
     - "sideNav.html"
+    - "apps.html"
 
 - name: "patch images"
   become_user: "{{hosting_username}}"

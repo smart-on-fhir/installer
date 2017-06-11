@@ -1,0 +1,43 @@
+<div class="container-fluid" ng-controller="AppsController">
+    <div class="row">
+        <div class="content-column"
+             ng-class="showing.appDetail ? 'col-lg-8 right-border' : 'col-lg-12'">
+            <div style="margin-bottom: 10px">
+                <div class="slim-page-header">Registered Sandbox Apps
+                    <a href={{docLink('registerAnApp')}} target="_blank"><i class="fa fa-question-circle-o"></i></a>
+                </div>
+                <button ng-click="registration()" class="btn btn-basic"><i class="fa fa-plus fa-lg"></i> Register Manually</button>
+                <button ng-click="registrationInbound()" class="btn btn-basic"><i class="fa fa-plus fa-lg"></i> Register Manifest</button>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div ng-class="showing.appDetail ? 'app-gallery-container-slim' : 'app-gallery-container'" resize
+                         ng-style="scrollScreen(size.screenH, size.screenW) ? '' : resizeWithOffset(size.navBarHeight+size.footerHeight+size.sandboxBarHeight+120)">
+                        <br style="clear: both;" />
+                        <div  class="row-fluid">
+                            <div ng-include="'static/js/templates/appsView.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 content-column left-border" ng-show="showing.appDetail">
+            <div class="details-header" resize ng-class="scrollWidth(size.screenW) ? 'details-vertical-scroll' : ''">
+                <!--<div class="slim-page-header">Registered App Details</div>-->
+                <!--<div class="row">-->
+                    <uib-tabset class="sandbox-nav-tabs">
+                        <uib-tab index="0" heading="Registered App Details">
+                            <div ng-include="'static/js/templates/appsDetail.html'"></div>
+                        </uib-tab>
+                        <uib-tab index="1" heading="Vendor Info">
+                            <div ng-include="'static/js/templates/appsPromote.html'"></div>
+                        </uib-tab>
+                    </uib-tabset>
+                <!--</div>-->
+            </div>
+
+            <!--<div ng-include="'static/js/templates/appsDetail.html'"></div>-->
+        </div>
+    </div>
+</div>
+
