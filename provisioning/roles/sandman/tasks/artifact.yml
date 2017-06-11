@@ -74,6 +74,7 @@
   with_items:
     - "static/js/branding/branded_text.js"
     - "static/js/templates/sideNav.html"
+    - "static/js/templates/apps.html"
     - "static/branding/smart/images/smart-logo.png"
     - "static/branding/smart/images/smart-logo@2x.png"
     - "static/branding/smart/images/smart-logo@3x.png"
