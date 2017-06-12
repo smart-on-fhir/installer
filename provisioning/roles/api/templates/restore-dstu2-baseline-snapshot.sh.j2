@@ -49,6 +49,6 @@ case $HTTP_STATUS in
 203|204|205|206|207|208|226) echo "$HTTP_STATUS"
      ;;
 *) echo "$HTTP_STATUS"
-   RESTORE_BASELINE_handleResourceError "Failed to restore database snapshot"
+   RESTORE_BASELINE_handleLastError "Failed to restore database snapshot"
    ;;
 esac
