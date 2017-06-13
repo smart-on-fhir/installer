@@ -56,12 +56,12 @@
   shell: npm install http-server -g
 
 - name: Allow 'sudo' group to have passwordless sudo
-      lineinfile:
-        dest: /etc/sudoers
-        state: present
-        regexp: '^%sudo'
-        line: '%sudo ALL=(ALL:ALL) NOPASSWD:ALL'
-        validate: visudo -cf %s
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL:ALL) NOPASSWD:ALL'
+    validate: visudo -cf %s
 
 - name: "create group"
   group: name="{{hosting_username}}"
