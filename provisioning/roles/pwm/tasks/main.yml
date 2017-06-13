@@ -30,6 +30,36 @@
   template: src=PwmConfiguration.xml.j2
             dest="{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/PwmConfiguration.xml"
 
+- name: "Remove the LocalDB"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/LocalDB"
+    state: absent
+
+- name: "Create the LocalDB"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/LocalDB"
+    mode: "0755"
+    state: present
+
+- name: "Remove the PWM Logs"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/logs"
+    state: absent
+
+- name: "Create the LocalDB"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/logs"
+    mode: "0755"
+    state: present
+
 - name: "build hspc pwm server"
   when: enable_pwm
   become_user: "{{hosting_username}}"
@@ -70,6 +100,13 @@
   when: enable_pwm
   become_user: "{{hosting_username}}"
   file: path="{{tomcat_home}}/webapps" state=directory
+
+- name: "remove prior PWM deployment"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{tomcat_home}}/webapps/ROOT"
+    state: absent
 
 - name: "configure tomcat to only host pwm"
   when: enable_pwm
