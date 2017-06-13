@@ -60,11 +60,10 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer
 ```
 
-Create a custom_settings.yml.  You can use the custom_settings_example.yml file as a starting point:
+Ansible installers use inventory files to manage variables that can change between environments (ex: test, prod).  For a Vagrant install, the variables that would normally exist in an inventory are located within the Vagrantfile in the **ansible.extra_vars** block.  Alter any of these values as your installation requires:
 
 ```
-cp provisioning/custom_settings_example.yml provisioning/custom_settings.yml
-vi provisioning/custom_settings.yml
+vi Vagrantfile
 ```
 
 ### Run the Installer
