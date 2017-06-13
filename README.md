@@ -9,7 +9,7 @@ The SMART on FHIR platform will be installed on a single machine in one of the f
 1. [VM Instance Install](#localvm) (ie: an Ubuntu server running on VirtualBox on a developer machine)
 2. [Native Install](#nativeinstall) (ie: an Ubuntu server)
 
-More advanced installations are possible by modifying this installer (mainly custom_settings.yml) but are not supported by our technical team.
+More advanced installations are possible by modifying this installer (mainly inventory.yml) but are not supported by our technical team.
 
 ### Supported Operating Systems
 The SMART on FHIR platform is tested on Ubuntu 16.04.  Other linux-based systems may require different commands or packages.
@@ -104,10 +104,10 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
 
-Modify custom_settings.yml:
+Create an inventory file for your environment using the inventory_example.yml as a template:
 ```
-cp custom_settings_example.yml custom_settings.yml
-vi custom_settings.yml
+cp inventory_example.yml inventory.yml
+vi inventory.yml
 ```
 
 * set "installer_user" to your ssh username
@@ -161,7 +161,7 @@ Here is the exact configuration we use to test the installer using an AWS EC2 in
 | LDAP PORT     | 10389                   |
 | APPS PORTS    | 9070-9099               |
 
-Here is the custom_settings.yml file:
+Here is the inventory.yml file:
 ```
 installer_user: "ubuntu"
 services_host: "x.x.x.x" (your IP address)
@@ -182,7 +182,7 @@ sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-par
 sudo pip install ansible==2.1.0
 git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
-vi custom_settings.yml
+vi inventory.yml
 ... (see above)
 sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
 ...
@@ -215,7 +215,7 @@ a client by client basis. Before you even try the apps, you should probably load
 API server and add the self-signed certificate to your browser's security exceptions.
 
 ### Sample data
-By default, the server will load data for only 20 sample patients. To automatically load the entire set of ~60 samples patients, you can update your `custom_settings` to increase this limit:
+By default, the server will load data for only 20 sample patients. To automatically load the entire set of ~60 samples patients, you can update your `inventory` to increase this limit:
 
 * `api_dstu2_sample_patients_limit: 100`
 
