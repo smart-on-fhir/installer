@@ -78,6 +78,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       aws_access_key_id: "changeme",
       aws_secret_access_key: "changeme",
       aws_ec2_volume_id: "changeme",
+      mysql_host: "localhost",
       mysql_password: "password",
       enable_pwm: false,
       pwm_server_external_host: "{{services_host}}",
