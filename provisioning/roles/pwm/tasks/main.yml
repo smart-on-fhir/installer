@@ -43,7 +43,7 @@
   file:
     path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/LocalDB"
     mode: "0755"
-    state: present
+    state: directory
 
 - name: "Remove the PWM Logs"
   when: enable_pwm
@@ -52,13 +52,13 @@
     path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/logs"
     state: absent
 
-- name: "Create the LocalDB"
+- name: "Create the PWM Logs"
   when: enable_pwm
   become_user: "{{hosting_username}}"
   file:
     path: "{{hosting_user_home}}/{{pwm_project}}/src/main/webapp/WEB-INF/logs"
     mode: "0755"
-    state: present
+    state: directory
 
 - name: "build hspc pwm server"
   when: enable_pwm
