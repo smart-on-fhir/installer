@@ -39,10 +39,16 @@ then
 fi
 
 # restart the api-dstu2 server (to clear out the hibernate sequence caching
-sudo service api_dstu2 restart
+sudo service api_dstu2 stop
 
 # wait for a few minutes
 sleep 2m
+
+# restart the api-dstu2 server (to clear out the hibernate sequence caching
+sudo service api_dstu2 start
+
+# wait for a few minutes
+sleep 10m
 
 # process the custom sample data
 source {{hosting_user_scripts_home}}/process-dstu2-custom-sample-data.sh .
