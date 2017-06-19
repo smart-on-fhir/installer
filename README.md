@@ -115,10 +115,10 @@ vi inventory.yml
 * setting passwords, ports, and other properties as desired
 
 ### Run the Installer
-Make a "local" connection using the "localhost" inventory file:
+Make a "local" connection using the "inventory" inventory file:
 
 ```
-sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
+sudo ansible-playbook -c local -i 'inventory.yml,' -vvvv site.yml
 ```
 
 ---
@@ -184,7 +184,7 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 vi inventory.yml
 ... (see above)
-sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
+sudo ansible-playbook -c local -i 'inventory.yml,' -vvvv site.yml
 ...
 (about 20 minutes later...)
 PLAY RECAP *********************************************************************
@@ -261,7 +261,6 @@ alias tldap='sudo journalctl -f -u apacheds-server.service'
 alias tmsg='sudo journalctl -f -u messaging-server.service'
 alias tpwm='sudo journalctl -f -u pwm-server.service'
 alias tsand='sudo journalctl -f -u sandbox-manager-server.service'
-alias v='sudo ansible-playbook  -c local -i localhost, -vvvv site.yml --tags "verify"'
 alias vapi='sudo journalctl -u api-dstu2-server.service'
 alias vapip='sudo journalctl -u persona-api-dstu2-server.service'
 alias vauth='sudo journalctl -u auth-server.service'
