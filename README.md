@@ -104,10 +104,10 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer/provisioning
 ```
 
-Create an inventory file for your environment using the inventory_example.yml as a template:
+Modify the inventory and group_vars for your environment:
 ```
-cp inventory_example.yml inventory.yml
-vi inventory.yml
+vi inventory/hosts
+vi inventory/group_vars/all.yml
 ```
 
 * set "installer_user" to your ssh username
@@ -115,10 +115,9 @@ vi inventory.yml
 * setting passwords, ports, and other properties as desired
 
 ### Run the Installer
-Make a "local" connection using the "inventory" inventory file:
 
 ```
-sudo ansible-playbook -c local -i 'inventory.yml,' -vvvv site.yml
+sudo ansible-playbook -i inventory/hosts site.yml
 ```
 
 ---

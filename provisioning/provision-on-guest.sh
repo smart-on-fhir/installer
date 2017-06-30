@@ -12,6 +12,7 @@ git clone https://github.com/smart-on-fhir/installer
 
 cd installer/provisioning
 
-cp inventory_example.yml inventory
+# modify the group_vars for your environment
+#vi inventory/group_vars/all.yml
 
-sudo ansible-playbook -c local -i 'localhost,' -vvvv site.yml
+sudo ansible-playbook -i inventory/hosts site.yml --extra-vars "--installer_user=vagrant"
