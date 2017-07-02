@@ -5,9 +5,5 @@ vagrant/.*
 *.log
 *.retry
 
-# This file should not be checked in, instead custom_settings_example.yml should be checked in
-custom_settings.yml
-
-provisioning/inventory_local_group_vars.yml
-provisioning/inventory_test_group_vars.yml
-provisioning/inventory_prod_group_vars.yml
+provisioning/inventory/group_vars/prod.yml
+provisioning/inventory/group_vars/test.yml

@@ -5,143 +5,159 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.hostname = "smart-on-fhir"
-  config.vm.box = "bento/ubuntu-16.04"
+    config.vm.hostname = "smart-on-fhir"
+    config.vm.box = "bento/ubuntu-16.04"
 
-# MYSQL Database
-  config.vm.network :forwarded_port, guest: 3306, host: 3307
+    # MYSQL Database
+    config.vm.network :forwarded_port, guest: 3306, host: 3307
 
-# Auth Server
-  config.vm.network :forwarded_port, guest: 9060, host: 9060
+    # Auth Server
+    config.vm.network :forwarded_port, guest: 9060, host: 9060
 
-# API_DSTU2 Server
-  config.vm.network :forwarded_port, guest: 9071, host: 9071
-# Mock-API_DSTU2 Server
-  config.vm.network :forwarded_port, guest: 9271, host: 9271
-# API_STU3 Server
-  config.vm.network :forwarded_port, guest: 9074, host: 9074
-# Mock-API_STU3 Server
-  config.vm.network :forwarded_port, guest: 9274, host: 9274
+    # API_DSTU2 Server
+    config.vm.network :forwarded_port, guest: 9071, host: 9071
+    # Mock-API_DSTU2 Server
+    config.vm.network :forwarded_port, guest: 9271, host: 9271
+    # API_STU3 Server
+    config.vm.network :forwarded_port, guest: 9074, host: 9074
+    # Mock-API_STU3 Server
+    config.vm.network :forwarded_port, guest: 9274, host: 9274
 
-# Sandbox Manager
-  config.vm.network :forwarded_port, guest: 9080, host: 9080
+    # Sandbox Manager
+    config.vm.network :forwarded_port, guest: 9080, host: 9080
 
-# Messaging Server
-  config.vm.network :forwarded_port, guest: 9091, host: 9091
-# PWM Server
-  config.vm.network :forwarded_port, guest: 9092, host: 9092
-# Apps Server
-  config.vm.network :forwarded_port, guest: 9093, host: 9093
+    # Messaging Server
+    config.vm.network :forwarded_port, guest: 9091, host: 9091
+    # PWM Server
+    config.vm.network :forwarded_port, guest: 9092, host: 9092
+    # Apps Server
+    config.vm.network :forwarded_port, guest: 9093, host: 9093
 
-# Patient Picker Server
-# Currently hosted inside the apps system
-#  config.vm.network :forwarded_port, guest: 9094, host: 9094
+    # Patient Picker Server
+    # Currently hosted inside the apps system
+    #  config.vm.network :forwarded_port, guest: 9094, host: 9094
 
-# Appointments
-  config.vm.network :forwarded_port, guest: 9095, host: 9095
-# Patient Data Manager
-  config.vm.network :forwarded_port, guest: 9096, host: 9096
+    # Appointments
+    config.vm.network :forwarded_port, guest: 9095, host: 9095
+    # Patient Data Manager
+    config.vm.network :forwarded_port, guest: 9096, host: 9096
 
-# ApacheDS
-  config.vm.network :forwarded_port, guest: 10389, host: 10389
+    # ApacheDS
+    config.vm.network :forwarded_port, guest: 10389, host: 10389
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.name = "SMART on FHIR Platform"
-    vb.memory = "6144"
-    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
-  end
+    config.vm.provider "virtualbox" do |vb|
+        vb.name = "SMART on FHIR Platform"
+        vb.memory = "6144"
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+        vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
+    end
 
-  config.vm.provision "fix-no-tty", type: "shell" do |s|
-    s.privileged = false
-    s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-  end
+    config.vm.provision "fix-no-tty", type: "shell" do |s|
+        s.privileged = false
+        s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+    end
 
-  config.vm.provision "ansible" do |ansible|
-#    ansible.verbose="vvvv"
-#    ansible.tags=["smart-platform"]
-#    ansible.playbook = "provisioning/playbook_patient_picker.yml"
-    ansible.playbook = "provisioning/site.yml"
-    # append to the auto-generated inventory file
-    ansible.extra_vars = {
-      installer_user: "vagrant",
-      services_host: "localhost",
-      use_secure_http: false,
-      use_custom_ssl_certificates: false,
-      certificate_crt_filename: "self-signed-certificate.crt",
-      certificate_key_filename: "self-signed-certificate.key",
-      keystore_password: "changeme",
-      hspc_platform_jwt_key: "changeme",
-      aws_output_format: "json",
-      aws_region: "changeme",
-      aws_access_key_id: "changeme",
-      aws_secret_access_key: "changeme",
-      aws_ec2_volume_id: "changeme",
-      mysql_host: "localhost",
-      mysql_password: "password",
-      enable_pwm: false,
-      pwm_server_external_host: "{{services_host}}",
-      pwm_server_external_port: "9092",
-      apacheds_server_external_host: "{{services_host}}",
-      apacheds_server_system_admin_password: "secret",
-      apacheds_server_sandbox_admin_password: "password",
-      apacheds_server_installer_enabled: true,
-      auth_server_external_host: "{{services_host}}",
-      auth_server_external_port: "9060",
-      auth_server_initial_memory: "32M",
-      auth_server_max_memory: "128M",
-      auth_server_newUserUrl: "",
-      auth_server_forgotPasswordUrl: "",
-      auth_server_admin_password: "password",
-      auth_mysql_reset_database: true,
-      api_server_oauth2_clientId: "hspc_resource_server",
-      api_server_oauth2_clientSecret: "secret",
-      api_dstu2_server_external_host: "{{services_host}}",
-      api_dstu2_server_external_port: "9071",
-      api_dstu2_server_initial_memory: "128M",
-      api_dstu2_server_max_memory: "256M",
-      api_dstu2_mysql_reset_database: true,
-      api_dstu2_sample_patients_limit: "20",
-      mock_api_dstu2_server_external_host: "{{services_host}}",
-      mock_api_dstu2_server_external_port: "9271",
-      mock_api_dstu2_server_initial_memory: "128M",
-      mock_api_dstu2_server_max_memory: "256M",
-      api_stu3_server_external_host: "{{services_host}}",
-      api_stu3_server_external_port: "9074",
-      api_stu3_server_initial_memory: "128M",
-      api_stu3_server_max_memory: "256M",
-      api_stu3_mysql_reset_database: true,
-      mock_api_stu3_server_external_host: "{{services_host}}",
-      mock_api_stu3_server_external_port: "9274",
-      mock_api_stu3_server_initial_memory: "128M",
-      mock_api_stu3_server_max_memory: "256M",
-      sandman_mysql_reset_database: true,
-      enable_backup_restore_jobs: false,
-      enable_aws_snapshot: false,
-      enable_api_sample_data: true,
-      enable_mock_endpoints: false,
-      messaging_server_external_host: "localhost",
-      messaging_server_external_port: "8091",
-      messaging_server_initial_memory: "1M",
-      messaging_server_max_memory: "32M",
-      messaging_profiles: "test",
-      sandman_server_external_host: "{{services_host}}",
-      sandman_server_external_port: "9080",
-      sandman_server_initial_memory: "16M",
-      sandman_server_max_memory: "128M",
-      sandman_server_send_email: false,
-      sandbox_server_admin_access_client_secret: "changeme",
-      apps_server_external_host: "{{services_host}}",
-      apps_server_external_port: "9093",
-      patient_picker_server_external_host: "{{apps_server_external_host}}",
-      patient_picker_server_external_port: "{{apps_server_external_port}}"
-    }
-  end
+    config.vm.provision "ansible" do |ansible|
+        #    ansible.verbose="vvvv"
+        #    ansible.tags=["smart-platform"]
+        #    ansible.playbook = "provisioning/playbook_patient_picker.yml"
+        ansible.playbook = "provisioning/site.yml"
+        # append to the auto-generated inventory file
+        ansible.extra_vars = {
+            installer_user: "vagrant"
+            hosting_userpass: ""
+            services_host: "localhost"
+            use_secure_http: false
+            use_custom_ssl_certificates: false
+            custom_ssl_certificates_path:
+            certificate_crt_filename: "self-signed-certificate.crt"
+            certificate_key_filename: "self-signed-certificate.key"
+            keystore_password: "changeme"
+            hspc_platform_jwt_key: "changeme"
+            aws_output_format: "json"
+            aws_region: "changeme"
+            aws_access_key_id: "changeme"
+            aws_secret_access_key: "changeme"
+            aws_ec2_volume_id: "changeme"
+            enable_backup_restore_jobs: false
+            enable_aws_snapshot: false
+            enable_pwm: false
+            mysql_host: "localhost"
+            mysql_root_pass: "password"
+            mysql_password: "password"
+            email_account_description: "SMART Account Services"
+            email_smtp_address: "changeme"
+            email_smtp_port: "587"
+            email_smtp_username: "changeme"
+            email_smtp_password_encrypted: "changeme"
+            email_admin_address: "admin@example.com"
+            email_contact_addresss: "contact@example.com"
+            apacheds_server_external_host: "{{services_host}}"
+            apacheds_server_system_admin_password: "secret"
+            apacheds_server_sandbox_admin_password: "password"
+            apacheds_server_installer_enabled: true
+            pwm_server_external_host: "{{services_host}}"
+            pwm_server_external_port: "9092"
+            pwm_unlocked: true
+            pwm_configpasswordhash: "changeme"
+            pwm_securitykey_encrypted: "changeme"
+            pwm_db_password_encrypted: "changeme"
+            pwm_sso_authentication_header_name: "changeme"
+            pwm_ldap_proxy_password_encrypted: "changeme"
+            auth_server_external_host: "{{services_host}}"
+            auth_server_external_port: "9060"
+            auth_server_initial_memory: "32M"
+            auth_server_max_memory: "128M"
+            auth_server_newUserUrl: "{{pwm_server_external_url}}public/newuser"
+            auth_server_forgotPasswordUrl: "{{pwm_server_external_url}}public/forgottenpassword"
+            auth_server_admin_password: "password"
+            auth_mysql_reset_database: false
+            api_server_oauth2_clientId: "hspc_resource_server"
+            api_server_oauth2_clientSecret: "secret"
+            enable_api_sample_data: true
+            enable_mock_endpoints: false
+            api_dstu2_server_external_host: "{{services_host}}"
+            api_dstu2_server_external_port: "9071"
+            api_dstu2_server_initial_memory: "128M"
+            api_dstu2_server_max_memory: "256M"
+            api_dstu2_mysql_reset_database: false
+            api_dstu2_sample_patients_limit: "20"
+            mock_api_dstu2_server_external_host: "{{services_host}}"
+            mock_api_dstu2_server_external_port: "9271"
+            mock_api_dstu2_server_initial_memory: "128M"
+            mock_api_dstu2_server_max_memory: "256M"
+            api_stu3_server_external_host: "{{services_host}}"
+            api_stu3_server_external_port: "9074"
+            api_stu3_server_initial_memory: "128M"
+            api_stu3_server_max_memory: "256M"
+            api_stu3_mysql_reset_database: false
+            mock_api_stu3_server_external_host: "{{services_host}}"
+            mock_api_stu3_server_external_port: "9274"
+            mock_api_stu3_server_initial_memory: "128M"
+            mock_api_stu3_server_max_memory: "256M"
+            messaging_server_external_host: "localhost"
+            messaging_server_external_port: "8091"
+            messaging_server_initial_memory: "32M"
+            messaging_server_max_memory: "64M"
+            messaging_profiles: "test"
+            sandman_server_external_host: "{{services_host}}"
+            sandman_server_external_port: "9080"
+            sandman_server_initial_memory: "128M"
+            sandman_server_max_memory: "256M"
+            sandman_server_send_email: false
+            sandbox_server_admin_access_client_secret: "changeme"
+            sandman_mysql_reset_database: false
+            apps_server_external_host: "{{services_host}}"
+            apps_server_external_port: "9093"
+            patient_picker_server_external_host: "{{apps_server_external_host}}"
+            patient_picker_server_external_port: "{{apps_server_external_port}}"
+        }
+    end
 
-  # If you are running the build on a Windows host, please comment out the
-  # "ansible" provisioner above and use this "shell" provisioner:
-  #
-  # config.vm.provision "shell", path: "provisioning/provision-on-guest.sh"
+    # If you are running the build on a Windows host, please comment out the
+    # "ansible" provisioner above and use this "shell" provisioner:
+    #
+    # config.vm.provision "shell", path: "provisioning/provision-on-guest.sh"
 
 end
