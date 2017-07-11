@@ -36,3 +36,7 @@ api_stu3_server_database: "hspc_{{api_schema_version}}_{{api_stu3_server_sandbox
 
 mock_api_stu3_server_internal_port: "8274"
 mock_api_stu3_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{mock_api_stu3_server_external_host}}{{(':'+mock_api_stu3_server_external_port|string) if mock_api_stu3_server_external_port|int not in (80,443) else ''}}"
+
+api_stu3_sample_patients_repo: "https://github.com/smart-on-fhir/sample-patients-stu3.git"
+api_stu3_sample_patients_branch: "master"
+api_stu3_sample_patients_generator_params: "--id-prefix SMART"
