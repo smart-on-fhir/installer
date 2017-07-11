@@ -63,6 +63,38 @@
            --insecure"
   with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
 
+- name: "checkout {{api_stu3_sample_patients_repo}}"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  git: repo={{api_stu3_sample_patients_repo}}
+       version={{api_stu3_sample_patients_branch}}
+       dest={{hosting_user_home}}/api_stu3_sample_patients
+       update={{update_repositories}}
+       force=yes
+       depth=1
+  register: api_stu3_sample_patients_checkout
+
+- name: "build api-stu3-sample patients"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/api_stu3_sample_patients/bin
+         python generate.py --write-fhir ../out {{api_stu3_sample_patients_generator_params}}
+
+- name: "list api-stu3-sample patients"
+  when: enable_api_sample_data
+  shell: ls {{hosting_user_home}}/api_stu3_sample_patients/out/*.json | head -n {{api_stu3_sample_patients_limit}}
+  register: api_stu3_sample_patient_files
+
+- name: "load api-stu3-sample patients"
+  when: enable_api_sample_data
+  shell: "chdir={{hosting_user_home}}/api_stu3_sample_patients/out/
+         curl
+           '{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/open/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}
+           --insecure"
+  with_items: "{{api_stu3_sample_patient_files.stdout_lines}}"
+
 - include: snapshot-command.yml
   when: enable_api_sample_data
   vars:

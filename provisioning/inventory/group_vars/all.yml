@@ -66,6 +66,7 @@ api_stu3_server_external_port: "9074"
 api_stu3_server_initial_memory: "128M"
 api_stu3_server_max_memory: "256M"
 api_stu3_mysql_reset_database: false
+api_stu3_sample_patients_limit: "20"
 mock_api_stu3_server_external_host: "{{services_host}}"
 mock_api_stu3_server_external_port: "9274"
 mock_api_stu3_server_initial_memory: "128M"
