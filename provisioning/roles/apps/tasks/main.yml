@@ -6,7 +6,7 @@
     state: absent
   with_items:
     - "{{hosting_user_home}}/{{apps}}"
-\
+
 - name: "create the service directory"
   become_user: "{{hosting_username}}"
   file: "path={{item}} state=directory"
