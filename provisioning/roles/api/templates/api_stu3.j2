@@ -20,7 +20,7 @@ server {
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
-      proxy_read_timeout 120s
+      proxy_read_timeout 120s;
 
       access_log /var/log/nginx/api_stu3_access.log;
       proxy_pass http://api_stu3;
