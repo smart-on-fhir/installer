@@ -87,3 +87,4 @@
     - "static/branding/smart/images/smart-logo.png"
     - "static/branding/smart/images/smart-logo@2x.png"
     - "static/branding/smart/images/smart-logo@3x.png"
+    - "static/js/services.js"
