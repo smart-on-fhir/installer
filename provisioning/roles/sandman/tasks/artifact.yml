@@ -67,6 +67,15 @@
     - "smart-logo@2x.png"
     - "smart-logo@3x.png"
 
+- name: "patch services (temporary)"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/sandman/project/static/js/{{item}}"
+    mode: "0755"
+  with_items:
+    - "services.js.j2"
+
 - name: "update war file"
   become_user: "{{hosting_username}}"
   shell: chdir={{hosting_user_home}}/sandman/project
