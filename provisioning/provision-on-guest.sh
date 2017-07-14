@@ -16,4 +16,4 @@ cd installer/provisioning
 #vi inventory/group_vars/all.yml
 
 # change the installer_user value to match your login account
-sudo ansible-playbook -i inventory/hosts site.yml --extra-vars "--installer_user=changeme"
+sudo ansible-playbook -i inventory/hosts site.yml --extra-vars "installer_user=changeme"
