@@ -1,0 +1,12 @@
+# the following command will load the roles
+#   ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
+
+- src: git+http://bitbucket.org/hspconsortium/common-role.git
+
+- src: git+http://bitbucket.org/hspconsortium/sandbox-manager-api-role.git
+
+- src: git+http://bitbucket.org/hspconsortium/sandbox-manager-role.git
+
+- src: git+http://bitbucket.org/hspconsortium/patient-data-manager-role.git
+
+- src: git+http://bitbucket.org/hspconsortium/bilirubin-risk-chart-role.git

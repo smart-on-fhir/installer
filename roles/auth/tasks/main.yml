@@ -1,0 +1,68 @@
+---
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/auth/mysql"
+    - "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views"
+    - "{{hosting_user_home}}/auth/project/src/main/webapp/static/images"
+
+- name: "create the project"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/auth/project/{{item}}"
+    mode: "0755"
+  with_items:
+    - "pom.xml"
+
+- name: "patch auth server login screen"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "web.xml.j2"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/web.xml"
+
+- name: "patch auth server login screen"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "login.jsp.j2"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views/login.jsp"
+
+# install SMART logos
+- name: "config company-logo.png"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "roles/common/files/images/company-logo.png"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/static/images/company-logo.png"
+
+- name: "config company-logo@2x.png"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "roles/common/files/images/company-logo.png"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/static/images/company-logo@2x.png"
+
+- name: "config company-logo-main-web-top.png"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "roles/common/files/images/company-logo-main-web-top.png"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/static/images/company-logo-main-web-top.png"
+
+- name: "build hspc auth server"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/auth/project
+       mvn clean install -e -U
+
+- name: "install auth system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "auth"
+    database: "{{auth_server_database}}"
+    database_drop: "{{auth_mysql_reset_database | default(false)}}"
+    database_exists: true
+    service_definition_file: "roles/auth/templates/auth.service.j2"
+    gateway_definition_file: "roles/auth/templates/auth.j2"
+    internal_port: "{{auth_server_internal_port}}"
+    external_host: "{{auth_server_external_host}}"
+    external_port: "{{auth_server_external_port}}"
+
+- include: "data.yml"

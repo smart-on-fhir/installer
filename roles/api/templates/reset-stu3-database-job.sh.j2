@@ -1,0 +1,68 @@
+#!/bin/bash
+
+DATE=$(date '+%Y-%m-%d')
+REMOVE_DATE=$(date --date="7 day ago" +%Y-%m-%d)
+ERROR=1
+CONTINUE_ON_ERROR=false
+JOBS_FOLDER="{{hosting_user_jobs_home}}"
+SCRIPTS_FOLDER="{{hosting_user_scripts_home}}"
+RESOURCES_FOLDER="{{hosting_user_home}}/api_stu3_custom_sample_data/fhir-resources"
+OUTPUT_FOLDER="{{hosting_user_jobs_output_home}}/$DATE/stu3"
+REMOVE_OUTPUT_FOLDER="{{hosting_user_jobs_output_home}}/$REMOVE_DATE"
+
+function handleLastError {
+  echo $1
+#  if [ ! $CONTINUE_ON_ERROR ]
+#  then
+    exit $ERROR
+#  fi
+}
+
+echo "Running reset-stu3-database-job.sh for $DATE"
+
+# only remove from the first script to execute
+# clear out prior executions for this date
+# echo "Removing output folder $OUTPUT_FOLDER"
+# rm -rf $OUTPUT_FOLDER
+
+# clear out folders that are old
+echo "Removing output folder $REMOVE_OUTPUT_FOLDER"
+rm -rf $REMOVE_OUTPUT_FOLDER
+
+# make sure folders exist
+echo "Creating output folder $OUTPUT_FOLDER"
+mkdir -p $OUTPUT_FOLDER
+
+# restore to the baseline snapshot
+source {{hosting_user_scripts_home}}/restore-stu3-baseline-snapshot.sh .
+
+if [ $? -ne 0 ]
+then
+    handleLastError "Failed to restore the baseline snapshot"
+fi
+
+# restart the api-stu3 server (to clear out the hibernate sequence caching
+echo "stoping api_stu3 service..."
+sudo service api_stu3 stop
+
+# wait for a few minutes
+echo "sleeping for 2 minutes..."
+sleep 2m
+
+# restart the api-stu3 server (to clear out the hibernate sequence caching
+echo "starting api_stu3 service..."
+sudo service api_stu3 start
+
+# wait for a few minutes
+echo "sleeping for 10 minutes..."
+sleep 10m
+
+# process the custom sample data
+#source {{hosting_user_scripts_home}}/process-stu3-custom-sample-data.sh .
+
+#if [ $? -ne 0 ]
+#then
+#    handleLastError "Failed to process custom sample data"
+#fi
+
+echo "reset-stu3-database-job.sh completed successfully!"

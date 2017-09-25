@@ -1,0 +1,87 @@
+---
+- name: "drop the service directory"
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: absent
+  with_items:
+    - "{{hosting_user_home}}/apps"
+
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/apps"
+    - "{{hosting_user_home}}/apps/static"
+    - "{{hosting_user_home}}/apps/static/apps"
+    - "{{hosting_user_home}}/apps/static/apps/patient-picker"
+
+- name: checkout cardiac_risk_app
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{cardiac_risk_project_info}}"
+
+- name: checkout bp_centiles_app
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{bp_centiles_project_info}}"
+
+- name: checkout growth_chart_app
+  become_user: "{{hosting_username}}"
+  include: "roles/common/tasks/project-clone-system.yml"
+  vars:
+    project: "{{growth_chart_project_info}}"
+
+- name: "check out patient_picker project"
+  become_user: "{{hosting_username}}"
+  git:
+    repo: "{{hspc_repo_base}}/patient-picker.git"
+    dest: "{{hosting_user_home}}/patient_picker/patient_picker"
+    version: "{{patient_picker_project_version}}"
+
+- name: "copy patient_picker to the apps project"
+  become_user: "{{hosting_username}}"
+  shell: cp -r {{hosting_user_home}}/patient_picker/patient_picker/src/* {{hosting_user_home}}/apps/static/apps/patient-picker
+
+- name: configure sample apps to use a common fhir-client
+  become_user: "{{hosting_username}}"
+  shell: sed -i -e 's/node_modules\/fhirclient\/fhir-client\.js/\.\.\/\.\.\/js\/fhir-client\.js/' {{hosting_user_home}}/apps/static/apps/{{item}}
+  with_items:
+        - bp-centiles/index.html
+        - bp-centiles/launch.html
+        - cardiac-risk/index.html
+        - cardiac-risk/launch.html
+        - growth-chart/index.html
+        - growth-chart/launch.html
+
+- name: extract images used in registration
+  become_user: "{{hosting_username}}"
+  unarchive: src="images.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common javascript
+  become_user: "{{hosting_username}}"
+  unarchive: src="js.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common angular
+  become_user: "{{hosting_username}}"
+  unarchive: src="angular.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common bootstrap
+  become_user: "{{hosting_username}}"
+  unarchive: src="bootstrap.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: extract common stylesheets
+  become_user: "{{hosting_username}}"
+  unarchive: src="stylesheets.tar" dest="{{hosting_user_home}}/apps/static/"
+
+- name: "install apps system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "apps"
+    service_definition_file: "roles/apps/templates/apps.service.j2"
+    gateway_definition_file: "roles/apps/templates/apps.j2"
+    internal_port: "{{apps_server_internal_port}}"
+    external_host: "{{apps_server_external_host}}"
+    external_port: "{{apps_server_external_port}}"

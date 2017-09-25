@@ -1,0 +1,47 @@
+---
+- name: "stop {{sandman_api_name}}"
+  service:
+    name: "{{sandman_api_name}}"
+    state: "stopped"
+  ignore_errors: yes
+
+- name: "create the smart directories"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_api_name}}/mysql"
+
+- name: "copy the sandman database scripts"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/{{sandman_api_name}}/mysql/{{item}}"
+    mode: "0755"
+  with_items:
+    - "remove_hspc_sandbox.sql"
+    - "default_apps.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
+
+- name: "load the sandman database scripts"
+  mysql_db:
+    name: "{{sandman_api_server_database}}"
+    state: import
+    target: "{{hosting_user_home}}/{{sandman_api_name}}/mysql/{{item}}"
+  with_items:
+    - "remove_hspc_sandbox.sql"
+    - "default_apps.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
+#  ignore_errors: yes
+
+- name: "start {{sandman_api_name}}"
+  service:
+    name: "{{sandman_api_name}}"
+    state: "started"
+
+- name: "verify {{sandman_api_name}} is available internally at localhost:{{sandman_server_internal_port}}"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "localhost"
+    port: "{{sandman_api_server_internal_port}}"

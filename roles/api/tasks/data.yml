@@ -1,0 +1,131 @@
+---
+- name: "drop sandbox snapshot"
+  when: enable_api_sample_data
+  include: snapshot-command.yml
+  vars:
+    snapshot_name: "{{api_baseline_snapshot}}"
+    snapshot_action: Delete
+
+- name: "initialize sandbox"
+  when: enable_api_sample_data
+  uri:
+    url: "{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/sandbox"
+    method: PUT
+    body: "{ 'teamId': '{{api_dstu2_server_sandbox}}','schemaVersion': '{{api_schema_version}}','allowOpenAccess': true,'baselineDate': '{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}' }"
+    body_format: json
+    HEADER_Content-Type: "application/json"
+    validate_certs: no
+
+- name: "checkout {{api_dstu2_sample_patients_repo}}"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  git: repo={{api_dstu2_sample_patients_repo}}
+       version={{api_dstu2_sample_patients_branch}}
+       dest={{hosting_user_home}}/api_dstu2_sample_patients
+       update={{update_repositories}}
+       force=yes
+       depth=1
+  register: api_dstu2_sample_patients_checkout
+
+- name: "build api-dstu2-sample patients"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/api_dstu2_sample_patients/bin
+         python generate.py --write-fhir ../generated-data {{api_dstu2_sample_patients_generator_params}}
+
+- name: "list api-dstu2-sample patients"
+  when: enable_api_sample_data
+  shell: ls {{hosting_user_home}}/api_dstu2_sample_patients/generated-data/*.xml | head -n {{api_dstu2_sample_patients_limit}}
+  register: api_dstu2_sample_patient_files
+
+- name: "load api-dstu2-sample patients"
+  when: enable_api_sample_data
+  shell: "chdir={{hosting_user_home}}/api_dstu2_sample_patients/generated-data/
+         curl
+           '{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/open/?'
+           -H 'Content-Type: application/xml+fhir'
+           --data-binary @{{item}}
+           --insecure"
+  with_items: "{{api_dstu2_sample_patient_files.stdout_lines}}"
+
+- name: "list custom patients (json)"
+  when: enable_api_sample_data
+  shell: ls {{hosting_user_home}}/api_dstu2_sample_patients/custom-data/*.json
+  register: api_dstu2_custom_patient_files_json
+
+- name: "load custom patients (json)"
+  when: enable_api_sample_data
+  shell: "chdir={{hosting_user_home}}/api_dstu2_sample_patients/custom-data/
+         curl
+           '{{api_dstu2_server_external_url}}/{{api_dstu2_server_sandbox}}/open/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}
+           --insecure"
+  with_items: "{{api_dstu2_custom_patient_files_json.stdout_lines}}"
+
+- name: "checkout {{api_stu3_sample_patients_repo}}"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  git: repo={{api_stu3_sample_patients_repo}}
+       version={{api_stu3_sample_patients_branch}}
+       dest={{hosting_user_home}}/api_stu3_sample_patients
+       update={{update_repositories}}
+       force=yes
+       depth=1
+  register: api_stu3_sample_patients_checkout
+
+- name: "build api-stu3-sample patients"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/api_stu3_sample_patients/bin
+         python generate.py --write-fhir ../out {{api_stu3_sample_patients_generator_params}}
+
+- name: "list api-stu3-sample patients"
+  when: enable_api_sample_data
+  shell: ls {{hosting_user_home}}/api_stu3_sample_patients/out/*.json | head -n {{api_stu3_sample_patients_limit}}
+  register: api_stu3_sample_patient_files
+
+- name: "load api-stu3-sample patients"
+  when: enable_api_sample_data
+  shell: "chdir={{hosting_user_home}}/api_stu3_sample_patients/out/
+         curl
+           '{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/open/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}
+           --insecure"
+  with_items: "{{api_stu3_sample_patient_files.stdout_lines}}"
+
+- include: snapshot-command.yml
+  when: enable_api_sample_data
+  vars:
+    snapshot_name: "{{api_baseline_snapshot}}"
+    snapshot_action: Take
+
+# custom-sample-data is loaded nightly after the snapshot is restored
+# checkout the project but don't build it
+- name: "checkout api_dstu2_custom_sample_data"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  git: repo={{api_dstu2_custom_sample_data_repo}}
+       version={{api_dstu2_custom_sample_data_branch}}
+       dest={{hosting_user_home}}/api_dstu2_custom_sample_data
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+- name: "prepare scripts folder"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  file: path="{{hosting_user_scripts_home}}" state=directory
+
+- name: "create script process-dstu2-custom-sample-data.sh"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  template: src=process-dstu2-custom-sample-data.sh.j2
+            dest={{hosting_user_scripts_home}}/process-dstu2-custom-sample-data.sh
+            mode=0755
+
+- name: "run the process-dstu2-custom-sample-data.sh script"
+  when: enable_api_sample_data
+  become_user: "{{hosting_username}}"
+  shell: "{{hosting_user_scripts_home}}/process-dstu2-custom-sample-data.sh ."

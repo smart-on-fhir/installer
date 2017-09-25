@@ -1,0 +1,50 @@
+SET AUTOCOMMIT = 0;
+
+START TRANSACTION;
+
+INSERT IGNORE INTO client_details (client_id, client_name, access_token_validity_seconds, token_endpoint_auth_method, client_secret) VALUES
+  ('sand_man', 'Sandbox Manager', 86400, 'NONE', null);
+
+INSERT IGNORE INTO client_redirect_uri (owner_id, redirect_uri) VALUES
+  ((SELECT id from client_details where client_id = 'sand_man'), '{{sandman_server_external_url}}');
+
+INSERT IGNORE INTO client_scope (owner_id, scope) VALUES
+  ((SELECT id from client_details where client_id = 'sand_man'), 'user/*.*'),
+  ((SELECT id from client_details where client_id = 'sand_man'), 'smart/orchestrate_launch'),
+  ((SELECT id from client_details where client_id = 'sand_man'), 'openid'),
+  ((SELECT id from client_details where client_id = 'sand_man'), 'profile');
+
+INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
+  ((SELECT id from client_details where client_id = 'sand_man'), 'authorization_code');
+
+INSERT IGNORE INTO whitelisted_site (creator_user_id, client_id) VALUES
+  ('admin', 'sand_man');
+
+INSERT IGNORE INTO whitelisted_site_scope (owner_id, scope) VALUES
+  ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'user/*.*');
+
+INSERT IGNORE INTO whitelisted_site_scope (owner_id, scope) VALUES
+  ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'smart/orchestrate_launch');
+
+INSERT IGNORE INTO whitelisted_site_scope (owner_id, scope) VALUES
+  ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'openid');
+
+INSERT IGNORE INTO whitelisted_site_scope (owner_id, scope) VALUES
+  ((SELECT id from whitelisted_site where client_id = 'sand_man'), 'profile');
+
+INSERT IGNORE INTO client_details (client_id, client_name, access_token_validity_seconds, token_endpoint_auth_method, client_secret) VALUES
+  ('{{sandbox_server_admin_access_client_id}}', 'Sandbox Manager Admin', 86400, 'SECRET_BASIC', '{{sandbox_server_admin_access_client_secret}}');
+
+INSERT IGNORE INTO client_redirect_uri (owner_id, redirect_uri) VALUES
+  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), '{{sandman_server_external_url}}');
+
+INSERT IGNORE INTO client_grant_type (owner_id, grant_type) VALUES
+  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'client_credentials');
+
+INSERT IGNORE INTO client_authority (owner_id, authority) VALUES
+  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'ROLE_ADMIN'),
+  ((SELECT id from client_details where client_id = '{{sandbox_server_admin_access_client_id}}'), 'ROLE_USER');
+
+COMMIT;
+
+SET AUTOCOMMIT = 1;

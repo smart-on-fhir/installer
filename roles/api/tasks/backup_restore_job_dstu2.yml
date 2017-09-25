@@ -1,0 +1,26 @@
+---
+- name: "create script restore-dstu2-baseline-snapshot.sh"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template: src=restore-dstu2-baseline-snapshot.sh.j2
+            dest={{hosting_user_scripts_home}}/restore-dstu2-baseline-snapshot.sh
+            mode=0755
+
+- name: "create script reset-dstu2-database-job.sh"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template: src=reset-dstu2-database-job.sh.j2
+            dest={{hosting_user_scripts_home}}/reset-dstu2-database-job.sh
+            mode=0755
+
+# create a cron job for nightly reset to be run at 5 AM UTC, or midnight US-EST
+- name: "create cron job to nightly reset the api database"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  cron:
+    name: "reset api-dstu2 database"
+    minute: "0"
+    hour: "5"
+    job: "{{hosting_user_scripts_home}}/reset-dstu2-database-job.sh >> {{hosting_user_jobs_output_home}}/nightly-reset.log"
+
+- meta: flush_handlers

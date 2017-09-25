@@ -1,0 +1,27 @@
+---
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/messaging"
+
+- name: "download the messaging webapp"
+  become_user: "{{hosting_username}}"
+  maven_artifact:
+    group_id: "{{messaging_server_artifact_group_id}}"
+    artifact_id: "{{messaging_server_artifact_artifact_id}}"
+    version: "{{messaging_server_artifact_version}}"
+    extension: "{{messaging_server_artifact_packaging}}"
+    repository_url: "{{messaging_server_artifact_repository_url}}"
+    dest: "{{hosting_user_home}}/messaging/{{messaging_server_artifact_artifact_id}}-{{messaging_server_artifact_version}}.{{messaging_server_artifact_packaging}}"
+
+- name: "install messaging system"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "messaging"
+    service_definition_file: "roles/messaging/templates/messaging.service.j2"
+#    gateway_definition_file: "roles/messaging/templates/messaging.j2"
+    internal_port: "{{messaging_server_internal_port}}"
+#    external_host: "{{messaging_server_external_host}}"
+#    external_port: "{{messaging_server_external_port}}"
+#    health_check_url: "{{messaging_server_external_url}}/resource/health"

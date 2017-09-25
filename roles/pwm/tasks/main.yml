@@ -1,0 +1,194 @@
+---
+- name: "drop the service directory"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: absent
+  with_items:
+    - "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}"
+
+- name: "create the service directory"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}"
+    - "{{hosting_user_home}}/{{pwm_project}}/pwm-data"
+
+- name: "checkout repository pwm_repo"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  git: repo="{{smart_repo_base}}/{{pwm_repo}}"
+       version="{{pwm_branch}}"
+       dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}"
+       update={{update_repositories}}
+       force=yes
+       depth=1
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo.png dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/public/resources/themes/custom/company-logo.png"
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo@2x.png dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/public/resources/themes/custom/company-logo@2x.png"
+
+# install SMART logos
+- name: "config company-logo.png"
+  when: enable_pwm
+  copy: src=roles/common/files/images/company-logo-main-web-top.png dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/public/resources/themes/custom/company-logo-main-web-top.png"
+
+# install web.xml
+- name: "config web.xml"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=web.xml.j2
+            dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/WEB-INF/web.xml"
+
+- name: "patch PwmConfiguration.xml"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=PwmConfiguration.xml.j2
+            dest="{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/WEB-INF/PwmConfiguration.xml"
+
+- name: "patch PwmConfiguration.xml"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=PwmConfiguration.xml.j2
+            dest="{{hosting_user_home}}/{{pwm_project}}/pwm-data/PwmConfiguration.xml"
+
+- name: "Remove the LocalDB"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/WEB-INF/LocalDB"
+    state: absent
+
+#- name: "Create the LocalDB"
+#  when: enable_pwm
+#  become_user: "{{hosting_username}}"
+#  file:
+#    path: "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/WEB-INF/LocalDB"
+#    mode: "0755"
+#    state: directory
+#
+- name: "Remove the PWM Logs"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/src/main/webapp/WEB-INF/logs"
+    state: absent
+
+#- name: "Create the PWM Logs"
+#  when: enable_pwm
+#  become_user: "{{hosting_username}}"
+#  file:
+#    path: "{{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/src/main/webapp/WEB-INF/logs"
+#    mode: "0755"
+#    state: directory
+
+- name: "build pwm server"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}
+       mvn clean package -e -U
+
+- name: "Configure MySQL user"
+  when: enable_pwm
+  mysql_user: name={{pwm_project}} host=localhost password={{mysql_password}} priv={{mysql_privilage}} state=present
+
+- name: "Drop the PWM Server database"
+  when: enable_pwm
+  mysql_db: name={{pwm_server_database}} state=absent
+
+- name: "Create the PWM Server database"
+  when: enable_pwm
+  mysql_db: name={{pwm_server_database}} state=present
+
+- name: "install apache-tomcat"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  unarchive: src="apache-tomcat-8.5.12.tar.gz"
+             dest="{{hosting_user_home}}"
+             creates="{{tomcat_home}}"
+
+- name: "configure tomcat server"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  template: src=server.xml.j2
+            dest="{{tomcat_home}}/conf/server.xml"
+
+- name: "remove tomcat default webapps"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file: path="{{tomcat_home}}/webapps" state=absent
+
+- name: "initialize tomcat webapps"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file: path="{{tomcat_home}}/webapps" state=directory
+
+- name: "remove prior PWM deployment"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{tomcat_home}}/webapps/ROOT"
+    state: absent
+
+- name: "configure tomcat to only host pwm"
+  when: enable_pwm
+  become_user: "{{hosting_username}}"
+  shell: "cp -r {{hosting_user_home}}/{{pwm_project}}/{{pwm_repo}}/server/target/pwm-1.8.0-SNAPSHOT {{tomcat_home}}/webapps/ROOT"
+
+- name: "configure pwm server service"
+  when: enable_pwm
+  template: src=pwm-server.service.j2
+            dest=/etc/systemd/system/pwm-server.service
+            owner=root group=root mode=0644
+
+- name: "enable pwm server service"
+  when: enable_pwm
+  shell: systemctl enable pwm-server.service
+
+- name: "reload systemd daemon"
+  when: enable_pwm
+  shell: systemctl daemon-reload
+
+- name: "stop pwm server"
+  when: enable_pwm
+  service: name=pwm-server state=stopped
+
+- name: "restart pwm server"
+  when: enable_pwm
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: "configure nginx (pwm server)"
+  when: enable_pwm
+  template: src=nginx_pwm.j2 dest={{nginx_home}}/sites-enabled/pwm owner=root group=root mode=0644
+  notify:
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "verify pwm-server is available"
+  when: enable_pwm
+  wait_for: host=localhost port={{pwm_server_internal_port}}
+
+- name: "stop pwm server"
+  when: enable_pwm
+  service: name=pwm-server state=stopped
+
+- name: "restart pwm server to rebuild the database tables"
+  when: enable_pwm
+  service: name=pwm-server enabled=yes state=restarted
+
+- name: "verify pwm-server is available"
+  when: enable_pwm
+  wait_for: host=localhost port={{pwm_server_internal_port}}

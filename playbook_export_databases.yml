@@ -1,0 +1,80 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - roles/linux/defaults/main.yml
+    - roles/api/defaults/main.yml
+    - roles/auth/defaults/main.yml
+    - roles/sandbox-manager-api-role/defaults/main.yml
+    - roles/sandbox-manager-role/defaults/main.yml
+    - roles/pwm/defaults/main.yml
+    - environments/{{env}}.yml
+  tasks:
+  - name: "create the service directory"
+    become_user: "{{hosting_username}}"
+    file: "path={{item}} state=directory"
+    with_items:
+      - "{{hosting_user_home}}/dumps"
+
+  - name: "export {{api_dstu2_server_database}}"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "{{api_dstu2_server_database}}"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/{{api_dstu2_server_database}}.sql.bz2"
+
+  - name: "export {{api_dstu2_server_database}} snapshot"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "{{api_dstu2_server_database}}$default"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/{{api_dstu2_server_database}}$default.sql.bz2"
+
+  - name: "export {{api_stu3_server_database}}"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "{{api_stu3_server_database}}"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/{{api_stu3_server_database}}.sql.bz2"
+
+  - name: "export {{api_stu3_server_database}} snapshot"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "{{api_stu3_server_database}}$default"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/{{api_stu3_server_database}}$default.sql.bz2"
+
+  - name: "export hspc_4_smartstu3$May17promsAndSmart"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "hspc_4_smartstu3$May17promsAndSmart"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/hspc_4_smartstu3$May17promsAndSmart.sql.bz2"
+
+  - name: "export hspc_4_smartstu3$May2017"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "hspc_4_smartstu3$May2017"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/hspc_4_smartstu3$May2017.sql.bz2"
+
+  - name: "export oic snapshot"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "oic"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/oic.sql.bz2"
+
+  - name: "export pwm snapshot"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "pwm"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/pwm.sql.bz2"
+
+  - name: "export sandman snapshot"
+    mysql_db:
+      login_host: "{{api_mysql_host}}"
+      name: "sandman"
+      state: dump
+      target: "{{hosting_user_home}}/dumps/sandman.sql.bz2"

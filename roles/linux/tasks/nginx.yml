@@ -1,0 +1,89 @@
+---
+- name: "create the service directory"
+  file: "path={{item}} state=directory mode=0755 owner=root group=root"
+  with_items:
+    - "{{nginx_home}}/conf"
+    - "{{nginx_home}}/conf.d"
+    - "{{nginx_home}}/sites-enabled"
+    - "/var/log/nginx"
+
+- name: "copy nginx.conf"
+  template:
+    src: "nginx.conf.j2"
+    dest: "{{nginx_home}}/conf/nginx.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "configure default site"
+  template:
+    src: "default.j2"
+    dest: "{{nginx_home}}/sites-enabled/default"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "configure upload.conf"
+  template:
+    src: "upload.conf.j2"
+    dest: "{{nginx_home}}/conf.d/upload.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "create ssl certificates directory"
+  when: use_secure_http
+  file:
+    path: "{{nginx_home}}/ssl"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0640"
+
+# create or copy the ssl certificates
+- name: "generate self-signed ssl certificate"
+  when: use_secure_http and not use_custom_ssl_certificates
+  shell: /bin/echo -e "{{self_signed_certificate_ssl_country}}\n{{self_signed_certificate_ssl_province}}\n{{self_signed_certificate_ssl_locality}}\n{{self_signed_certificate_ssl_organization}}\n{{self_signed_certificate_ssl_division}}\n{{full_domain_name}}\n{{self_signed_certificate_ssl_email}}\n" | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {{nginx_home}}/ssl/{{certificate_key_filename}} -out {{nginx_home}}/ssl/{{certificate_crt_filename}}
+  args:
+    creates: "{{nginx_home}}/ssl/{{certificate_crt_filename}}"
+
+- name: "copy custom ssl certificates"
+  when: use_secure_http and use_custom_ssl_certificates
+  copy:
+    src: "{{custom_ssl_certificates_path}}/{{certificate_crt_filename}}"
+    dest: "{{nginx_home}}/ssl/{{certificate_crt_filename}}"
+    remote_src: true
+
+- name: "copy custom ssl keys"
+  when: use_secure_http and use_custom_ssl_certificates
+  copy:
+    src: "{{custom_ssl_certificates_path}}/{{certificate_key_filename}}"
+    dest: "{{nginx_home}}/ssl/{{certificate_key_filename}}"
+    remote_src: true
+
+- name: "list private key files"
+  find:
+    paths: "{{nginx_home}}/ssl"
+    patterns:
+     - "*.key"
+     - "*.pem"
+  register: keys
+
+- name: "set private key permissions"
+  when: use_secure_http
+  file:
+    path: "{{item.path}}"
+    group: ssl-cert
+    mode: "0640"
+  with_items: "{{keys.files}}"
+
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "add www-data user to ssl-cert group"
+  when: use_secure_http
+  user:
+    name: "www-data"
+    groups: "ssl-cert"

@@ -1,0 +1,16 @@
+1) configure pwm data path
+ex:
+mkdir /home/user/pwm-data
+export PWM_APPLICATIONPATH='/home/user/pwm-data'
+
+2)
+LDAP Proxy Credentials:
+Proxy DN: uid=admin,ou=system
+Proxy Password: secret
+
+LDAP Login Root Context:
+User Contained DN: dc=smarthealthit,dc=org
+
+Administrators Group:
+cn=Administrators,ou=groups,ou=system
+

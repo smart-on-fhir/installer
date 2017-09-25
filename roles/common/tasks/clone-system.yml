@@ -1,0 +1,47 @@
+---
+# due to Ansible not able to clone with locally modified files,
+#
+# vars:
+#   repo_base_url: url of the repo to clone (ex: https://bitbucket.org/hspconsortium)
+#   repo_name: name of the repo (ex: reference-api)
+#   repo_branch: branch of the repo (ex: master)
+#   repo_tag: optional repo tag (ex: '1.0')
+#   target_base_folder: folder to clone the repo into, default '' (ex: '/Users/fred/projects')
+#   target_project_name: optional linked folder for the repo itself and trailing / (ex: 'project_v2/')
+#   clone_options: optional options for clone including '-', default: ''
+#   checkout_options: optional options for checkout including '-', default: ''
+- name: "make sure {{target_base_folder}} exists"
+  file: path={{target_base_folder}} state=directory mode=0755
+
+- name: "clone repo {{repo_base_url}}/{{repo_name}}.git"
+  shell: chdir="{{target_base_folder}}"
+         git clone {{clone_options | default('')}} {{repo_base_url}}/{{repo_name}}.git {{target_project_name}}
+  args:
+    creates: "{{target_base_folder}}/{{target_project_name}}"
+
+- name: "fetch latest changes"
+  shell: chdir="{{target_base_folder}}/{{target_project_name}}"
+         git fetch
+
+- name: "check out the branch {{repo_branch}}"
+  shell: chdir="{{target_base_folder}}/{{target_project_name}}"
+         git checkout {{checkout_options | default('')}} origin/{{repo_branch}} -b {{repo_branch}}
+  ignore_errors: yes
+  when:
+    - "not((repo_branch is undefined) or (repo_branch|trim == ''))"
+
+# *note, a tag will result in a detached head, or no upstream branch state
+- name: "check out the tag {{repo_tag}}"
+  shell: chdir="{{target_base_folder}}/{{target_project_name}}"
+         git checkout {{checkout_options | default('')}} tags/{{repo_tag}}
+  ignore_errors: yes
+  when:
+    - "not((repo_tag is undefined) or (repo_tag|trim == ''))"
+
+# don't pull for tags because they don't track an upstream branch
+- name: "pull the latest code"
+  shell: chdir="{{target_base_folder}}/{{target_project_name}}"
+         git pull
+  ignore_errors: yes
+  when:
+    - "(repo_tag is undefined) or (repo_tag|trim == '')"

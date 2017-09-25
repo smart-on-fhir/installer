@@ -1,0 +1,80 @@
+---
+- name: "stop {{sandman_name}}"
+  service:
+    name: "{{sandman_name}}"
+    state: "stopped"
+  ignore_errors: yes
+
+- name: "create the smart directories"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_name}}/project/static/js/branding/smart/images"
+    - "{{hosting_user_home}}/{{sandman_name}}/project/static/branding/smart/images"
+    - "{{hosting_user_home}}/{{sandman_name}}/project/static/js/templates"
+
+- name: "patch branded_text.js"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/{{sandman_name}}/project/static/js/branding/{{item}}"
+    mode: "0755"
+  with_items:
+    - "branded_text.js"
+
+- name: "patch templates"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/{{sandman_name}}/project/static/js/templates/{{item}}"
+    mode: "0755"
+  with_items:
+    - "sideNav.html"
+
+- name: "patch images"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{hosting_user_home}}/{{sandman_name}}/project/static/branding/smart/images/{{item}}"
+    mode: "0755"
+  with_items:
+    - "smart-logo.png"
+    - "smart-logo@2x.png"
+    - "smart-logo@3x.png"
+    - "smart-white-logo.png"
+    - "smart-white-logo@2x.png"
+
+- name: "process the templates"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/{{sandman_name}}/project/static/js/config/{{item}}"
+    owner: "{{hosting_username}}"
+    group: "{{hosting_username}}"
+    mode: "0644"
+  with_items:
+    - "sample-apps.json"
+
+- name: "update war file"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/{{sandman_name}}/project
+        jar uf {{hosting_user_home}}/{{sandman_name}}/{{sandman_server_artifact_artifact_id}}-{{sandman_server_artifact_version}}.{{sandman_server_artifact_packaging}} {{item}}
+  with_items:
+    - "static/js/config/sample-apps.json"
+    - "static/js/branding/branded_text.js"
+    - "static/js/templates/sideNav.html"
+    - "static/branding/smart/images/smart-logo.png"
+    - "static/branding/smart/images/smart-logo@2x.png"
+    - "static/branding/smart/images/smart-logo@3x.png"
+    - "static/branding/smart/images/smart-white-logo.png"
+    - "static/branding/smart/images/smart-white-logo@2x.png"
+
+- name: "start {{sandman_name}}"
+  service:
+    name: "{{sandman_name}}"
+    state: "started"
+
+- name: "verify {{sandman_name}} is available internally at localhost:{{sandman_server_internal_port}}"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "localhost"
+    port: "{{sandman_server_internal_port}}"

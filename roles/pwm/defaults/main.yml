@@ -1,0 +1,15 @@
+---
+# PWM Server
+pwm_repo: "pwm"
+pwm_project: "pwm_18"
+pwm_branch: "master"
+pwm_server_database: "pwm_18"
+pwm_server_internal_port: "8092"
+pwm_server_initial_memory: "128M"
+pwm_server_max_memory: "256M"
+pwm_db_password_encrypted: "gDs7KkJA/xJ6oFT56C2dRA=="
+pwm_server_inferred_protocol: "{{'https' if use_secure_http else 'http'}}"
+pwm_server_inferred_port: "{{(':'+pwm_server_external_port|string) if pwm_server_external_port|int not in (80,443) else ''}}"
+pwm_server_external_url: "{{pwm_server_inferred_protocol}}://{{pwm_server_external_host}}{{pwm_server_inferred_port}}/"
+pwm_i18n_display_name: "SMART Health IT Account Self Service"
+tomcat_home: "{{hosting_user_home}}/apache-tomcat-8.5.12"

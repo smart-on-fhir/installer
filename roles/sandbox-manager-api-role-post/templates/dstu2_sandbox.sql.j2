@@ -1,0 +1,44 @@
+USE sandman;
+
+SET AUTOCOMMIT = 0;
+
+START TRANSACTION;
+
+INSERT IGNORE INTO sandbox (id, allow_open_access, created_timestamp, description, name, sandbox_id, api_endpoint_index, created_by_id, fhir_server_end_point, visibility)
+VALUES (1, '', '2017-03-15 16:46:06', 'SMART DSTU2 Sandbox', 'SMART DSTU2 Sandbox', 'smartdstu2', '1', 1, null, 0);
+
+UPDATE sandbox
+SET name='SMART DSTU2 Sandbox', description='SMART DSTU2 Sandbox'
+WHERE name='SMART Sandbox';
+
+INSERT IGNORE INTO user_sandbox (user_id, sandbox_id) VALUES (1, 2);
+
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (1, 1);
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (1, 2);
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (1, 3);
+
+INSERT IGNORE INTO app (id, created_timestamp, launch_uri, logo_uri, visibility, auth_client_id, created_by_id, logo_id, sandbox_id)
+VALUES (1, now(), '{{apps_server_external_url}}/apps/bp-centiles/launch.html', 'https://content.hspconsortium.org/images/bp-centiles/logo/bpc2.png', 0, 1, 1, NULL, 1);
+INSERT IGNORE INTO app (id, created_timestamp, launch_uri, logo_uri, visibility, auth_client_id, created_by_id, logo_id, sandbox_id)
+VALUES (2, now(), '{{apps_server_external_url}}/apps/cardiac-risk/launch.html', 'https://content.hspconsortium.org/images/cardiac-risk/logo/cardiac-risk.png', 0, 2, 1, NULL, 1);
+INSERT IGNORE INTO app (id, created_timestamp, launch_uri, logo_uri, visibility, auth_client_id, created_by_id, logo_id, sandbox_id)
+VALUES (3, now(), '{{apps_server_external_url}}/apps/growth-chart/launch.html', 'https://content.hspconsortium.org/images/growth-chart/logo/growth-chart.png', 0, 3, 1, NULL, 1);
+
+UPDATE app
+SET launch_uri='{{apps_server_external_url}}/apps/bp-centiles/launch.html',
+    logo_uri='https://content.hspconsortium.org/images/bp-centiles/logo/bpc2.png'
+WHERE id=1;
+
+UPDATE app
+SET launch_uri='{{apps_server_external_url}}/apps/cardiac-risk/launch.html',
+    logo_uri='https://content.hspconsortium.org/images/cardiac-risk/logo/cardiac-risk.png'
+WHERE id=2;
+
+UPDATE app
+SET launch_uri='{{apps_server_external_url}}/apps/growth-chart/launch.html',
+    logo_uri='https://content.hspconsortium.org/images/growth-chart/logo/growth-chart.png'
+WHERE id=3;
+
+COMMIT;
+
+SET AUTOCOMMIT = 1;

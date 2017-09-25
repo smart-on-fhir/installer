@@ -1,0 +1,26 @@
+---
+- name: "create script restore-stu3-baseline-snapshot.sh"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template: src=restore-stu3-baseline-snapshot.sh.j2
+            dest={{hosting_user_scripts_home}}/restore-stu3-baseline-snapshot.sh
+            mode=0755
+
+- name: "create script reset-stu3-database-job.sh"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  template: src=reset-stu3-database-job.sh.j2
+            dest={{hosting_user_scripts_home}}/reset-stu3-database-job.sh
+            mode=0755
+
+# create a cron job for nightly reset to be run at 6 AM UTC, or 1 AM US-EST
+- name: "create cron job to nightly reset the api database"
+  when: enable_backup_restore_jobs
+  become_user: "{{hosting_username}}"
+  cron:
+    name: "reset api-stu3 database"
+    minute: "0"
+    hour: "6"
+    job: "{{hosting_user_scripts_home}}/reset-stu3-database-job.sh >> {{hosting_user_jobs_output_home}}/nightly-reset.log"
+
+- meta: flush_handlers

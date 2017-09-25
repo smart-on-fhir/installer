@@ -1,0 +1,22 @@
+---
+- name: "copy the sandman database scripts"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/sandman/mysql/{{item}}"
+    mode: "0755"
+  with_items:
+    - "initialize.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
+
+- name: "load the sandman database scripts"
+  mysql_db:
+    name: "{{sandman_api_server_database}}"
+    state: import
+    target: "{{hosting_user_home}}/sandman/mysql/{{item}}"
+  with_items:
+    - "initialize.sql"
+    - "dstu2_sandbox.sql"
+    - "stu3_sandbox.sql"
+  ignore_errors: yes

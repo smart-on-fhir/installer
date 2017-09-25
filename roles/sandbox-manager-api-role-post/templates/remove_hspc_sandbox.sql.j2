@@ -1,0 +1,10 @@
+-- delete the hspc1 sandbox
+DELETE FROM sandbox_user_roles WHERE sandbox = (SELECT id FROM sandbox WHERE sandbox_id='hspc1');
+DELETE FROM user_sandbox WHERE sandbox_id = (SELECT id FROM sandbox WHERE sandbox_id='hspc1');
+DELETE FROM sandbox WHERE sandbox_id = 'hspc1';
+
+-- delete the hspc4 sandbox
+DELETE FROM sandbox_user_roles WHERE sandbox = (SELECT id FROM sandbox WHERE sandbox_id='hspc4');
+DELETE FROM user_sandbox WHERE sandbox_id = (SELECT id FROM sandbox WHERE sandbox_id='hspc4');
+DELETE FROM sandbox WHERE sandbox_id = 'hspc4';
+

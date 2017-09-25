@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - roles/linux/defaults/main.yml
+    - roles/api/defaults/main.yml
+    - environments/{{env}}.yml
+  roles:
+    - common
+    - messaging
