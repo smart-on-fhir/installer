@@ -19,7 +19,7 @@
 
     $(document).ready(function () {
         // select the appropriate field based on context
-        $('#<c:out value="${ login_hint != null ? 'j_password' : 'j_username' }" />').focus();
+        $('#<c:out value="${ login_hint != null ? 'password' : 'username' }" />').focus();
     });
 
     //-->
@@ -49,14 +49,14 @@
                         <span class="add-on"><i class="icon-user"></i></span>
                         <input type="text" placeholder="Email Address" autocorrect="off" autocapitalize="off" required
                                autocomplete="off" spellcheck="false" value="<c:out value="${ login_hint }" />"
-                               id="j_username" name="j_username">
+                               id="username" name="username">
                     </div>
                 </div>
                 <div>
                     <div class="input-prepend input-block-level">
                         <span class="add-on"><i class="icon-lock"></i></span>
                         <input type="password" placeholder="Password" autocorrect="off" autocapitalize="off" required
-                               autocomplete="off" spellcheck="false" id="j_password" name="j_password">
+                               autocomplete="off" spellcheck="false" id="password" name="password">
                     </div>
                 </div>
                 <input id="redirectUrl" type="hidden" name="redirectUrl"
@@ -90,8 +90,8 @@
     var personaAttemptFailed = false;
 
     $('#loginForm').submit(function (e) {
-        var username = $('#j_username').val();
-        var password = $('#j_password').val();
+        var username = $('#username').val();
+        var password = $('#password').val();
 
         if (username && username.length && looksLikePersona(username)) {
             e.preventDefault();

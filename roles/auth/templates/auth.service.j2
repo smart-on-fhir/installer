@@ -11,7 +11,7 @@ ExecStart={{java_home}}/bin/java \
  -Xmx{{auth_server_max_memory}} \
  -Djetty.port={{auth_server_internal_port}} \
  -Djetty.host=localhost \
- -Dspring.profiles.active=production \
+ -Dspring.profiles.active=production,users-ldap \
  -Doidc.datasource.mysql.url=jdbc:mysql://{{auth_server_mysql_host}}:{{mysql_port}}/{{auth_server_database}} \
  -Doidc.datasource.mysql.username={{mysql_username}} \
  -Doidc.datasource.mysql.password={{mysql_password}} \

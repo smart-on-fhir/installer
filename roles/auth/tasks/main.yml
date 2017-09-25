@@ -16,17 +16,23 @@
   with_items:
     - "pom.xml"
 
-- name: "patch auth server login screen"
+- name: "patch web.xml"
   become_user: "{{hosting_username}}"
   template:
     src: "web.xml.j2"
     dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/web.xml"
 
+- name: "patch log4j.xml"
+  become_user: "{{hosting_username}}"
+  template:
+    src: "log4j.xml.j2"
+    dest: "{{hosting_user_home}}/auth/project/src/main/resources/log4j.xml"
+
 - name: "patch auth server login screen"
   become_user: "{{hosting_username}}"
   template:
     src: "login.jsp.j2"
-    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views/login.jsp"
+    dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/views/login-ldap.jsp"
 
 # install SMART logos
 - name: "config company-logo.png"

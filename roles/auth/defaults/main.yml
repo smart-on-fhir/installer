@@ -1,8 +1,8 @@
 ---
 # Auth Artifact
 auth_server_artifact_group_id: "org.hspconsortium.reference"
-auth_server_artifact_artifact_id: "hspc-reference-auth-server-ldap-webapp"
-auth_server_artifact_version: "1.6.2"
+auth_server_artifact_artifact_id: "hspc-reference-auth-server-webapp"
+auth_server_artifact_version: "1.9.6"
 auth_server_artifact_packaging: "war"
 #auth_server_artifact_repository_url: "{{snapshot_repository_url}}"
 auth_server_artifact_repository_url: "{{release_repository_url}}"
