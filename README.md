@@ -55,19 +55,28 @@ sudo pip install ansible==2.3.2.0
 ```
 
 ### Prepare the host
+
 ```
 vagrant plugin install vagrant-vbguest
 git clone https://github.com/smart-on-fhir/installer
 cd installer
 ```
 
-Ansible installers use inventory files to manage variables that can change between environments (ex: test, prod).  For a Vagrant install, the variables that would normally exist in an inventory are located within the Vagrantfile in the **ansible.extra_vars** block.  Alter any of these values as your installation requires:
+### Load the Ansible Galaxy roles
+
+```
+ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
+```
+
+### Prepare the environment files
+Configure the Vagrant properties for the Ansible install found in the Vagrantfile, **ansible.extra_vars** block.
 
 ```
 vi Vagrantfile
 ```
 
 ### Run the Installer
+
 ```
 vagrant up
 ```
