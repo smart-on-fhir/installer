@@ -34,8 +34,8 @@ full_domain_name: "{{additional_subdomains}}{{domain_name}}"
 
 # Artifact Repositories
 m2_repo_folder: "{{hosting_user_home}}/.m2/repository"
-snapshot_repository_url: "https://oss.sonatype.org/content/repositories/snapshots"
-release_repository_url: "https://repo1.maven.org/maven2/"
+snapshot_repository_url: "https://nexus.hspconsortium.org/repository/maven-all/"
+release_repository_url: "https://nexus.hspconsortium.org/repository/maven-all/"
 smart_repo_base: "https://github.com/smart-on-fhir"
 hspc_repo_base: "https://bitbucket.org/hspconsortium"
 # By default Ansible will update the local copies of the servers code from
@@ -80,4 +80,3 @@ mysql_connect_host: "%"
 
 #custom_ssl_certificates_path: examples/certificates
 certificate_truststore_alias: "smart"
-

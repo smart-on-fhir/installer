@@ -22,12 +22,6 @@
     src: "web.xml.j2"
     dest: "{{hosting_user_home}}/auth/project/src/main/webapp/WEB-INF/web.xml"
 
-- name: "patch log4j.xml"
-  become_user: "{{hosting_username}}"
-  template:
-    src: "log4j.xml.j2"
-    dest: "{{hosting_user_home}}/auth/project/src/main/resources/log4j.xml"
-
 - name: "patch auth server login screen"
   become_user: "{{hosting_username}}"
   template:
@@ -71,4 +65,4 @@
     external_host: "{{auth_server_external_host}}"
     external_port: "{{auth_server_external_port}}"
 
-- include: "data.yml"
+#- include: "data.yml"
