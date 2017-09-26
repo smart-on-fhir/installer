@@ -9,7 +9,7 @@ auth_server_artifact_repository_url: "{{release_repository_url}}"
 auth_server_internal_port: "8060"
 auth_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{auth_server_external_host}}{{(':'+auth_server_external_port|string) if auth_server_external_port|int not in (80,443) else ''}}"
 auth_server_hspc_account_cookie_name: smart-login-cookie
-auth_server_persona_cookie_name: smart-persona-login-cookie
+auth_server_persona_cookie_name: hspc-persona-token
 auth_server_persona_cookie_domain: "{{domain_name}}"
 auth_server_CONTEXT_FHIR_ENDPOINT: "{{api_dstu2_server_external_url}},{{mock_api_dstu2_server_external_url}},{{api_stu3_server_external_url}},{{mock_api_stu3_server_external_url}}"
 auth_server_test_client: "client"
