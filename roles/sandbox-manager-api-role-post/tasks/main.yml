@@ -10,7 +10,7 @@
   file: "path={{item}} state=directory"
   with_items:
     - "{{hosting_user_home}}/{{sandman_api_name}}/mysql"
-    - "{{hosting_user_home}}/{{sandman_api_name}}/project/db/mysql/migration"
+    - "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration"
 
 - name: "copy the sandman database scripts"
   become_user: "{{hosting_username}}"
@@ -39,7 +39,7 @@
 - name: "process the templates"
   template:
     src: "{{item}}.j2"
-    dest: "{{hosting_user_home}}/{{sandman_api_name}}/project/db/mysql/migration/{{item}}"
+    dest: "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration/{{item}}"
     owner: "{{hosting_username}}"
     group: "{{hosting_username}}"
     mode: "0644"
@@ -51,7 +51,7 @@
   shell: chdir={{hosting_user_home}}/{{sandman_api_name}}/project
         jar uf {{hosting_user_home}}/{{sandman_api_name}}/{{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}} {{item}}
   with_items:
-    - "db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
 
 - name: "start {{sandman_api_name}}"
   service:
