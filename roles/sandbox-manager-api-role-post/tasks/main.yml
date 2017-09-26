@@ -45,6 +45,7 @@
     mode: "0644"
   with_items:
     - "V9.1__Migrate_SMART_Logos.sql"
+    - "V9.2__default_personas.sql"
 
 - name: "update jar file"
   become_user: "{{hosting_username}}"
@@ -52,6 +53,7 @@
         jar uf {{hosting_user_home}}/{{sandman_api_name}}/{{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}} {{item}}
   with_items:
     - "BOOT-INF/classes/db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.2__default_personas.sql"
 
 - name: "start {{sandman_api_name}}"
   service:
