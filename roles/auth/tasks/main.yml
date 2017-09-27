@@ -1,4 +1,8 @@
 ---
+- name: "remove existing auth project directory"
+  become_user: "{{hosting_username}}"
+  file: path="{{hosting_user_home}}/auth" state=absent
+
 - name: "create the service directory"
   become_user: "{{hosting_username}}"
   file: "path={{item}} state=directory"
