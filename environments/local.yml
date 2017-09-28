@@ -1,7 +1,7 @@
 ---
 # this file contains properties for the local environment that are not sensitive
 # for the local environment, sensitive properties are found in the Vagrantfile
-installer_user: "ubuntu"
+installer_user: "vagrant"
 services_host: "localhost"
 use_secure_http: false
 use_custom_ssl_certificates: false
@@ -27,6 +27,9 @@ auth_server_newUserUrl: "{{pwm_server_external_url}}public/newuser"
 auth_server_forgotPasswordUrl: "{{pwm_server_external_url}}public/forgottenpassword"
 auth_mysql_reset_database: true
 api_server_oauth2_clientId: "hspc_resource_server"
+enable_backup_restore_jobs: true
+enable_aws_snapshot: false
+enable_pwm: false
 enable_api_sample_data: true
 enable_mock_endpoints: false
 api_dstu2_server_external_host: "{{services_host}}"
@@ -55,6 +58,7 @@ messaging_server_initial_memory: "32M"
 messaging_server_max_memory: "64M"
 messaging_profiles: "test"
 sandman_server_artifact_repository_url: "{{release_repository_url}}"
+sandman_server_artifact_version: "2.0.0"
 sandman_server_external_host: "{{services_host}}"
 sandman_server_external_port: "9080"
 sandman_server_initial_memory: "16M"
@@ -65,6 +69,7 @@ sandman_server_api_v2_url: "{{api_stu3_server_external_url}}"
 sandman_server_api_v3_url: "{{api_stu3_server_external_url}}"
 sandman_server_api_v4_url: "{{api_stu3_server_external_url}}"
 sandman_api_server_artifact_repository_url: "{{release_repository_url}}"
+sandman_api_server_artifact_version: "0.2.2"
 sandman_api_server_external_host: "{{services_host}}"
 sandman_api_server_external_port: "13000"
 sandman_api_server_initial_memory: "128M"
@@ -79,7 +84,9 @@ apps_server_external_host: "{{services_host}}"
 apps_server_external_port: "9093"
 patient_picker_server_external_host: "{{apps_server_external_host}}"
 patient_picker_server_external_port: "{{apps_server_external_port}}"
+patient_data_manager_project_version: "1.0.2"
 patient_data_manager_server_external_host: "{{services_host}}"
 patient_data_manager_server_external_port: "9096"
+bilirubin_risk_chart_project_version: "master"
 bilirubin_risk_chart_server_external_host: "{{services_host}}"
 bilirubin_risk_chart_server_external_port: "9086"

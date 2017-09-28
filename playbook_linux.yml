@@ -3,5 +3,6 @@
   become: yes
   vars_files:
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - linux

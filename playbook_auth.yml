@@ -10,6 +10,7 @@
     - roles/apacheds/defaults/main.yml
     - roles/pwm/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - common
     - auth

@@ -6,6 +6,7 @@
     - roles/auth/defaults/main.yml
     - roles/messaging/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - common
     - api

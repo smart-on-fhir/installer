@@ -4,6 +4,7 @@
   vars_files:
     - roles/linux/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - common
     - apps
