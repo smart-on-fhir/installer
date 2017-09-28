@@ -68,40 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.playbook = "site.yml"
         # append to the auto-generated inventory file
         ansible.extra_vars = {
-            env: "local",
-            installer_user: "vagrant",
-            hosting_userpass: "",
-            keystore_password: "changeme",
-            hspc_platform_jwt_key: "changeme",
-            aws_access_key_id: "changeme",
-            aws_secret_access_key: "changeme",
-            aws_ec2_volume_id: "changeme",
-            aws_region: "changeme",
-            enable_backup_restore_jobs: true,
-            enable_aws_snapshot: false,
-            enable_pwm: false,
-            mysql_root_pass: "password",
-            mysql_password: "password",
-            auth_server_admin_password: "password",
-            sandbox_server_admin_access_client_secret: "changeme",
-            certificate_crt_filename: "self-signed-certificate.crt",
-            certificate_key_filename: "self-signed-certificate.key",
-            email_smtp_address: "changeme",
-            email_smtp_username: "changeme",
-            email_smtp_password_encrypted: "changeme",
-            apacheds_server_system_admin_password: "secret",
-            apacheds_server_sandbox_admin_password: "password",
-            pwm_configpasswordhash: "changeme",
-            pwm_securitykey_encrypted: "changeme",
-            pwm_db_password_encrypted: "changeme",
-            pwm_ldap_proxy_password_encrypted: "changeme",
-            api_server_oauth2_clientSecret: "secret",
-            sandman_server_artifact_version: "2.0.0",
-            sandman_api_server_artifact_version: "0.2.2",
-            messaging_mail_server_username: "changeme",
-            messaging_mail_server_password: "changeme",
-            patient_data_manager_project_version: "1.0.2",
-            bilirubin_risk_chart_project_version: "master"
+            env: "local"
         }
     end
 

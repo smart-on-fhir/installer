@@ -9,6 +9,7 @@
     - roles/api/defaults/main.yml
     - roles/apps/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - common
     - common-role

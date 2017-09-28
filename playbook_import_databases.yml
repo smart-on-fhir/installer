@@ -9,6 +9,7 @@
     - roles/sandbox-manager-role/defaults/main.yml
     - roles/pwm/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   tasks:
   - name: "create the service directory"
     become_user: "{{hosting_username}}"

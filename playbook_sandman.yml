@@ -12,6 +12,7 @@
     - roles/bilirubin-risk-chart-role/defaults/main.yml
     - roles/patient-data-manager-role/defaults/main.yml
     - environments/{{env}}.yml
+    - environments/{{env}}-secrets.yml
   roles:
     - common
     - common-role
