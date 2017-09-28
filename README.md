@@ -68,13 +68,6 @@ cd installer
 ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
 ```
 
-### Prepare the environment files
-Configure the Vagrant properties for the Ansible install found in the Vagrantfile, **ansible.extra_vars** block.
-
-```
-vi Vagrantfile
-```
-
 ### Run the Installer
 
 ```
@@ -115,14 +108,26 @@ git clone https://github.com/smart-on-fhir/installer
 cd installer
 ```
 
-Modify the group_vars for your environment:
+Modify the vars for your environment.  You will also need to define which set of environment files your deployment is using.
+We set an inventory property in our Ansible Galaxy inventory such as:
+
+env: "test"
+
 ```
-vi inventory/group_vars/all.yml
+vi environments/{env}.yml
 ```
+
+Sensitive properties can be stored in the {env}-secrets.yml files.  There is an excellent tutorial here: [Ansible Vault Tutorial](https://www.digitalocean.com/community/tutorials/how-to-use-vault-to-protect-sensitive-ansible-data-on-ubuntu-16-04).
 
 * set "installer_user" to your ssh username
 * set "services_host" to a real-world route-able IP for your Ubuntu machine
 * setting passwords, ports, and other properties as desired
+
+### Load the Ansible Galaxy roles
+
+```
+ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
+```
 
 ### Run the Installer
 
