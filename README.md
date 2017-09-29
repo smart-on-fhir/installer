@@ -45,7 +45,7 @@ In this install, we are going to build the SMART on FHIR platform on a Ubuntu se
 ### Prerequisites
 * [VirtualBox 5.1.28](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant 2.0.0](https://www.vagrantup.com/downloads.html)
-* [Ansible 2.4.0](http://docs.ansible.com/intro_installation.html)
+* [Ansible 2.3.2.0](http://docs.ansible.com/intro_installation.html)
 
 If you have the *pip* Python package manager installed, the easiest way to install the
 correct version of Ansible is to run the following:
