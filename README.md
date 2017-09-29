@@ -132,7 +132,7 @@ ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
 ### Run the Installer
 
 ```
-sudo ansible-playbook -i inventory/hosts site.yml
+sudo ansible-playbook site.yml
 ```
 
 ---
