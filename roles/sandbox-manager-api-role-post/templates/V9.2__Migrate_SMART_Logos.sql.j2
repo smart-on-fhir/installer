@@ -1,5 +1,0 @@
-# migrate logo urls
-
-UPDATE app
-SET logo_uri=REPLACE(logo_uri, 'sandbox.smarthealthit.org/REST', 'sandbox-api.smarthealthit.org')
-WHERE logo_uri LIKE '%REST%';

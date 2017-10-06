@@ -2,22 +2,16 @@
 - hosts: all
   become: yes
   vars_files:
-    - roles/common-role/defaults/main.yml
-    - roles/linux-role/defaults/main.yml
     - roles/linux/defaults/main.yml
+    - roles/messaging/defaults/main.yml
+    - roles/auth/defaults/main.yml
     - roles/pwm/defaults/main.yml
-    - roles/reference-messaging-role/defaults/main.yml
-    - roles/reference-auth-role/defaults/main.yml
-    - roles/reference-api-role/defaults/main.yml
-    - roles/reference-api-dstu2-role/defaults/main.yml
-    - roles/reference-api-stu3-role/defaults/main.yml
-    - roles/bp-centiles-role/defaults/main.yml
-    - roles/cardiac-risk-role/defaults/main.yml
-    - roles/growth-chart-role/defaults/main.yml
-    - roles/smart/defaults/main.yml
+    - roles/api/defaults/main.yml
+    - roles/apps/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
   roles:
+    - common
     - common-role
     - sandbox-manager-api-role
     - sandbox-manager-api-role-post

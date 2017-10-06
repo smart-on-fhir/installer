@@ -2,11 +2,11 @@
 - hosts: all
   become: yes
   vars_files:
-    - roles/common-role/defaults/main.yml
-    - roles/linux-role/defaults/main.yml
     - roles/linux/defaults/main.yml
-    - roles/smart/defaults/main.yml
+    - roles/auth/defaults/main.yml
+    - roles/messaging/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
   roles:
-    - reference-api-role
+    - common
+    - api

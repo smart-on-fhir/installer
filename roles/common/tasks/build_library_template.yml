@@ -1,0 +1,39 @@
+---
+# Build a generic library
+# params:
+#   library_name: name of the library
+#   library_artifact_name: artifact name of the library
+#   library_url: download url of the library
+#   working_folder: full path to the working folder
+#   configure_command: default "configure"
+#   skip_configure: true to skip the configure phase
+#   skip_make: true to skip the make phase
+#   skip_make_install: true to skip the make_install phase
+#   skip_link: true to skip the link phase
+
+- name: "download {{library_artifact_name}}"
+  shell: chdir="{{working_folder}}"
+         wget {{library_url}}
+  args:
+    creates: "{{working_folder}}/{{library_artifact_name}}.tar.gz"
+
+- name: "extract {{library_artifact_name}}"
+  shell: chdir="{{working_folder}}"
+         tar -zxf {{library_artifact_name}}.tar.gz
+
+- name: "configure {{library_artifact_name}}"
+  when: skip_configure is undefined and not skip_configure
+  command: "{{ item }} chdir={{working_folder}}/{{library_artifact_name}}"
+  with_items:
+  - "{{configure_command | default('./configure')}}"
+  - "make"
+  - "sudo make install"
+
+- name: "linking {{library_name}} to {{library_artifact_name}}"
+  when: skip_link is undefined and not skip_link
+  file:
+    src: "{{working_folder}}/{{library_artifact_name}}"
+    dest: "{{working_folder}}/{{library_name}}"
+    owner: "root"
+    group: "root"
+    state: "link"

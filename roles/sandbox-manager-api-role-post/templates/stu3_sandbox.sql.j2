@@ -1,0 +1,18 @@
+USE sandman;
+
+SET AUTOCOMMIT = 0;
+
+START TRANSACTION;
+
+INSERT IGNORE INTO sandbox (id, allow_open_access, created_timestamp, description, name, sandbox_id, api_endpoint_index, created_by_id, fhir_server_end_point, visibility)
+VALUES (2, '', '2017-03-15 16:46:50', 'SMART STU3 Sandbox', 'SMART STU3 Sandbox', 'smartstu3', '2', 1, null, 0);
+
+INSERT IGNORE INTO user_sandbox (user_id, sandbox_id) VALUES (1, 2);
+
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (2, 4);
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (2, 5);
+INSERT IGNORE INTO sandbox_user_roles (sandbox, user_roles) VALUES (2, 6);
+
+COMMIT;
+
+SET AUTOCOMMIT = 1;

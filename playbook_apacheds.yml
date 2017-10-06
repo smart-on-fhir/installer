@@ -2,9 +2,8 @@
 - hosts: all
   become: yes
   vars_files:
+    - roles/linux/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
-    - roles/linux-role/defaults/main.yml
-    - roles/smart/defaults/main.yml
   roles:
     - apacheds

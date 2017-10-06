@@ -1,6 +1,6 @@
 ---
 - name: "install sandman system"
-  include: "roles/common-role/tasks/service_template.yml"
+  include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "sandman"
     database: "{{sandman_api_server_database}}"

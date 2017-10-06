@@ -32,7 +32,7 @@
     dest: "{{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
 
 - name: "install api_dstu2 system"
-  include: "roles/common-role/tasks/service_template.yml"
+  include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "api_dstu2"
     database: "{{api_dstu2_server_database}}"
@@ -46,7 +46,7 @@
 
 - name: "install mock_api_dstu2 system"
   when: enable_mock_endpoints
-  include: "roles/common-role/tasks/service_template.yml"
+  include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "mock_api_dstu2"
     database: "{{api_dstu2_server_database}}"
@@ -59,7 +59,7 @@
     external_port: "{{mock_api_dstu2_server_external_port}}"
 
 - name: "install api_stu3 system"
-  include: "roles/common-role/tasks/service_template.yml"
+  include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "api_stu3"
     database: "{{api_stu3_server_database}}"
@@ -73,7 +73,7 @@
 
 - name: "install mock_api_stu3 system"
   when: enable_mock_endpoints
-  include: "roles/common-role/tasks/service_template.yml"
+  include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "mock_api_stu3"
     database: "{{api_stu3_server_database}}"

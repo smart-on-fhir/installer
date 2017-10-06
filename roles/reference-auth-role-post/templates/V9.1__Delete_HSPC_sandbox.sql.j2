@@ -1,3 +1,0 @@
-DELETE FROM sandbox_user_roles WHERE sandbox IN (SELECT id FROM sandbox WHERE sandbox_id like 'hspc%');
-DELETE FROM user_sandbox WHERE sandbox_id IN (SELECT id FROM sandbox WHERE sandbox_id like 'hspc%');
-DELETE FROM sandbox WHERE sandbox_id LIKE 'hspc%';

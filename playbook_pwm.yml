@@ -3,7 +3,6 @@
   become: yes
   vars_files:
     - roles/linux/defaults/main.yml
-    - roles/linux-role/defaults/main.yml
     - roles/apacheds/defaults/main.yml
     - roles/sandbox-manager-api-role/defaults/main.yml
     - roles/sandbox-manager-role/defaults/main.yml

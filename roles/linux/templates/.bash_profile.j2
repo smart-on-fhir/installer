@@ -6,12 +6,15 @@ export EDITOR=vi
 alias n='cd $NGINX_SITES'
 alias s='cd $SERVICE_HOME'
 
+alias reload='sudo systemctl daemon-reload'
+
 # tail services
-alias t='sudo journalctl -f -u'
-alias v='sudo journalctl -u'
+alias t='sudo journalctl -f -u '
+
+# view services
+alias v='sudo journalctl -u '
 
 alias stopn='sudo service nginx stop'
 alias startn='sudo service nginx start'
 alias build='~/build.sh'
-alias p='cd $PROVISIONING_HOME'
 alias m='mysql -h {{mysql_host}} -u {{mysql_username}} -p{{mysql_password}}'
