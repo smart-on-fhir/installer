@@ -8,10 +8,6 @@ vagrant/.*
 inventory/group_vars/prod.yml
 inventory/group_vars/test.yml
 roles/pwm/files/temp/
-roles/sandbox-manager-api-role/
-roles/sandbox-manager-role/
-roles/common-role/
-roles/bilirubin-risk-chart-role/
+roles/*-role/
 roles/git-gal-dep/
-roles/patient-data-manager-role/
 inventory-legacy/temp/
