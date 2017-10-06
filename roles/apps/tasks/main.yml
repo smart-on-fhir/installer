@@ -77,7 +77,7 @@
   unarchive: src="stylesheets.tar" dest="{{hosting_user_home}}/apps/static/"
 
 - name: "install apps system"
-  include: "roles/common/tasks/service_template.yml"
+  include: "roles/common-role/tasks/service_template.yml"
   vars:
     service_name: "apps"
     service_definition_file: "roles/apps/templates/apps.service.j2"

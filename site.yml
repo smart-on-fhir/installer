@@ -5,14 +5,27 @@
 
 - include: playbook_pwm.yml
 
+- include: playbook_patient_picker.yml
+
 - include: playbook_auth.yml
 
 - include: playbook_api.yml
 
+- include: playbook_api_stu3.yml
+
+- include: playbook_api_dstu2.yml
+
 - include: playbook_messaging.yml
+
+- include: playbook_patient_data_manager.yml
 
 - include: playbook_sandman_api.yml
 
 - include: playbook_sandman.yml
 
-- include: playbook_apps.yml
+- include: playbook_growth_chart_app.yml
+
+- include: playbook_bp_centiles_app.yml
+
+- include: playbook_cardiac_risk_app.yml
+#

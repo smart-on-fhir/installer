@@ -2,15 +2,22 @@
 - hosts: all
   become: yes
   vars_files:
+    - roles/common-role/defaults/main.yml
+    - roles/linux-role/defaults/main.yml
     - roles/linux/defaults/main.yml
-    - roles/api/defaults/main.yml
-    - roles/apps/defaults/main.yml
-    - roles/sandbox-manager-api-role/defaults/main.yml
-    - roles/sandbox-manager-role/defaults/main.yml
     - roles/apacheds/defaults/main.yml
     - roles/pwm/defaults/main.yml
+    - roles/patient-picker-role/defaults/main.yml
+    - roles/reference-api-role/defaults/main.yml
+    - roles/reference-api-dstu2-role/defaults/main.yml
+    - roles/reference-api-stu3-role/defaults/main.yml
+    - roles/sandbox-manager-role/defaults/main.yml
+    - roles/sandbox-manager-api-role/defaults/main.yml
+    - roles/smart/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
   roles:
     - common
-    - auth
+    - common-role
+    - reference-auth-role
+    - reference-auth-role-post

@@ -1,0 +1,51 @@
+---
+top_level_domain: "org"
+second_level_domain: "smarthealthit"
+
+# Self-signed SSL certificates settings (if generating self-signed certificates)
+self_signed_certificate_ssl_country: "US"
+self_signed_certificate_ssl_province: "MA"
+self_signed_certificate_ssl_locality: "Boston"
+self_signed_certificate_ssl_organization: "Example Company"
+self_signed_certificate_ssl_division: "support"
+self_signed_certificate_ssl_email: "support@{{domain_name}}"
+
+gallery_server_external_url: "none"
+gallery_server_internal_port: "0"
+
+mock_api_dstu2_server_internal_port: "8271"
+mock_api_dstu2_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{mock_api_dstu2_server_external_host}}{{(':'+mock_api_dstu2_server_external_port|string) if mock_api_dstu2_server_external_port|int not in (80,443) else ''}}"
+
+mock_api_stu3_server_internal_port: "8274"
+mock_api_stu3_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{mock_api_stu3_server_external_host}}{{(':'+mock_api_stu3_server_external_port|string) if mock_api_stu3_server_external_port|int not in (80,443) else ''}}"
+
+firebase_projectName: "none"
+firebase_database_url: "none"
+account_accountLoginPage: "none"
+account_accountLogoutPage: "none"
+
+auth_server_start_command: |
+  {{java_home}}/bin/java \
+  -Xms{{auth_server_initial_memory}} \
+  -Xmx{{auth_server_max_memory}} \
+  -Djetty.port={{auth_server_internal_port}} \
+  -Djetty.host=localhost \
+  -Dspring.profiles.active=production,users-firebase \
+  -Dbootstrap.datasource.mysql.url=jdbc:mysql://{{auth_server_mysql_host}}:{{mysql_port}} \
+  -Doidc.datasource.mysql.url=jdbc:mysql://{{auth_server_mysql_host}}:{{mysql_port}}/{{auth_server_database}} \
+  -Doidc.datasource.mysql.username={{mysql_username}} \
+  -Doidc.datasource.mysql.password={{mysql_password}} \
+  -Doidc.issuer={{auth_server_external_url}}/ \
+  -Dhspc.platform.persona.oauthUserLoginEndpointURL={{auth_server_external_url}}/j_spring_security_check \
+  -DCONTEXT_FHIR_ENDPOINT={{auth_server_CONTEXT_FHIR_ENDPOINT}} \
+  -DCONTEXT_RESOLVE_ENDPOINT={{patient_picker_server_external_url}} \
+  -Dhspc.platform.jwt.key={{hspc_platform_jwt_key}} \
+  -Dhspc.platform.sandbox.api.host={{sandman_api_server_external_url}} \
+  -Dhspc.platform.persona.cookieDomain={{auth_server_persona_cookie_domain}} \
+  -Dhspc.platform.firebase.projectName={{firebase_projectName}} \
+  -Dhspc.platform.firebase.databaseUrl={{firebase_database_url}} \
+  -Dhspc.platform.accountLoginPage={{account_accountLoginPage}} \
+  -Dhspc.platform.accountLogoutPage={{account_accountLogoutPage}} \
+  -jar {{hosting_user_home}}/{{jetty_runner_artifact_artifact_id}}-{{jetty_runner_artifact_version}}.{{jetty_runner_artifact_packaging}} \
+  --config {{hosting_user_home}}/jetty.xml \
+  {{auth_server_artifact_artifact_id}}-{{auth_server_artifact_version}}.war

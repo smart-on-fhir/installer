@@ -24,7 +24,7 @@
     dest: "{{hosting_user_home}}/messaging/{{messaging_server_artifact_artifact_id}}-{{messaging_server_artifact_version}}.{{messaging_server_artifact_packaging}}"
 
 - name: "install messaging system"
-  include: "roles/common/tasks/service_template.yml"
+  include: "roles/common-role/tasks/service_template.yml"
   vars:
     service_name: "messaging"
     service_definition_file: "roles/messaging/templates/messaging.service.j2"

@@ -1,0 +1,36 @@
+INSERT INTO sandbox (allow_open_access, created_timestamp, description, name, sandbox_id, api_endpoint_index, created_by_id, fhir_server_end_point, visibility)
+VALUES (
+  '',
+  now(),
+  'SMART STU3 Sandbox',
+  'SMART STU3 Sandbox',
+  'smartstu3',
+  '2',
+  (SELECT id FROM user WHERE sbm_user_id='admin'),
+  null,
+  0
+);
+
+INSERT INTO user_sandbox (user_id, sandbox_id)
+VALUES (
+  (SELECT id FROM user WHERE sbm_user_id='admin'),
+  (SELECT id FROM sandbox WHERE sandbox_id='smartstu3')
+);
+
+INSERT INTO sandbox_user_roles (sandbox, user_roles)
+VALUES (
+  (SELECT id FROM sandbox WHERE sandbox_id='smartstu3'),
+  4
+);
+
+INSERT INTO sandbox_user_roles (sandbox, user_roles)
+VALUES (
+  (SELECT id FROM sandbox WHERE sandbox_id='smartstu3'),
+  5
+);
+
+INSERT INTO sandbox_user_roles (sandbox, user_roles)
+VALUES (
+  (SELECT id FROM sandbox WHERE sandbox_id='smartstu3'),
+  6
+);

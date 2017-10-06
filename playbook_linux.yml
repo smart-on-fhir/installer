@@ -4,5 +4,8 @@
   vars_files:
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
+    - roles/linux-role/defaults/main.yml
+    - roles/smart/defaults/main.yml
   roles:
+    - linux-role
     - linux

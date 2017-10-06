@@ -5,11 +5,9 @@
     - roles/common-role/defaults/main.yml
     - roles/linux-role/defaults/main.yml
     - roles/linux/defaults/main.yml
-    - roles/reference-api-role/defaults/main.yml
-    - roles/reference-api-stu3-role/defaults/main.yml
-    - roles/smart/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
   roles:
+    - common
     - common-role
-    - reference-messaging-role
+    - patient-picker-role

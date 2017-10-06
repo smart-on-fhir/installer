@@ -23,13 +23,25 @@
     group: "root"
     mode: "0644"
 
-- name: "configure upload.conf"
+- name: "configure *.conf files"
   template:
-    src: "upload.conf.j2"
-    dest: "{{nginx_home}}/conf.d/upload.conf"
+    src: "{{item}}.j2"
+    dest: "{{nginx_home}}/conf.d/{{item}}"
     owner: "root"
     group: "root"
     mode: "0644"
+  with_items:
+    - "upload.conf"
+
+- name: "configure other conf files"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{nginx_home}}/{{item}}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  with_items:
+    - "nginx_open_cors.conf"
 
 - name: "create ssl certificates directory"
   when: use_secure_http

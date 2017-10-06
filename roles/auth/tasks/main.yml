@@ -65,11 +65,11 @@
        mvn clean install -e -U
 
 - name: "install auth system"
-  include: "roles/common/tasks/service_template.yml"
+  include: "roles/common-role/tasks/service_template.yml"
   vars:
     service_name: "auth"
     database: "{{auth_server_database}}"
-    database_drop: "{{auth_mysql_reset_database | default(false)}}"
+    database_drop: "{{auth_mysql_database_drop | default(false)}}"
     database_exists: true
     service_definition_file: "roles/auth/templates/auth.service.j2"
     gateway_definition_file: "roles/auth/templates/auth.j2"

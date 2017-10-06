@@ -1,11 +1,4 @@
 ---
-- name: "check custom certificate preconditions"
-  fail:
-    msg: "please define the path to the custom certificates that you would like to use"
-  when: use_custom_ssl_certificates and (custom_ssl_certificates_path is not defined)
-
 - include: initialize.yml
 
 - include: nginx.yml
-
-- include: jobs.yml

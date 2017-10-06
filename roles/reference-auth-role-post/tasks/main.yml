@@ -1,7 +1,7 @@
 ---
-- name: "stop {{sandman_api_name}}"
+- name: "stop {{reference_auth_name}}"
   service:
-    name: "{{sandman_api_name}}"
+    name: "{{reference_auth_name}}"
     state: "stopped"
   ignore_errors: yes
 
@@ -9,13 +9,13 @@
   become_user: "{{hosting_username}}"
   file: "path={{item}} state=directory"
   with_items:
-    - "{{hosting_user_home}}/{{sandman_api_name}}/mysql"
-    - "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration"
+    - "{{hosting_user_home}}/{{reference_auth_name}}/mysql"
+#    - "{{hosting_user_home}}/{{reference_auth_name}}/project/BOOT-INF/classes/db/mysql/migration"
 
 - name: "process the templates"
   template:
     src: "{{item}}.j2"
-    dest: "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration/{{item}}"
+    dest: "{{hosting_user_home}}/{{reference_auth_name}}/project/BOOT-INF/classes/db/mysql/migration/{{item}}"
     owner: "{{hosting_username}}"
     group: "{{hosting_username}}"
     mode: "0644"
