@@ -99,13 +99,27 @@ In this install, we are going to build a SMART on FHIR platform directly on an U
 * *See [SMART on FHIR AWS Test Configuration](#awsconfig)*
 
 ### Prepare the server
+
 From the Ubuntu 16.04 machine:
+
 ```
 sudo apt-get update
 sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
 sudo pip install ansible==2.3.2.0
 git clone https://github.com/smart-on-fhir/installer
 cd installer
+```
+
+### Download the Ansible Galaxy roles
+
+```
+ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
+```
+
+### Run the site.yml playbook for the local environment
+
+```
+ansible-playbook site.yml -i "localhost," -c local --extra-vars "env=local installer_user=ubuntu services_host=54.165.133.221"
 ```
 
 Modify the vars for your environment.  You will also need to define which set of environment files your deployment is using.
