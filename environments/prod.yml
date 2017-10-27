@@ -13,7 +13,7 @@ email_smtp_port: "587"
 email_admin_address: "travis@isalussolutions.com"
 email_contact_addresss: "support@smarthealthit.org"
 apacheds_server_external_host: "sb-ldap.smarthealthit.org"
-apacheds_server_installer_enabled: false
+apacheds_server_installer_enabled: true
 pwm_server_external_host: "sb-pwm.smarthealthit.org"
 pwm_server_external_port: "443"
 pwm_unlocked: false
