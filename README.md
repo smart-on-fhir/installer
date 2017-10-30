@@ -103,9 +103,7 @@ In this install, we are going to build a SMART on FHIR platform directly on an U
 From the Ubuntu 16.04 machine:
 
 ```
-sudo apt-get update
-sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2
-sudo pip install ansible==2.3.2.0
+sudo apt-get update; sudo apt-get -y install curl git python-pycurl python-pip python-yaml python-paramiko python-jinja2; sudo pip install ansible==2.3.2.0; pip install --upgrade pip
 git clone https://github.com/smart-on-fhir/installer
 cd installer
 ```
