@@ -27,6 +27,7 @@ auth_server_newUserUrl: "{{pwm_server_external_url}}public/newuser"
 auth_server_forgotPasswordUrl: "{{pwm_server_external_url}}public/forgottenpassword"
 auth_mysql_reset_database: true
 api_server_oauth2_clientId: "hspc_resource_server"
+enable_monitoring: false
 enable_backup_restore_jobs: true
 enable_aws_snapshot: false
 enable_pwm: false
