@@ -46,7 +46,6 @@
   with_items:
     - "V9.1__Migrate_SMART_Logos.sql"
     - "V9.2__default_personas.sql"
-    - "V10__remove_duplicate_user_sandboxes.sql"
 
 - name: "update jar file"
   become_user: "{{hosting_username}}"
