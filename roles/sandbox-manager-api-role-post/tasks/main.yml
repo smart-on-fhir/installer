@@ -46,6 +46,7 @@
   with_items:
     - "V9.1__Migrate_SMART_Logos.sql"
     - "V9.2__default_personas.sql"
+    - "V10__remove_duplicate_user_sandboxes.sql"
 
 - name: "update jar file"
   become_user: "{{hosting_username}}"
@@ -54,6 +55,7 @@
   with_items:
     - "BOOT-INF/classes/db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
     - "BOOT-INF/classes/db/mysql/migration/V9.2__default_personas.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V10__remove_duplicate_user_sandboxes.sql"
 
 - name: "start {{sandman_api_name}}"
   service:
