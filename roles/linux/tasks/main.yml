@@ -9,3 +9,5 @@
 - include: nginx.yml
 
 - include: jobs.yml
+
+- include: monitoring.yml
