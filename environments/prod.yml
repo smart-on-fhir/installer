@@ -13,7 +13,7 @@ email_smtp_port: "587"
 email_admin_address: "travis@isalussolutions.com"
 email_contact_addresss: "support@smarthealthit.org"
 apacheds_server_external_host: "sb-ldap.smarthealthit.org"
-apacheds_server_installer_enabled: false
+apacheds_server_installer_enabled: true
 pwm_server_external_host: "sb-pwm.smarthealthit.org"
 pwm_server_external_port: "443"
 pwm_unlocked: false
@@ -27,6 +27,7 @@ auth_server_newUserUrl: "{{pwm_server_external_url}}public/newuser"
 auth_server_forgotPasswordUrl: "{{pwm_server_external_url}}public/forgottenpassword"
 auth_mysql_reset_database: false
 api_server_oauth2_clientId: "hspc_resource_server"
+enable_monitoring: true
 enable_backup_restore_jobs: true
 enable_aws_snapshot: true
 enable_pwm: true
@@ -80,6 +81,7 @@ sandman_api_server_api_v1_url: "{{api_dstu2_server_external_url}}"
 sandman_api_server_api_v2_url: "{{api_stu3_server_external_url}}"
 sandman_api_server_api_v3_url: "{{api_stu3_server_external_url}}"
 sandman_api_server_api_v4_url: "{{api_stu3_server_external_url}}"
+sandman_api_server_default_system_roles: "USER"
 apps_server_external_host: "sb-apps.smarthealthit.org"
 apps_server_external_port: "443"
 patient_picker_server_external_host: "{{apps_server_external_host}}"

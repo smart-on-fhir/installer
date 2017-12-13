@@ -30,7 +30,7 @@ echo "Gathering custom-sample-data..."
 git fetch && git pull
 
 echo "Installing pip requirements..."
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 
 if [ $? -ne 0 ]
 then

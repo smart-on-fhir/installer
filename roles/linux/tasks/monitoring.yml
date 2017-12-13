@@ -1,0 +1,44 @@
+---
+- name: "create the service directory"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory mode=0755"
+  with_items:
+    - "{{hosting_user_home}}/monitoring"
+
+- name: "get the AWS monitoring script"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  shell: chdir="{{hosting_user_home}}/monitoring"
+         curl http://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.1.zip -O
+
+- name: "unzip script"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  shell: chdir="{{hosting_user_home}}/monitoring"
+         unzip CloudWatchMonitoringScripts-1.2.1.zip
+
+- name: "rm script"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  shell: chdir="{{hosting_user_home}}/monitoring"
+         rm CloudWatchMonitoringScripts-1.2.1.zip
+
+- name: "copy monitoring files"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/monitoring/aws-scripts-mon/{{item}}"
+    mode: "0700"
+  with_items:
+    - "awscreds.conf"
+
+- name: "create cron job to monitor to AWS"
+  when: enable_monitoring
+  become_user: "{{hosting_username}}"
+  cron:
+    name: "server monitor"
+    minute: "5"
+    job: "{{hosting_user_home}}/monitoring/aws-scripts-mon/mon-put-instance-data.pl --mem-util --mem-used-incl-cache-buff --mem-used --mem-avail --disk-space-util --disk-space-avail --disk-space-used --disk-path=/ --from-cron"
+
