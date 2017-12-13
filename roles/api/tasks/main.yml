@@ -37,7 +37,7 @@
     service_name: "api_dstu2"
     database: "{{api_dstu2_server_database}}"
     database_drop: "{{api_dstu2_mysql_reset_database | default(false)}}"
-    database_exists: true
+    database_exists: false
     service_definition_file: "roles/api/templates/api_dstu2.service.j2"
     gateway_definition_file: "roles/api/templates/api_dstu2.j2"
     internal_port: "{{api_dstu2_server_internal_port}}"
@@ -51,7 +51,7 @@
     service_name: "mock_api_dstu2"
     database: "{{api_dstu2_server_database}}"
     database_drop: false
-    database_exists: true
+    database_exists: false
     service_definition_file: "roles/api/templates/mock_api_dstu2.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_dstu2.j2"
     internal_port: "{{mock_api_dstu2_server_internal_port}}"
