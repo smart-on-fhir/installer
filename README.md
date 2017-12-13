@@ -116,8 +116,11 @@ ansible-galaxy install -r roles/requirements.yml -p ./roles/ --force
 
 ### Run the site.yml playbook for the local environment
 
+*Note: replace the services_host with your IP address or host name
+
 ```
-ansible-playbook site.yml -i "localhost," -c local --extra-vars "env=local installer_user=ubuntu services_host=54.165.133.221"
+ansible-playbook site.yml -i "localhost," -c local \
+  --extra-vars "env=local installer_user=ubuntu services_host=34.239.242.159"
 ```
 
 Modify the vars for your environment.  You will also need to define which set of environment files your deployment is using.
