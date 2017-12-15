@@ -95,7 +95,7 @@
 
         if (username && username.length && looksLikePersona(username)) {
             e.preventDefault();
-            var personaAuthEndpoint = "{{sandman_server_external_url}}<spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.personaAuthPath')"/>";
+            var personaAuthEndpoint = "{{sandman_api_server_external_url}}<spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.personaAuthPath')"/>";
 
             $.ajax({
                 type: "POST",
