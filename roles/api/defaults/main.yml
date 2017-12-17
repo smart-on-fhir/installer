@@ -2,14 +2,14 @@
 # api common properties
 api_server_artifact_group_id: "org.hspconsortium.reference"
 api_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
-api_server_artifact_version: "1.8.0"
+api_server_artifact_version: "1.10.1"
 api_server_artifact_packaging: "jar"
 api_server_artifact_repository_url: "{{release_repository_url}}"
 api_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
 api_mysql_host: "{{mysql_host}}"
 api_mysql_username: "{{mysql_username}}"
 api_mysql_password: "{{mysql_password}}"
-api_schema_version: 4
+api_schema_version: 5
 api_baseline_snapshot: "default"
 api_server_default_sandbox_url: "{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/data"
 

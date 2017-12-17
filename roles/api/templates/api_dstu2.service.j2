@@ -18,6 +18,7 @@ ExecStart={{java_home}}/bin/java \
  -Dhspc.platform.authorization.url={{auth_server_external_url}} \
  -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
  -Dspring.profiles.active=dstu2,multitenant \
+ -Dspring.jpa.hibernate.ddl-auto=update \
  -Dhibernate.search.default.indexBase=lucenefiles \
  -jar {{hosting_user_home}}/api/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}
 Restart=always
