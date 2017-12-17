@@ -44,6 +44,16 @@
     external_host: "{{api_dstu2_server_external_host}}"
     external_port: "{{api_dstu2_server_external_port}}"
 
+- name: "restart the api_dstu2 system to apply security rules"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "api_dstu2"
+    service_definition_file: "roles/api/templates/api_dstu2.service.j2"
+    gateway_definition_file: "roles/api/templates/api_dstu2.j2"
+    internal_port: "{{api_dstu2_server_internal_port}}"
+    external_host: "{{api_dstu2_server_external_host}}"
+    external_port: "{{api_dstu2_server_external_port}}"
+
 - name: "install mock_api_dstu2 system"
   when: enable_mock_endpoints
   include: "roles/common/tasks/service_template.yml"
@@ -58,13 +68,34 @@
     external_host: "{{mock_api_dstu2_server_external_host}}"
     external_port: "{{mock_api_dstu2_server_external_port}}"
 
+- name: "restart the mock_api_dstu2 system to apply security rules"
+  when: enable_mock_endpoints
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "mock_api_dstu2"
+    service_definition_file: "roles/api/templates/mock_api_dstu2.service.j2"
+    gateway_definition_file: "roles/api/templates/mock_api_dstu2.j2"
+    internal_port: "{{mock_api_dstu2_server_internal_port}}"
+    external_host: "{{mock_api_dstu2_server_external_host}}"
+    external_port: "{{mock_api_dstu2_server_external_port}}"
+
 - name: "install api_stu3 system"
   include: "roles/common/tasks/service_template.yml"
   vars:
     service_name: "api_stu3"
     database: "{{api_stu3_server_database}}"
     database_drop: "{{api_stu3_mysql_reset_database | default(false)}}"
-    database_exists: true
+    database_exists: false
+    service_definition_file: "roles/api/templates/api_stu3.service.j2"
+    gateway_definition_file: "roles/api/templates/api_stu3.j2"
+    internal_port: "{{api_stu3_server_internal_port}}"
+    external_host: "{{api_stu3_server_external_host}}"
+    external_port: "{{api_stu3_server_external_port}}"
+
+- name: "restart the api_stu3 system to apply security rules"
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "api_stu3"
     service_definition_file: "roles/api/templates/api_stu3.service.j2"
     gateway_definition_file: "roles/api/templates/api_stu3.j2"
     internal_port: "{{api_stu3_server_internal_port}}"
@@ -79,6 +110,17 @@
     database: "{{api_stu3_server_database}}"
     database_drop: false
     database_exists: true
+    service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
+    gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
+    internal_port: "{{mock_api_stu3_server_internal_port}}"
+    external_host: "{{mock_api_stu3_server_external_host}}"
+    external_port: "{{mock_api_stu3_server_external_port}}"
+
+- name: "restart the mock_api_stu3 system to apply security rules"
+  when: enable_mock_endpoints
+  include: "roles/common/tasks/service_template.yml"
+  vars:
+    service_name: "mock_api_stu3"
     service_definition_file: "roles/api/templates/mock_api_stu3.service.j2"
     gateway_definition_file: "roles/api/templates/mock_api_stu3.j2"
     internal_port: "{{mock_api_stu3_server_internal_port}}"
