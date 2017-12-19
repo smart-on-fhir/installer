@@ -23,7 +23,7 @@ mkdir -p $RESTORE_BASELINE_OUTPUT_FOLDER
 # restore the baseline
 cd $RESTORE_BASELINE_OUTPUT_FOLDER
 echo "Exporting schema {{api_dstu2_server_database}}\${{api_baseline_snapshot}} to {{api_dstu2_server_database}}\${{api_baseline_snapshot}}.sql"
-mysqldump -u fhir -p{{mysql_password}} '{{api_dstu2_server_database}}${{api_baseline_snapshot}}' --hex-blob > '{{api_dstu2_server_database}}${{api_baseline_snapshot}}.sql'
+mysqldump -u fhir -p{{mysql_password}} '{{api_dstu2_server_database}}${{api_baseline_snapshot}}' --hex-blob -r '{{api_dstu2_server_database}}${{api_baseline_snapshot}}.sql'
 
 # handle errors
 if [ $? -ne 0 ]
