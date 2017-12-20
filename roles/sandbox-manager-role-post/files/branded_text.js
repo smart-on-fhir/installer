@@ -30,6 +30,7 @@ angular.module("sandManApp.branding", [], ["$provide", function($provide) {
             },
             documentationLinks : [
                 {name: "registerAnApp", link: "http://docs.smarthealthit.org/sandbox/register-app.html"},
+                {name: "inboundRegisterApp", link: "https://bitbucket.org/hspconsortium/registration"},
                 {name: "sandboxVersions", link: "http://hl7.org/fhir/directory.html"},
                 {name: "launchScenarios", link: "http://docs.smarthealthit.org/sandbox/launch.html"},
                 {name: "sandboxPersona", link: "http://docs.smarthealthit.org/sandbox/persona.html"},
