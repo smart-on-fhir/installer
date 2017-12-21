@@ -1,0 +1,130 @@
+---
+- name: "drop the service directory"
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: absent
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_name}}"
+
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_name}}"
+
+- name: "check out project"
+  become_user: "{{hosting_username}}"
+  git:
+    repo: "{{hspc_repo_base}}/{{sandman_project_name}}.git"
+    version: "{{sandman_server_project_version}}"
+    dest: "{{sandman_project_home}}"
+    update: "{{update_repositories}}"
+    force: yes
+
+- name: "create the service directory"
+  become_user: "{{hosting_username}}"
+  file:
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_name}}"
+    - "{{sandman_project_home}}/src/static/js/config"
+
+- name: "process the templates"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{sandman_project_home}}/src/static/js/config/{{item}}"
+    owner: "{{hosting_username}}"
+    group: "{{hosting_username}}"
+    mode: "0644"
+  with_items:
+    - "sample-apps.json"
+    - "sandbox-manager.json"
+
+- name: "npm install"
+  become_user: "{{hosting_username}}"
+  shell: chdir="{{sandman_project_home}}"
+         npm install
+
+- name: "install system"
+  include: "roles/common-role/tasks/service_template.yml"
+  vars:
+    service_name: "{{sandman_name}}"
+    service_definition_file: "{{common_service_template}}"
+    service_start_command: "{{sandman_server_start_command}}"
+    service_working_dir: "{{sandman_project_home}}"
+    gateway_definition_file: "{{common_nginx_gateway_template}}"
+    internal_port: "{{sandman_server_internal_port}}"
+    external_host: "{{sandman_server_external_host}}"
+    external_port: "{{sandman_server_external_port}}"
+    with_cors_headers: "{{sandman_server_include_cors_headers}}"
+
+### SMART customizations
+- name: "stop {{sandman_name}}"
+  service:
+    name: "{{sandman_name}}"
+    state: "stopped"
+  ignore_errors: yes
+
+- name: "create the smart directories"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{sandman_project_home}}/src/static/js/branding/smart/images"
+    - "{{sandman_project_home}}/src/static/branding/smart/images"
+    - "{{sandman_project_home}}/src/static/js/templates"
+
+- name: "patch branded_text.js"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{sandman_project_home}}/src/static/js/branding/{{item}}"
+    mode: "0755"
+  with_items:
+    - "branded_text.js"
+
+- name: "patch templates"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{sandman_project_home}}/src/static/js/templates/{{item}}"
+    mode: "0755"
+  with_items:
+    - "sideNav.html"
+
+- name: "patch images"
+  become_user: "{{hosting_username}}"
+  copy:
+    src: "{{item}}"
+    dest: "{{sandman_project_home}}/src/static/branding/smart/images/{{item}}"
+    mode: "0755"
+  with_items:
+    - "smart-logo.png"
+    - "smart-logo@2x.png"
+    - "smart-logo@3x.png"
+    - "smart-white-logo.png"
+    - "smart-white-logo@2x.png"
+
+- name: "process the templates"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{sandman_project_home}}/src/static/js/config/{{item}}"
+    owner: "{{hosting_username}}"
+    group: "{{hosting_username}}"
+    mode: "0644"
+  with_items:
+    - "sample-apps.json"
+
+- name: "start {{sandman_name}}"
+  service:
+    name: "{{sandman_name}}"
+    state: "started"
+
+- name: "verify {{sandman_name}} is available internally at localhost:{{sandman_server_internal_port}}"
+  become_user: "{{hosting_username}}"
+  wait_for:
+    host: "localhost"
+    port: "{{sandman_server_internal_port}}"

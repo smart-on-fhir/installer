@@ -1,24 +1,13 @@
 angular.module("sandManApp.branding", [], ["$provide", function($provide) {
 
     $provide.value("brandedText", {
-        smart: {
-            mainImage: "{{sandman_company_logo_path}}",
-            mainImage2x: "{{sandman_company_logo2x_path}}",
-            whiteImage: "{{sandman_company_white_logo_path}}",
-            whiteImage2x: "{{sandman_company_white_logo2x_path}}",
-            imageStyle: {
-                height: '50px',
-                marginTop: '-10px',
-                marginLeft: '-10px'
-            },
-            imageTextStyle: {
-                marginTop: '-30px',
-                marginLeft: '88px',
-                fontSize: '28px',
-                fontWeight: '200'
-            },
-            mainTitle: "",
-            sandboxText: "Sandbox",
+        default: {
+            mainImage: "static/branding/smart/images/smart-logo.png",
+            mainImage2x: "static/branding/smart/images/smart-logo@2x.png",
+            whiteImage: "static/branding/smart/images/smart-white-logo.png",
+            whiteImage2x: "static/branding/smart/images/smart-white-logo@2x.png",
+            mainTitle: "SMART Sandbox",
+            sandboxText: "",
             moreLinks: false,
             dashboardTitle: "Dashboard",
             showEmptyInviteList: false,
@@ -27,8 +16,8 @@ angular.module("sandManApp.branding", [], ["$provide", function($provide) {
             showTermsLink: false,
             userSettingsPWM: true,
             loginDoc: "http://docs.smarthealthit.org/sandbox/",
-            defaultLaunchScenario: false,
             defaultApiEndpointIndex : "1",
+            defaultLaunchScenario: false,
             sandboxApiEndpointIndexes : [
                 {index: "1", name: "FHIR DSTU 2 (v1.0.2)", fhirVersion: "1.0.2", fhirTag: "1_0_2", altName: "FHIR v1.0.2", canCreate: true, supportsDataSets: false},
                 {index: "2", name: "FHIR STU 3 (v3.0.1)", fhirVersion: "3.0.1", fhirTag: "3_0_1", altName: "FHIR v3.0.1", canCreate: true, supportsDataSets: false}
@@ -41,6 +30,7 @@ angular.module("sandManApp.branding", [], ["$provide", function($provide) {
             },
             documentationLinks : [
                 {name: "registerAnApp", link: "http://docs.smarthealthit.org/sandbox/register-app.html"},
+                {name: "inboundRegisterApp", link: "https://bitbucket.org/hspconsortium/registration"},
                 {name: "sandboxVersions", link: "http://hl7.org/fhir/directory.html"},
                 {name: "launchScenarios", link: "http://docs.smarthealthit.org/sandbox/launch.html"},
                 {name: "sandboxPersona", link: "http://docs.smarthealthit.org/sandbox/persona.html"},

@@ -1,0 +1,26 @@
+---
+# metadata
+sandman_name: "sandman"
+
+# vcs project info
+sandman_project_name: "sandbox-manager"
+sandman_project_home: "{{hosting_user_home}}/{{sandman_project_name}}/project"
+
+# artifact info
+
+# hosting info
+sandman_server_internal_port: "8080"
+sandman_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{sandman_server_external_host}}{{(':'+sandman_server_external_port|string) if sandman_server_external_port|int not in (80,443) else ''}}"
+sandman_server_start_command: "/usr/bin/npm run serve"
+sandman_server_include_cors_headers: false
+
+# app settings
+sandman_server_env: "prod"
+sandman_server_default_sandbox_creator_roles: "ADMIN,MANAGE_USERS,MANAGE_DATA"
+sandman_server_default_system_roles: "USER,CREATE_SANDBOX"
+sandman_server_default_private_sandbox_roles: "USER,MANAGE_USERS,MANAGE_DATA"
+sandman_server_default_sandbox_visibility: "PRIVATE"
+sandman_server_default_public_sandbox_roles: "USER"
+sandbox_server_admin_access_client_id: "sandman_admin"
+sandman_company_logo_path: "static/branding/smart/images/smart-logo.png"
+sandman_company_logo2x_path: "static/branding/smart/images/smart-logo@2x.png"

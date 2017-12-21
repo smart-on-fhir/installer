@@ -22,22 +22,22 @@ mkdir -p $RESTORE_BASELINE_OUTPUT_FOLDER
 
 # restore the baseline
 cd $RESTORE_BASELINE_OUTPUT_FOLDER
-echo "Exporting schema {{api_stu3_server_database}}${{api_baseline_snapshot}} to {{api_stu3_server_database}}${{api_baseline_snapshot}}.sql"
-mysqldump -u fhir -p{{mysql_password}} '{{api_stu3_server_database}}${{api_baseline_snapshot}}' --hex-blob > '{{api_stu3_server_database}}${{api_baseline_snapshot}}.sql'
+echo "Exporting schema {{api_stu3_server_database}}\${{api_baseline_snapshot}} to {{api_stu3_server_database}}\${{api_baseline_snapshot}}.sql"
+mysqldump -u fhir -p{{mysql_password}} '{{api_stu3_server_database}}${{api_baseline_snapshot}}' --hex-blob -r '{{api_stu3_server_database}}${{api_baseline_snapshot}}.sql'
 
 # handle errors
 if [ $? -ne 0 ]
 then
-    RESTORE_BASELINE_handleLastError "Failed to export {{api_stu3_server_database}}${{api_baseline_snapshot}}"
+    RESTORE_BASELINE_handleLastError "Failed to export {{api_stu3_server_database}}\${{api_baseline_snapshot}}"
 fi
 
-echo "Importing {{api_stu3_server_database}}${{api_baseline_snapshot}}.sql to schema {{api_stu3_server_database}}"
+echo "Importing {{api_stu3_server_database}}\${{api_baseline_snapshot}}.sql to schema {{api_stu3_server_database}}"
 mysql -u fhir -p{{mysql_password}} {{api_stu3_server_database}} < '{{api_stu3_server_database}}${{api_baseline_snapshot}}.sql'
 
 # handle errors
 if [ $? -ne 0 ]
 then
-    RESTORE_BASELINE_handleLastError "Failed to import {{api_stu3_server_database}}${{api_baseline_snapshot}}.sql"
+    RESTORE_BASELINE_handleLastError "Failed to import {{api_stu3_server_database}}\${{api_baseline_snapshot}}.sql"
 fi
 
 echo "Restored snapshot containing resources:"
