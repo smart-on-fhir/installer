@@ -1,6 +1,0 @@
----
-- include: "artifact.yml"
-
-- include: "service.yml"
-
-- include: "data.yml"
