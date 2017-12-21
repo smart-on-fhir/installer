@@ -4,8 +4,8 @@
   vars_files:
     - roles/linux/defaults/main.yml
     - roles/apacheds/defaults/main.yml
-    - roles/sandbox-manager-api-role/defaults/main.yml
-    - roles/sandbox-manager-role/defaults/main.yml
+    - roles/sandbox-manager-api/defaults/main.yml
+    - roles/sandbox-manager/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml
   roles:

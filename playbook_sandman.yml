@@ -8,7 +8,7 @@
     - roles/auth/defaults/main.yml
     - roles/pwm/defaults/main.yml
     - roles/api/defaults/main.yml
-    - roles/sandbox-manager-api-role/defaults/main.yml
+    - roles/sandbox-manager-api/defaults/main.yml
     - roles/bilirubin-risk-chart-role/defaults/main.yml
     - roles/patient-data-manager-role/defaults/main.yml
     - environments/{{env}}.yml
@@ -16,5 +16,4 @@
   roles:
     - common
     - common-role
-    - sandbox-manager-role
-    - sandbox-manager-role-post
+    - sandbox-manager

@@ -5,8 +5,8 @@
     - roles/linux/defaults/main.yml
     - roles/api/defaults/main.yml
     - roles/auth/defaults/main.yml
-    - roles/sandbox-manager-api-role/defaults/main.yml
-    - roles/sandbox-manager-role/defaults/main.yml
+    - roles/sandbox-manager-api/defaults/main.yml
+    - roles/sandbox-manager/defaults/main.yml
     - roles/pwm/defaults/main.yml
     - environments/{{env}}.yml
     - environments/{{env}}-secrets.yml

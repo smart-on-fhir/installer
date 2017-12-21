@@ -13,5 +13,4 @@
   roles:
     - common
     - common-role
-    - sandbox-manager-api-role
-    - sandbox-manager-api-role-post
+    - sandbox-manager-api

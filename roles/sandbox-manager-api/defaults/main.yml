@@ -1,0 +1,48 @@
+---
+# metadata
+sandman_api_name: "sandman-api"
+
+# vcs project info
+
+# artifact info
+sandman_api_server_artifact_group_id: "org.hspconsortium.sandbox"
+sandman_api_server_artifact_artifact_id: "hspc-sandbox-manager-api"
+sandman_api_server_artifact_packaging: "jar"
+
+# hosting info
+sandman_api_server_internal_port: "12000"
+sandman_api_server_external_url: "{{'https' if use_secure_http else 'http'}}://{{sandman_api_server_external_host}}{{(':'+sandman_api_server_external_port|string) if sandman_api_server_external_port|int not in (80,443) else ''}}"
+sandman_api_server_database: "sandman"
+sandman_api_server_start_command: |
+  {{java_home}}/bin/java \
+  -Xms{{sandman_api_server_initial_memory}} \
+  -Xmx{{sandman_api_server_max_memory}} \
+  -Dspring.datasource.username={{mysql_username}} \
+  -Dspring.datasource.password={{mysql_password}} \
+  -Dspring.datasource.base_url=jdbc:mysql://{{mysql_host}}:{{mysql_port}} \
+  -Dspring.datasource.my_schema={{sandman_api_server_database}} \
+  -Dhspc.platform.api.version1.baseUrl={{sandman_api_server_api_v1_url}} \
+  -Dhspc.platform.api.version2.baseUrl={{sandman_api_server_api_v2_url}} \
+  -Dhspc.platform.api.version3.baseUrl={{sandman_api_server_api_v3_url}} \
+  -Dhspc.platform.api.version4.baseUrl={{sandman_api_server_api_v4_url}} \
+  -Dhspc.platform.messaging.url={{messaging_server_external_url}} \
+  -Dhspc.platform.defaultSandboxCreatorRoles={{sandman_api_server_default_sandbox_creator_roles}} \
+  -Dhspc.platform.messaging.sendEmail={{sandman_api_server_send_email}} \
+  -Dhspc.platform.defaultSystemRoles={{sandman_api_server_default_system_roles}} \
+  -Dhspc.platform.defaultPrivateSandboxRoles={{sandman_api_server_default_private_sandbox_roles}} \
+  -Dhspc.platform.defaultSandboxVisibility={{sandman_api_server_default_sandbox_visibility}} \
+  -Dhspc.platform.defaultPublicSandboxRoles={{sandman_api_server_default_public_sandbox_roles}} \
+  -Dhspc.platform.authorization.adminAccess.clientId={{sandbox_server_admin_access_client_id}} \
+  -Dhspc.platform.authorization.adminAccess.clientSecret={{sandbox_server_admin_access_client_secret}} \
+  -Dhspc.platform.authorization.url={{auth_server_external_url}} \
+  -Dhspc.platform.jwt.key={{hspc_platform_jwt_key}} \
+  -jar {{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}}
+
+# app settings
+sandman_api_server_env: "prod"
+sandman_api_server_default_sandbox_creator_roles: "ADMIN,MANAGE_USERS,MANAGE_DATA"
+sandman_api_server_default_system_roles: "USER,CREATE_SANDBOX"
+sandman_api_server_default_private_sandbox_roles: "USER,MANAGE_USERS,MANAGE_DATA"
+sandman_api_server_default_sandbox_visibility: "PRIVATE"
+sandman_api_server_default_public_sandbox_roles: "USER"
+sandbox_server_admin_access_client_id: "sandman_admin"
