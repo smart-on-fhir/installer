@@ -81,9 +81,24 @@
   shell: chdir={{hosting_user_home}}/api_stu3_sample_patients/bin
          python generate.py --write-fhir ../out {{api_stu3_sample_patients_generator_params}}
 
+- name: "list api-stu3-sample practitioners"
+  when: enable_api_sample_data
+  shell: ls {{hosting_user_home}}/api_stu3_sample_patients/out/0-.json
+  register: api_stu3_sample_practitioner_files
+
+- name: "load api-stu3-sample practitioners"
+  when: enable_api_sample_data
+  shell: "chdir={{hosting_user_home}}/api_stu3_sample_patients/out/
+         curl
+           '{{api_stu3_server_external_url}}/{{api_stu3_server_sandbox}}/open/?'
+           -H 'Content-Type: application/json+fhir'
+           --data-binary @{{item}}
+           --insecure"
+  with_items: "{{api_stu3_sample_practitioner_files.stdout_lines}}"
+
 - name: "list api-stu3-sample patients"
   when: enable_api_sample_data
-  shell: ls {{hosting_user_home}}/api_stu3_sample_patients/out/*.json | head -n {{api_stu3_sample_patients_limit}}
+  shell: ls {{hosting_user_home}}/api_stu3_sample_patients/out/p.json | head -n {{api_stu3_sample_patients_limit}}
   register: api_stu3_sample_patient_files
 
 - name: "load api-stu3-sample patients"
