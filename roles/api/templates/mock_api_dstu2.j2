@@ -24,6 +24,8 @@ server {
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
+      proxy_set_header X-Forwarded-Port {{mock_api_dstu2_server_external_port}};
+      proxy_read_timeout 120s;
 
       access_log /var/log/nginx/mock_api_dstu2_access.log;
       proxy_pass http://mock_api_dstu2;
