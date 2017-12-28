@@ -25,6 +25,43 @@
     repository_url: "{{sandman_api_server_artifact_repository_url}}"
     dest: "{{hosting_user_home}}/{{sandman_api_name}}/{{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}}"
 
+### SMART customization
+- name: "create the smart directories"
+  become_user: "{{hosting_username}}"
+  file: "path={{item}} state=directory"
+  with_items:
+    - "{{hosting_user_home}}/{{sandman_api_name}}/mysql"
+    - "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration"
+
+- name: "process the templates"
+  template:
+    src: "{{item}}.j2"
+    dest: "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration/{{item}}"
+    owner: "{{hosting_username}}"
+    group: "{{hosting_username}}"
+    mode: "0644"
+  with_items:
+    - "V9.1__Migrate_SMART_Logos.sql"
+    - "V9.2__default_personas.sql"
+    - "V9.3__remove_hspc_sandbox.sql"
+    - "V9.4__default_apps.sql"
+    - "V9.5__dstu2_sandbox.sql"
+    - "V9.6__stu3_sandbox.sql"
+    - "V10__remove_duplicate_user_sandboxes.sql"
+
+- name: "update jar file"
+  become_user: "{{hosting_username}}"
+  shell: chdir={{hosting_user_home}}/{{sandman_api_name}}/project
+        jar uf {{hosting_user_home}}/{{sandman_api_name}}/{{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}} {{item}}
+  with_items:
+    - "BOOT-INF/classes/db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.2__default_personas.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.3__remove_hspc_sandbox.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.4__default_apps.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.5__dstu2_sandbox.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V9.6__stu3_sandbox.sql"
+    - "BOOT-INF/classes/db/mysql/migration/V10__remove_duplicate_user_sandboxes.sql"
+
 - name: "install system"
   include: "roles/common-role/tasks/service_template.yml"
   vars:
@@ -39,71 +76,3 @@
     internal_port: "{{sandman_api_server_internal_port}}"
     external_host: "{{sandman_api_server_external_host}}"
     external_port: "{{sandman_api_server_external_port}}"
-
-### SMART customization
-- name: "stop {{sandman_api_name}}"
-  service:
-    name: "{{sandman_api_name}}"
-    state: "stopped"
-  ignore_errors: yes
-
-- name: "create the smart directories"
-  become_user: "{{hosting_username}}"
-  file: "path={{item}} state=directory"
-  with_items:
-    - "{{hosting_user_home}}/{{sandman_api_name}}/mysql"
-    - "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration"
-
-- name: "copy the sandman database scripts"
-  become_user: "{{hosting_username}}"
-  template:
-    src: "{{item}}.j2"
-    dest: "{{hosting_user_home}}/{{sandman_api_name}}/mysql/{{item}}"
-    mode: "0755"
-  with_items:
-    - "remove_hspc_sandbox.sql"
-    - "default_apps.sql"
-    - "dstu2_sandbox.sql"
-    - "stu3_sandbox.sql"
-
-- name: "load the sandman database scripts"
-  mysql_db:
-    name: "{{sandman_api_server_database}}"
-    state: import
-    target: "{{hosting_user_home}}/{{sandman_api_name}}/mysql/{{item}}"
-  with_items:
-    - "remove_hspc_sandbox.sql"
-    - "default_apps.sql"
-    - "dstu2_sandbox.sql"
-    - "stu3_sandbox.sql"
-#  ignore_errors: yes
-
-- name: "process the templates"
-  template:
-    src: "{{item}}.j2"
-    dest: "{{hosting_user_home}}/{{sandman_api_name}}/project/BOOT-INF/classes/db/mysql/migration/{{item}}"
-    owner: "{{hosting_username}}"
-    group: "{{hosting_username}}"
-    mode: "0644"
-  with_items:
-    - "V9.1__Migrate_SMART_Logos.sql"
-    - "V9.2__default_personas.sql"
-
-- name: "update jar file"
-  become_user: "{{hosting_username}}"
-  shell: chdir={{hosting_user_home}}/{{sandman_api_name}}/project
-        jar uf {{hosting_user_home}}/{{sandman_api_name}}/{{sandman_api_server_artifact_artifact_id}}-{{sandman_api_server_artifact_version}}.{{sandman_api_server_artifact_packaging}} {{item}}
-  with_items:
-    - "BOOT-INF/classes/db/mysql/migration/V9.1__Migrate_SMART_Logos.sql"
-    - "BOOT-INF/classes/db/mysql/migration/V9.2__default_personas.sql"
-
-- name: "start {{sandman_api_name}}"
-  service:
-    name: "{{sandman_api_name}}"
-    state: "started"
-
-- name: "verify {{sandman_api_name}} is available internally at localhost:{{sandman_server_internal_port}}"
-  become_user: "{{hosting_username}}"
-  wait_for:
-    host: "localhost"
-    port: "{{sandman_api_server_internal_port}}"
