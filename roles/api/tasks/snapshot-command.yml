@@ -11,3 +11,4 @@
     body_format: json
     HEADER_Content-Type: "application/json"
     validate_certs: no
+    timeout: 90

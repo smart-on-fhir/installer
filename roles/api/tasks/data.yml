@@ -15,6 +15,7 @@
     body_format: json
     HEADER_Content-Type: "application/json"
     validate_certs: no
+    timeout: 90
 
 - name: "checkout {{api_dstu2_sample_patients_repo}}"
   when: enable_api_sample_data
