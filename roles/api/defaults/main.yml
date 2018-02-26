@@ -2,7 +2,7 @@
 # api common properties
 api_server_artifact_group_id: "org.hspconsortium.reference"
 api_server_artifact_artifact_id: "hspc-reference-api-webapp-multitenant"
-api_server_artifact_version: "1.10.1"
+api_server_artifact_version: "1.11.7"
 api_server_artifact_packaging: "jar"
 api_server_artifact_repository_url: "{{release_repository_url}}"
 api_server_artifact_location: "{{m2_repo_folder}}/org/hspconsortium/reference/{{api_server_artifact_artifact_id}}/{{api_server_artifact_version}}/{{api_server_artifact_artifact_id}}-{{api_server_artifact_version}}.{{api_server_artifact_packaging}}"
