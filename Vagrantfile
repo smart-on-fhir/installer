@@ -15,13 +15,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 9060, host: 9060
 
     # API_DSTU2 Server
-    config.vm.network :forwarded_port, guest: 9075, host: 9075
+    config.vm.network :forwarded_port, guest: 9071, host: 9071
     # Mock-API_DSTU2 Server
-    config.vm.network :forwarded_port, guest: 9275, host: 9275
+    config.vm.network :forwarded_port, guest: 9271, host: 9271
     # API_STU3 Server
-    config.vm.network :forwarded_port, guest: 9076, host: 9076
+    config.vm.network :forwarded_port, guest: 9074, host: 9074
     # Mock-API_STU3 Server
-    config.vm.network :forwarded_port, guest: 9276, host: 9276
+    config.vm.network :forwarded_port, guest: 9274, host: 9274
 
     # Sandbox Manager
     config.vm.network :forwarded_port, guest: 9080, host: 9080
