@@ -41,7 +41,7 @@ then
 fi
 
 echo "Restored snapshot containing resources:"
-mysql -u fhir -p{{mysql_password}} -e "select count(*) from hspc_4_smartstu3.hfj_resource"
+mysql -u fhir -p{{mysql_password}} -e "select count(*) from hspc_5_smartstu3.hfj_resource"
 
 echo "*********************************************"
 echo "Finished restore-stu3-baseline-snapshot.sh  "
