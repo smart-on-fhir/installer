@@ -188,7 +188,7 @@ Here is the exact configuration we use to test the installer using an AWS EC2 in
 | HTTP PORT     | 80                      |
 | HTTPS PORT    | 443                     |
 | LDAP PORT     | 10389                   |
-| APPS PORTS    | 9070-9099               |
+| APPS PORTS    | 9060-9099               |
 
 ### TLS
 
