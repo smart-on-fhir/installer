@@ -1,3 +1,12 @@
+# DEPRECATED!
+This project is not maintained any more. Please check out our current local sandbox project at https://github.com/smart-on-fhir/smart-dev-sandbox
+
+<br/>
+
+<br/>
+
+<br/>
+
 ## Building your own SMART on FHIR platform
 ![SMART Logo](smart-logo.png)
 
